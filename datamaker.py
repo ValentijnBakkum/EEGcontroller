@@ -9,6 +9,8 @@ import numpy as np
 import matplotlib.pyplot as plt 
 import os
 
+print('test')
+
 arr = os.listdir("C:\\Users\\Gebruiker\\Desktop\\Bap\\Data")
 
 for _ in arr[:1]:
