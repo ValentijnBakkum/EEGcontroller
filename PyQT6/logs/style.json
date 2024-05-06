@@ -1,0 +1,18 @@
+{
+	"QCustomQStackedWidget":[
+		{
+			"name":"mainPages",
+			"navigation":[
+				{
+					"navigationButtons":[
+						{
+							"trainBtn": "mainBodyContainerTrain",
+							"testBtn": "mainBodyContainerTest",
+							"usersBtn": "mainBodyContainerUsers"
+						}
+					]
+				}
+			]
+		}
+	]
+}
