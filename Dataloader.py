@@ -20,24 +20,26 @@ class DataReader():
             #print(self.pos)
             for x in a:
                 timestamp = self.pos[x].astype(int).item()
-                #print(timestamp)
+                print(timestamp)
                 i = 0
-                for i in range(10):
+                for i in range(1):
                     #print(i)
-                    begin1 = timestamp + (i * self.fs) + (4 * self.fs)
-                    end1 = timestamp + (i * self.fs) + (5 * self.fs)
+                    begin1 = timestamp + (i * self.fs)  #(1 * self.fs)
+                    end1 = timestamp + (i * self.fs) + (576)#2.56 * self.fs)
                     g = self.data["s"][begin1:end1]
-                    g = np.delete(g,(0,7,9,11,13,19,22,23,24),1)
+                    g = np.delete(g,(4,6,8,10,13,14,16,23,24),1)
                     #print(g.shape)
-                    if g.shape[0] == 250:
+                    if g.shape[0] == 576:
                         samplelist.append(g)
                         idlist.append(_ - 769)
                     else: 
                         print("issue")
+                        print(g)
                     i = i + 0.1
         return samplelist, idlist
-
-
-
+'''
+a = DataReader()
+print(a.load_data())
+'''
 
         
