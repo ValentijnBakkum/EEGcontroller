@@ -1,0 +1,6 @@
+Notes GUI subgroup:
+  1) discuss with ML group signals (format, amount, etc.)
+  2) change train window
+    a. add buttons left and right
+    b. change left/right signal in between start and end to send the signal instead of receive it
+  3) user functionality (save users in users.csv)
