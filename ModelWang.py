@@ -5,9 +5,6 @@ from torchinfo import summary
 from attentionmod import blockblock
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-#t = torch.rand(9,9,8)
-#print(t)
-
 #convnet decleration/architecture
 arch_1 = [
     (32,1),
@@ -32,6 +29,7 @@ class convblock(nn.Module):
         x = torch.cat((x3,x5,x7),dim = 1)
         return self.max(self.act(self.batchnorm(x)))
 
+#Lstm layer
 class lstmmodule(nn.Module):
     def __init__(self, input_len = 1, hidden_size=128, num_layers=1):
         super(lstmmodule, self).__init__()
@@ -48,7 +46,8 @@ class lstmmodule(nn.Module):
         cell_states = torch.zeros(self.num_layers, x.size(0),self.hidden_size).to(device)
         out, (hn,cn) = self.lstm(x,(hidden_states.detach(),cell_states.detach()))
         return self.fc(self.flatten(out))
-    
+
+#Dense layer    
 class Dense(nn.Module):
     def __init__(self):
         super(Dense, self).__init__()
@@ -71,19 +70,23 @@ class cnnnet1(nn.Module):
         self.flatten = nn.Flatten()
         self.lstm = lstmmodule()
         self.dense = Dense()
-        self.decoder = blockblock(10,16,2).to(device)
+        self.decoder = blockblock(4,16,4,576,16).to(device)
     def forward(self,x):
-        N,C,H,W = x.shape
-        yw = torch.squeeze(x)
-        x = torch.reshape(x,(N,1,24,24,16))
-        intermediate = self.Cnn(x)
-        intermediate = self.dense(intermediate)
+        N,C,H,W = x.shape # get shape of input
+        xr = torch.reshape(x,(N,1,24,24,16)) # reshape input for convolutional neural network
+        #convolutional part
+        intermediate = self.Cnn(xr)
+        intermediate = self.dense(intermediate) # reshape for LSTM part
+        # LSTM part
         xlstmi = intermediate[:,:,None]
         xlstm = self.lstm(xlstmi)
+        #self attention part
+        yw = torch.squeeze(x)
         yw = self.flatten(self.decoder(yw))
         intermediate = torch.cat((xlstm,yw),dim=1)
         return(self.nn(intermediate))
-    def Create_conv_layers(self,arch):
+    
+    def Create_conv_layers(self,arch): #creates the 3d convolution layers used before the lstm
         in_channels = self.in_channels
         list = []
         for x in arch:
@@ -92,10 +95,10 @@ class cnnnet1(nn.Module):
                 in_channels = x[0]*3
             elif type(x) == list:
                 print("placeholder")
-        return nn.Sequential(*list) # *unpcks list into nn.Sequential module
-    def create_nn(self):
+        return nn.Sequential(*list) # *unpacks list into nn.Sequential module
+    def create_nn(self): #creates the nn used in the model
         return nn.Sequential(nn.Flatten(),
-                             nn.Linear(9472,512,bias=True),
+                             nn.Linear(512,512,bias=True),
                              nn.Dropout(p=0.3),
                              nn.LeakyReLU(),
                              nn.Linear(512,256,bias=True),
@@ -104,8 +107,10 @@ class cnnnet1(nn.Module):
                              nn.Linear(256,4,bias=True)
                              #nn.Softmax()
         )
-#summary
-#model = cnnnet1().to(device)
-#summary(model,input_size=(128,1,576,16))
+    
+
+#summary of the model
+model = cnnnet1().to(device)
+summary(model,input_size=(256+128,1,576,16))
 #a = torch.rand(1,1,576,16).to(device)
 #print(model(a))

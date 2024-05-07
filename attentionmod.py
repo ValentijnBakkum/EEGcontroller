@@ -2,7 +2,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torchinfo import summary
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+#single self attention head
 class head(nn.Module):
     def __init__(self, head_size,n_channels):
         super(head,self).__init__()
@@ -19,6 +21,7 @@ class head(nn.Module):
         out = wei @ v
         return out
     
+#Feedforward
 class feedforward(nn.Module):
     def __init__(self,n_channels):
         super(feedforward,self).__init__()
@@ -30,6 +33,7 @@ class feedforward(nn.Module):
     def forward(self,x):
         return self.fcs(x)
 
+#multi self-attention head
 class multihead(nn.Module):
     def __init__(self,n_channels,n_heads,head_size):
         super().__init__()
@@ -40,6 +44,7 @@ class multihead(nn.Module):
         out = self.linlay(inter)
         return out
     
+#above classes combined    
 class attentionblock(nn.Module):
     def __init__(self,n_channels,n_head):
         super().__init__()
@@ -54,12 +59,34 @@ class attentionblock(nn.Module):
         out = self.layernorm2(self.feedforward(x)+inter)
         return out
 
-class blockblock(nn.Module):
-    def __init__(self,num_repeat,n_channels,n_heads):
-        super().__init__()
-        self.blocks = nn.Sequential(*[attentionblock(n_channels,n_heads) for _ in range(num_repeat)])
+#Dense class
+class Dense(nn.Module):
+    def __init__(self):
+        super(Dense, self).__init__()
+        self.dense = nn.Sequential(nn.Flatten(),
+                                   nn.Linear(9216,256),
+                                   nn.Dropout(p=0.3),
+                                   nn.LeakyReLU(),    
+        )
     def forward(self,x):
-        return self.blocks(x)
+        return(self.dense(x))
+
+#Class for combining whole self attention module
+class blockblock(nn.Module):
+    def __init__(self,num_repeat,n_channels,n_heads,length,n_embd):
+        super().__init__()
+        self.blocks = nn.Sequential(*[attentionblock(n_embd,n_heads) for _ in range(num_repeat)])
+        self.pos_embed = nn.Embedding(length,n_embd)
+        self.linear_token_embedding = nn.Linear(n_channels,n_embd)
+        self.linearnorm = nn.LayerNorm(n_embd)
+        self.dense = Dense()
+    def forward(self,x):
+        B,T,C = x.shape
+        x_posembd = self.pos_embed(torch.arange(T, device = device))
+        x = self.linearnorm(self.linear_token_embedding(x))
+        x = x + x_posembd
+        return self.dense(self.blocks(x))
     
-#model = blockblock(12,8,4)
-#summary(model,input_size=(1,576,8))
+#summary    
+#model = blockblock(6,16,4,576,32).to(device)
+#summary(model,input_size=(1,576,16))
