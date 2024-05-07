@@ -14,5 +14,12 @@
 				}
 			]
 		}
+	],
+
+	"QPushButton": [
+		{
+			"name": "startTrainBtn",
+			"theme": "13"
+		}
 	]
 }

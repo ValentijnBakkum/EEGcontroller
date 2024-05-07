@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1102</width>
-    <height>681</height>
+    <width>1108</width>
+    <height>693</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,7 +22,7 @@
 	color:#000;
 	border-color: rgb(0, 0, 0);
 }
-QPushButton{text-align:left; padding:5px 10px;}
+
 </string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -283,29 +283,50 @@ color: rgb(255, 255, 255);</string>
         <item row="0" column="0" colspan="2">
          <widget class="QWidget" name="userIDTrain" native="true">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
             <horstretch>0</horstretch>
-            <verstretch>10</verstretch>
+            <verstretch>1</verstretch>
            </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>70</height>
+           </size>
           </property>
           <property name="styleSheet">
            <string notr="true">color: rgb(255, 255, 255);
 background-color: rgb(0, 187, 255);</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
-            <widget class="QLineEdit" name="lineEdit">
-             <property name="styleSheet">
-              <string notr="true">font: 24pt &quot;Segoe UI&quot;;</string>
+            <widget class="QLineEdit" name="userID_test">
+             <property name="font">
+              <font>
+               <pointsize>28</pointsize>
+               <bold>true</bold>
+              </font>
              </property>
              <property name="text">
               <string>User ID</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
-             </property>
-             <property name="readOnly">
-              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -317,7 +338,7 @@ background-color: rgb(0, 187, 255);</string>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>50</horstretch>
-            <verstretch>90</verstretch>
+            <verstretch>95</verstretch>
            </sizepolicy>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -341,7 +362,7 @@ background-color: rgb(0, 187, 255);</string>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
                <horstretch>0</horstretch>
-               <verstretch>15</verstretch>
+               <verstretch>10</verstretch>
               </sizepolicy>
              </property>
              <property name="styleSheet">
@@ -458,7 +479,7 @@ background-color: rgb(0, 187, 255);</string>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                <horstretch>0</horstretch>
-               <verstretch>25</verstretch>
+               <verstretch>15</verstretch>
               </sizepolicy>
              </property>
              <property name="frameShape">
@@ -482,7 +503,7 @@ background-color: rgb(0, 187, 255);</string>
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>18</pointsize>
+                      <pointsize>16</pointsize>
                      </font>
                     </property>
                     <property name="text">
@@ -503,7 +524,7 @@ background-color: rgb(0, 187, 255);</string>
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>18</pointsize>
+                      <pointsize>16</pointsize>
                      </font>
                     </property>
                     <property name="text">
@@ -528,7 +549,7 @@ background-color: rgb(0, 187, 255);</string>
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>18</pointsize>
+                      <pointsize>16</pointsize>
                      </font>
                     </property>
                     <property name="cursor">
@@ -549,7 +570,7 @@ background-color: rgb(0, 187, 255);</string>
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>18</pointsize>
+                      <pointsize>16</pointsize>
                      </font>
                     </property>
                     <property name="cursor">
@@ -574,7 +595,7 @@ background-color: rgb(0, 187, 255);</string>
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>18</pointsize>
+                      <pointsize>16</pointsize>
                      </font>
                     </property>
                     <property name="text">
@@ -595,7 +616,7 @@ background-color: rgb(0, 187, 255);</string>
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>18</pointsize>
+                      <pointsize>16</pointsize>
                      </font>
                     </property>
                     <property name="text">
@@ -620,7 +641,7 @@ background-color: rgb(0, 187, 255);</string>
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>18</pointsize>
+                      <pointsize>16</pointsize>
                      </font>
                     </property>
                     <property name="cursor">
@@ -641,7 +662,7 @@ background-color: rgb(0, 187, 255);</string>
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>18</pointsize>
+                      <pointsize>16</pointsize>
                      </font>
                     </property>
                     <property name="cursor">
@@ -686,8 +707,21 @@ background-color: rgb(0, 187, 255);</string>
               <enum>QFrame::Raised</enum>
              </property>
              <layout class="QGridLayout" name="gridLayout_3">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_5">
+              <item row="5" column="1">
+               <widget class="QWidget" name="widget_9" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                  <horstretch>90</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="0">
+               <widget class="QLabel" name="label_7">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                   <horstretch>10</horstretch>
@@ -700,7 +734,7 @@ background-color: rgb(0, 187, 255);</string>
                  </font>
                 </property>
                 <property name="text">
-                 <string>raw</string>
+                 <string>Ch8</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -723,7 +757,20 @@ background-color: rgb(0, 187, 255);</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
+              <item row="3" column="1">
+               <widget class="QWidget" name="widget_6" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                  <horstretch>90</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0">
                <widget class="QLabel" name="label_6">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -737,28 +784,15 @@ background-color: rgb(0, 187, 255);</string>
                  </font>
                 </property>
                 <property name="text">
-                 <string>alpha</string>
+                 <string>Ch7</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
-               <widget class="QWidget" name="widget_4" native="true">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                  <horstretch>90</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_7">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_5">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                   <horstretch>10</horstretch>
@@ -771,14 +805,14 @@ background-color: rgb(0, 187, 255);</string>
                  </font>
                 </property>
                 <property name="text">
-                 <string>beta</string>
+                 <string>Ch1</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
+              <item row="7" column="1">
                <widget class="QWidget" name="widget_5" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -788,6 +822,166 @@ background-color: rgb(0, 187, 255);</string>
                 </property>
                 <property name="styleSheet">
                  <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QWidget" name="widget_7" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                  <horstretch>90</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QWidget" name="widget_8" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                  <horstretch>90</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QWidget" name="widget_4" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                  <horstretch>90</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QWidget" name="widget_10" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                  <horstretch>90</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_8">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>10</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>16</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Ch2</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_9">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>10</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>16</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Ch3</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_10">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>10</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>16</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Ch4</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_11">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>10</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>16</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Ch5</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="label_12">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>10</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>16</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Ch6</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
@@ -802,7 +996,7 @@ background-color: rgb(0, 187, 255);</string>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>50</horstretch>
-            <verstretch>90</verstretch>
+            <verstretch>95</verstretch>
            </sizepolicy>
           </property>
           <property name="styleSheet">
@@ -935,27 +1129,21 @@ image: url(:/newPrefix/Afbeeldingen/cursor.png);</string>
             <pointsize>18</pointsize>
            </font>
           </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(232, 232, 232);</string>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
           </property>
           <property name="selectionRectVisible">
            <bool>true</bool>
           </property>
-          <item>
-           <property name="text">
-            <string>Jack Chen</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Martin Little</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Davi Spiller Beltrao</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item row="1" column="1">
@@ -1105,29 +1293,50 @@ color: rgb(255, 255, 255);</string>
         <item row="0" column="0" colspan="2">
          <widget class="QWidget" name="userIDTrain_2" native="true">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
             <horstretch>0</horstretch>
-            <verstretch>10</verstretch>
+            <verstretch>1</verstretch>
            </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>70</height>
+           </size>
           </property>
           <property name="styleSheet">
            <string notr="true">color: rgb(255, 255, 255);
 background-color: rgb(0, 187, 255);</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_36">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
-            <widget class="QLineEdit" name="lineEdit_34">
-             <property name="styleSheet">
-              <string notr="true">font: 24pt &quot;Segoe UI&quot;;</string>
+            <widget class="QLineEdit" name="userID_train">
+             <property name="font">
+              <font>
+               <pointsize>28</pointsize>
+               <bold>true</bold>
+              </font>
              </property>
              <property name="text">
               <string>User ID</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
-             </property>
-             <property name="readOnly">
-              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -1139,7 +1348,7 @@ background-color: rgb(0, 187, 255);</string>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>50</horstretch>
-            <verstretch>90</verstretch>
+            <verstretch>95</verstretch>
            </sizepolicy>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -1163,7 +1372,7 @@ background-color: rgb(0, 187, 255);</string>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
                <horstretch>0</horstretch>
-               <verstretch>15</verstretch>
+               <verstretch>10</verstretch>
               </sizepolicy>
              </property>
              <property name="styleSheet">
@@ -1280,7 +1489,7 @@ background-color: rgb(0, 187, 255);</string>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                <horstretch>0</horstretch>
-               <verstretch>25</verstretch>
+               <verstretch>15</verstretch>
               </sizepolicy>
              </property>
              <property name="frameShape">
@@ -1304,11 +1513,11 @@ background-color: rgb(0, 187, 255);</string>
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>18</pointsize>
+                      <pointsize>16</pointsize>
                      </font>
                     </property>
                     <property name="text">
-                     <string>x:</string>
+                     <string>Batch size:</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1325,11 +1534,11 @@ background-color: rgb(0, 187, 255);</string>
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>18</pointsize>
+                      <pointsize>16</pointsize>
                      </font>
                     </property>
                     <property name="text">
-                     <string>y:</string>
+                     <string>Learning rate:</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1350,14 +1559,14 @@ background-color: rgb(0, 187, 255);</string>
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>18</pointsize>
+                      <pointsize>16</pointsize>
                      </font>
                     </property>
                     <property name="cursor">
                      <cursorShape>ArrowCursor</cursorShape>
                     </property>
                     <property name="text">
-                     <string>20</string>
+                     <string>1000</string>
                     </property>
                    </widget>
                   </item>
@@ -1371,14 +1580,14 @@ background-color: rgb(0, 187, 255);</string>
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>18</pointsize>
+                      <pointsize>16</pointsize>
                      </font>
                     </property>
                     <property name="cursor">
                      <cursorShape>ArrowCursor</cursorShape>
                     </property>
                     <property name="text">
-                     <string>10</string>
+                     <string>44100</string>
                     </property>
                    </widget>
                   </item>
@@ -1396,11 +1605,11 @@ background-color: rgb(0, 187, 255);</string>
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>18</pointsize>
+                      <pointsize>16</pointsize>
                      </font>
                     </property>
                     <property name="text">
-                     <string>velocity (pixel/sec):</string>
+                     <string>Max iteration:</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1417,11 +1626,11 @@ background-color: rgb(0, 187, 255);</string>
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>18</pointsize>
+                      <pointsize>16</pointsize>
                      </font>
                     </property>
                     <property name="text">
-                     <string>power (mW):</string>
+                     <string>Window Length (&gt;28)</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1442,7 +1651,7 @@ background-color: rgb(0, 187, 255);</string>
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>18</pointsize>
+                      <pointsize>16</pointsize>
                      </font>
                     </property>
                     <property name="cursor">
@@ -1463,14 +1672,14 @@ background-color: rgb(0, 187, 255);</string>
                     </property>
                     <property name="font">
                      <font>
-                      <pointsize>18</pointsize>
+                      <pointsize>16</pointsize>
                      </font>
                     </property>
                     <property name="cursor">
                      <cursorShape>ArrowCursor</cursorShape>
                     </property>
                     <property name="text">
-                     <string>15</string>
+                     <string>1000</string>
                     </property>
                    </widget>
                   </item>
@@ -1508,27 +1717,6 @@ background-color: rgb(0, 187, 255);</string>
               <enum>QFrame::Raised</enum>
              </property>
              <layout class="QGridLayout" name="gridLayout_23">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_33">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>10</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>16</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>raw</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
               <item row="0" column="1">
                <widget class="QWidget" name="widget_25" native="true">
                 <property name="sizePolicy">
@@ -1545,7 +1733,7 @@ background-color: rgb(0, 187, 255);</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
+              <item row="6" column="0">
                <widget class="QLabel" name="label_34">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -1559,14 +1747,56 @@ background-color: rgb(0, 187, 255);</string>
                  </font>
                 </property>
                 <property name="text">
-                 <string>alpha</string>
+                 <string>Ch7</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_39">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>10</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>16</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Ch5</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_36">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>10</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>16</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Ch2</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
                <widget class="QWidget" name="widget_26" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -1580,6 +1810,27 @@ background-color: rgb(0, 187, 255);</string>
                </widget>
               </item>
               <item row="2" column="0">
+               <widget class="QLabel" name="label_37">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>10</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>16</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Ch3</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="0">
                <widget class="QLabel" name="label_35">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -1593,7 +1844,91 @@ background-color: rgb(0, 187, 255);</string>
                  </font>
                 </property>
                 <property name="text">
-                 <string>beta</string>
+                 <string>Ch8</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QWidget" name="widget_28" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                  <horstretch>90</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="1">
+               <widget class="QWidget" name="widget_27" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                  <horstretch>90</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QWidget" name="widget_31" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                  <horstretch>90</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_33">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>10</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>16</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Ch1</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="label_40">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>10</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>16</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Ch6</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -1601,7 +1936,60 @@ background-color: rgb(0, 187, 255);</string>
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QWidget" name="widget_27" native="true">
+               <widget class="QWidget" name="widget_30" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                  <horstretch>90</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_38">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>10</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>16</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Ch4</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QWidget" name="widget_29" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                  <horstretch>90</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="cursor">
+                 <cursorShape>ArrowCursor</cursorShape>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QWidget" name="widget_32" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                   <horstretch>90</horstretch>
@@ -1624,7 +2012,7 @@ background-color: rgb(0, 187, 255);</string>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>50</horstretch>
-            <verstretch>90</verstretch>
+            <verstretch>95</verstretch>
            </sizepolicy>
           </property>
           <property name="styleSheet">
@@ -1735,30 +2123,49 @@ background-color: rgb(0, 187, 255);</string>
                  <string notr="true">background-color: rgb(255, 255, 255);</string>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_25">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
                  <item row="0" column="0">
-                  <widget class="QLineEdit" name="lineEdit_42">
+                  <widget class="QCustomQPushButton" name="startTrainBtn">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                     <horstretch>50</horstretch>
+                     <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
                    </property>
                    <property name="font">
                     <font>
                      <pointsize>24</pointsize>
+                     <bold>true</bold>
                     </font>
                    </property>
-                   <property name="cursor">
-                    <cursorShape>ArrowCursor</cursorShape>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(255, 255, 255);</string>
+                   <property name="autoFillBackground">
+                    <bool>false</bool>
                    </property>
                    <property name="text">
-                    <string>Left/Right</string>
+                    <string>Start training!</string>
                    </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
+                   <property name="autoDefault">
+                    <bool>false</bool>
+                   </property>
+                   <property name="default">
+                    <bool>false</bool>
+                   </property>
+                   <property name="flat">
+                    <bool>false</bool>
                    </property>
                   </widget>
                  </item>
@@ -1784,6 +2191,11 @@ background-color: rgb(0, 187, 255);</string>
    <extends>QStackedWidget</extends>
    <header>Custom_Widgets.QCustomQStackedWidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QCustomQPushButton</class>
+   <extends>QPushButton</extends>
+   <header>Custom_Widgets.QCustomQPushButton.h</header>
   </customwidget>
  </customwidgets>
  <resources>
