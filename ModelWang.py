@@ -53,7 +53,7 @@ class Dense(nn.Module):
     def __init__(self):
         super(Dense, self).__init__()
         self.dense = nn.Sequential(nn.Flatten(),
-                                   nn.Linear(9216,256),
+                                   nn.Linear(6912,256),
                                    nn.Dropout(p=0.3),
                                    nn.LeakyReLU(),    
         )
@@ -77,7 +77,7 @@ class cnnnet1(nn.Module):
         yw = torch.squeeze(x)
         x = torch.reshape(x,(N,1,24,24,16))
         intermediate = self.Cnn(x)
-        intermediate = self.dense(x)
+        intermediate = self.dense(intermediate)
         xlstmi = intermediate[:,:,None]
         xlstm = self.lstm(xlstmi)
         yw = self.flatten(self.decoder(yw))
