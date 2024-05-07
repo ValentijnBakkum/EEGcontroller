@@ -4,3 +4,4 @@ Notes GUI subgroup:
     a. add buttons left and right
     b. change left/right signal in between start and end to send the signal instead of receive it
   3) user functionality (save users in users.csv)
+  4) after training show ML console and graphs in stead of recordings
