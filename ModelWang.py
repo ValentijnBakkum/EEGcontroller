@@ -21,7 +21,7 @@ class convblock(nn.Module):
         self.conv7 = nn.Conv3d(in_channels = in_channels, out_channels = filter_number,kernel_size=7, stride = 1, padding = 3, bias = False)
         self.batchnorm = nn.BatchNorm3d(filter_number*3)
         self.max = nn.MaxPool3d(kernel_size=(2,2,2))
-        self.act = nn.ReLU()
+        self.act = nn.LeakyReLU()
     def forward(self,x):
         x3 = self.act(self.conv3(x))
         x5 = self.act(self.conv5(x))
@@ -38,7 +38,7 @@ class lstmmodule(nn.Module):
         self.lstm = nn.LSTM(input_len,hidden_size,num_layers,batch_first=True)
         self.fc = nn.Sequential(nn.Linear(256*hidden_size,256),
                                 nn.Dropout(p=0.3),
-                                nn.ReLU()
+                                nn.LeakyReLU()
                                 )
         self.flatten = nn.Flatten()
     def forward(self,x):
@@ -95,7 +95,7 @@ class cnnnet1(nn.Module):
                 in_channels = x[0]*3
             elif type(x) == list:
                 print("placeholder")
-        return nn.Sequential(*list) # *unpacks list into nn.Sequential module
+        return nn.Sequential(*list) # * unpacks list into nn.Sequential module
     def create_nn(self): #creates the nn used in the model
         return nn.Sequential(nn.Flatten(),
                              nn.Linear(512,512,bias=True),
