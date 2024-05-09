@@ -110,7 +110,7 @@ class cnnnet1(nn.Module):
     
 
 #summary of the model
-model = cnnnet1().to(device)
-summary(model,input_size=(256+128,1,576,16))
+#model = cnnnet1().to(device)
+#summary(model,input_size=(256+128,1,576,16))
 #a = torch.rand(1,1,576,16).to(device)
 #print(model(a))

@@ -64,7 +64,7 @@ class Dense(nn.Module):
     def __init__(self):
         super(Dense, self).__init__()
         self.dense = nn.Sequential(nn.Flatten(),
-                                   nn.Linear(9216,256),
+                                   nn.Linear(18432,256),
                                    nn.Dropout(p=0.3),
                                    nn.LeakyReLU(),    
         )
@@ -80,13 +80,15 @@ class blockblock(nn.Module):
         self.linear_token_embedding = nn.Linear(n_channels,n_embd)
         self.linearnorm = nn.LayerNorm(n_embd)
         self.dense = Dense()
+        self.linear = nn.Linear(256,4)
     def forward(self,x):
+        x = torch.squeeze(x)
         B,T,C = x.shape
         x_posembd = self.pos_embed(torch.arange(T, device = device))
         x = self.linearnorm(self.linear_token_embedding(x))
         x = x + x_posembd
-        return self.dense(self.blocks(x))
+        return self.linear(self.dense(self.blocks(x)))
     
 #summary    
-#model = blockblock(6,16,4,576,32).to(device)
-#summary(model,input_size=(1,576,16))
+#model = blockblock(6,16,4,576,16).to(device)
+#summary(model,input_size=(2,1,576,16))
