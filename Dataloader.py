@@ -21,21 +21,23 @@ class DataReader():
             for x in a:
                 timestamp = self.pos[x].astype(int).item()
                 print(timestamp)
-                i = 0
-                for i in range(1):
-                    #print(i)
-                    begin1 = timestamp + (i * self.fs)  #(1 * self.fs)
-                    end1 = timestamp + (i * self.fs) + (576)#2.56 * self.fs)
-                    g = self.data["s"][begin1:end1]
+                h = 0
+                for i in range(10):
+                    #print(h)
+                    begin1 = timestamp + (h * self.fs) #+ (1 * self.fs)
+                    
+                    end1 = timestamp + (h * self.fs) + (256)
+                    #print(begin1,end1)
+                    g = self.data["s"][int(begin1):int(end1)]
                     g = np.delete(g,(4,6,8,10,13,14,16,23,24),1)
                     #print(g.shape)
-                    if g.shape[0] == 576:
+                    if g.shape[0] == 256:
                         samplelist.append(g)
                         idlist.append(_ - 769)
                     else: 
                         print("issue")
                         print(g)
-                    i = i + 0.1
+                    h = h + 0.1
         return samplelist, idlist
 '''
 a = DataReader()
