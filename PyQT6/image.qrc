@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="newPrefix">
+    <file>../../../../Afbeeldingen/calibartion_cross.png</file>
+    <file>../../../../Afbeeldingen/EEG cap.png</file>
+    <file>../../../../Afbeeldingen/EEG.jpg</file>
     <file>../../../../Afbeeldingen/cursor.png</file>
     <file>../../../../Afbeeldingen/column plot.png</file>
     <file>../../../../Afbeeldingen/Graph with sample points.png</file>

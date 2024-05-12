@@ -2,15 +2,23 @@ import os
 import sys
 import json
 import csv
+import random
 from ui_interface import *
+from ui_trainWindow import Ui_TrainWindow
 from Custom_Widgets import *
 from PyQt6.QtWidgets import QInputDialog, QMessageBox
+from PySide6.QtCore import QTimer, Slot, Signal
 
+
+#Mainwindow from which everything can be called
 class MainWindow(QMainWindow):
     def __init__(self):
-        QMainWindow.__init__(self)
+        super(MainWindow, self).__init__()
+
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
+        self.setWindowTitle("EEG-based BCI")
 
         #Apply style from the file style.json
         loadJsonStyle(self, self.ui, jsonFiles = {
@@ -18,6 +26,7 @@ class MainWindow(QMainWindow):
                             }) 
         
         #Check if the buttons are clicked and evoke their function
+        #User page:
         self.ui.addBtn.clicked.connect(self.addUser)
         self.ui.editBtn.clicked.connect(self.editUser)
         self.ui.removeBtn.clicked.connect(self.removeUser)
@@ -25,6 +34,13 @@ class MainWindow(QMainWindow):
         self.ui.downBtn.clicked.connect(self.downUser)
         self.ui.sortBtn.clicked.connect(self.sortUser)
         self.ui.usersList.itemClicked.connect(self.ChooseUser)
+
+        self.ui.trainBtn.clicked.connect(self.changeTrainBtn)
+        self.ui.testBtn.clicked.connect(self.changeTestBtn)
+        self.ui.usersBtn.clicked.connect(self.changeUsersBtn)
+        #Training window
+        self.app = TrainWindow()
+        self.ui.startTrainBtn.clicked.connect(self.openTrainWindow)
 
         # add users to user list from file
         with open('users.csv', newline='') as user_file:
@@ -36,6 +52,14 @@ class MainWindow(QMainWindow):
 
         self.show()
 
+    #Call the training window
+    def openTrainWindow(self):
+        if self.app.isHidden():
+            self.app.show()
+        else:
+            self.app.hide()            
+
+    #Function that handles the user based interface
     def ChooseUser(self, item):
         if type(item) is str:
             self.ui.userID_test.setText(item)
@@ -63,6 +87,24 @@ class MainWindow(QMainWindow):
         print(self.current_id)
 
     #Functions for the buttons on the user page
+    def changeTrainBtn(self):
+        if self.ui.mainPages.currentIndex() == 2:
+            self.ui.trainBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
+            self.ui.testBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+            self.ui.usersBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+
+    def changeTestBtn(self):
+        if self.ui.mainPages.currentIndex() == 0:
+            self.ui.testBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
+            self.ui.trainBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+            self.ui.usersBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+
+    def changeUsersBtn(self):
+        if self.ui.mainPages.currentIndex() == 1:
+            self.ui.usersBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
+            self.ui.trainBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+            self.ui.testBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+
     def addUser(self):
         currentIndex = self.ui.usersList.currentRow()
         error = ""
@@ -90,6 +132,8 @@ class MainWindow(QMainWindow):
                     self.ui.usersList.insertItem(currentIndex, text)
                     self.ChooseUser(text)
                     return
+            else:
+                return
             
 
     def editUser(self):
@@ -124,6 +168,8 @@ class MainWindow(QMainWindow):
                         item.setText(text)
                         self.ChooseUser(text)
                         return
+                else:
+                    return
             
     def removeUser(self):
         currentIndex = self.ui.usersList.currentRow()
@@ -167,6 +213,49 @@ class MainWindow(QMainWindow):
     def sortUser(self):
         self.ui.usersList.sortItems()
 
+
+#Training window class
+class TrainWindow(QMainWindow):
+    def __init__(self):
+        super(TrainWindow, self).__init__()
+        self.ui = Ui_TrainWindow()
+        self.ui.setupUi(self)
+
+        self.setWindowTitle("Ttraining Window")
+
+        #Timer
+        self.timer = QTimer()
+
+        #Check clicked buttons and call their respective functions
+        self.ui.startRecordingBtn.clicked.connect(self.startRecording)
+        self.ui.stopRecordingBtn.clicked.connect(self.stopRecording)
+        self.ui.helpBtn.clicked.connect(self.help)
+        self.timer.timeout.connect(lambda: self.changePages())
+
+    def startRecording(self):
+        self.timer.start(1000)
+        global count
+        count = 0
+
+    def changePages(self):
+        global count
+        pageNumber = random.randint(1,4)
+        if count % 2 != 0:
+            self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
+        else:
+            self.ui.promptsWidgets.setCurrentIndex(pageNumber)
+        count = count + 1
+
+    def stopRecording(self):
+        self.timer.stop()
+        self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
+    
+    def help(self):
+        QMessageBox.information(None,"Help",
+        "Instructions and their respective outputs:\nleft hand -> left\nright hand -> right\nfeet -> down\ntongue -> up",
+        QMessageBox.StandardButton.Ok)
+
+#Creates the app and runs the Mainwindow
 if __name__ == "__main__":
 
     path = './users.csv'

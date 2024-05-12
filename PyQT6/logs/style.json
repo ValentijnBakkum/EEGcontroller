@@ -21,5 +21,67 @@
 			"name": "startTrainBtn",
 			"theme": "13"
 		}
-	]
+	],
+
+	"QCustomSlideMenu": [{
+		"name": "infoWidgetTrain",
+		"defaultSize": [{
+			"width": 0,
+			"height": "auto"
+		}],
+		"collapsedSize": [{
+			"width": 0,
+			"height": "auto"
+		}],
+		"expandedSize": [{
+			"width": 1000,
+			"height": 250
+		}],
+		"toggleButton": [{
+			"buttonName": "infoBtn"
+		}],
+		"menuTransitionAnimation": [{
+			"animationDuration": 500,
+			"animationEasingCurve": "Linear"
+		}],
+		"floatPosition": [
+			{
+				"relativeTo": "centralwidget",
+				"position": "center-center",
+				"shadow":[
+					{
+						"blurRadius": 0,
+						"xOffset": 0,
+						"yOffset": 0
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "leftMenuContainer",
+		"defaultSize": [{
+			"width": 39,
+			"height": "parent"
+		}],
+		"collapsedSize": [{
+			"width": 39,
+			"height": "parent"
+		}],
+		"expandedSize": [{
+			"width": 123,
+			"height": "parent"
+		}],
+		"toggleButton": [{
+			"buttonName": "menuBtn",
+			"icons": [{
+				"whenMenuIsCollapsed": ":/icons/menu.svg",
+				"whenMenuIsExpanded": ":/icons/chevron-left.svg"
+			}]
+		}],
+		"menuTransitionAnimation": [{
+			"animationDuration": 500,
+			"animationEasingCurve": "Linear"
+		}]
+	}]
 }

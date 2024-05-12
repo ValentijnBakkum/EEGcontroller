@@ -6,12 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1108</width>
-    <height>693</height>
+    <width>1297</width>
+    <height>782</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="image.qrc">
+    <normaloff>:/newPrefix/Afbeeldingen/EEG.jpg</normaloff>:/newPrefix/Afbeeldingen/EEG.jpg</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">*{
@@ -42,18 +46,30 @@
     <property name="bottomMargin">
      <number>0</number>
     </property>
-    <item>
-     <widget class="QWidget" name="leftMenuContainer" native="true">
+    <item alignment="Qt::AlignLeft">
+     <widget class="QCustomSlideMenu" name="leftMenuContainer" native="true">
+      <property name="maximumSize">
+       <size>
+        <width>39</width>
+        <height>16777215</height>
+       </size>
+      </property>
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(0, 187, 255);
-color: rgb(255, 255, 255);</string>
+       <string notr="true">*{
+background-color: rgb(0, 166, 214);
+border:none;
+color: rgb(255, 255, 255);
+}
+QPushButton{
+	text-align:left;
+}</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="spacing">
         <number>0</number>
        </property>
        <property name="leftMargin">
-        <number>0</number>
+        <number>5</number>
        </property>
        <property name="topMargin">
         <number>0</number>
@@ -110,12 +126,22 @@ color: rgb(255, 255, 255);</string>
               <widget class="QPushButton" name="menuBtn">
                <property name="font">
                 <font>
-                 <pointsize>16</pointsize>
+                 <pointsize>22</pointsize>
                  <bold>true</bold>
                 </font>
                </property>
                <property name="text">
                 <string>Menu</string>
+               </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/icons/menu.svg</normaloff>:/icons/icons/menu.svg</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -135,29 +161,39 @@ color: rgb(255, 255, 255);</string>
               <number>0</number>
              </property>
              <property name="leftMargin">
-              <number>5</number>
+              <number>0</number>
              </property>
              <property name="topMargin">
-              <number>10</number>
+              <number>20</number>
              </property>
              <property name="rightMargin">
               <number>0</number>
              </property>
              <property name="bottomMargin">
-              <number>10</number>
+              <number>0</number>
              </property>
              <item>
               <widget class="QPushButton" name="trainBtn">
                <property name="font">
                 <font>
-                 <pointsize>16</pointsize>
+                 <pointsize>22</pointsize>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true"/>
+                <string notr="true">background-color: rgb(0, 118, 194);</string>
                </property>
                <property name="text">
                 <string>Train</string>
+               </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/icons/sliders.svg</normaloff>:/icons/icons/sliders.svg</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -165,7 +201,7 @@ color: rgb(255, 255, 255);</string>
               <widget class="QPushButton" name="testBtn">
                <property name="font">
                 <font>
-                 <pointsize>16</pointsize>
+                 <pointsize>22</pointsize>
                 </font>
                </property>
                <property name="styleSheet">
@@ -174,17 +210,37 @@ color: rgb(255, 255, 255);</string>
                <property name="text">
                 <string>Test</string>
                </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/icons/target.svg</normaloff>:/icons/icons/target.svg</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
+               </property>
               </widget>
              </item>
              <item>
               <widget class="QPushButton" name="usersBtn">
                <property name="font">
                 <font>
-                 <pointsize>16</pointsize>
+                 <pointsize>22</pointsize>
                 </font>
                </property>
                <property name="text">
                 <string>Users</string>
+               </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/icons/users.svg</normaloff>:/icons/icons/users.svg</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -232,11 +288,21 @@ color: rgb(255, 255, 255);</string>
               <widget class="QPushButton" name="infoBtn">
                <property name="font">
                 <font>
-                 <pointsize>16</pointsize>
+                 <pointsize>22</pointsize>
                 </font>
                </property>
                <property name="text">
-                <string>Information</string>
+                <string>Info</string>
+               </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/icons/info.svg</normaloff>:/icons/icons/info.svg</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -244,11 +310,21 @@ color: rgb(255, 255, 255);</string>
               <widget class="QPushButton" name="exitBtn">
                <property name="font">
                 <font>
-                 <pointsize>16</pointsize>
+                 <pointsize>22</pointsize>
                 </font>
                </property>
                <property name="text">
                 <string>Exit</string>
+               </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/icons/x-circle.svg</normaloff>:/icons/icons/x-circle.svg</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -264,7 +340,7 @@ color: rgb(255, 255, 255);</string>
     <item>
      <widget class="QCustomQStackedWidget" name="mainPages">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -277,15 +353,18 @@ color: rgb(255, 255, 255);</string>
       </property>
       <widget class="QWidget" name="mainBodyContainerTest">
        <property name="styleSheet">
-        <string notr="true">border:none;</string>
+        <string notr="true"/>
        </property>
        <layout class="QGridLayout" name="gridLayout">
+        <property name="bottomMargin">
+         <number>9</number>
+        </property>
         <item row="0" column="0" colspan="2">
-         <widget class="QWidget" name="userIDTrain" native="true">
+         <widget class="QWidget" name="userIDTest" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
             <horstretch>0</horstretch>
-            <verstretch>1</verstretch>
+            <verstretch>0</verstretch>
            </sizepolicy>
           </property>
           <property name="maximumSize">
@@ -296,7 +375,8 @@ color: rgb(255, 255, 255);</string>
           </property>
           <property name="styleSheet">
            <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 187, 255);</string>
+background-color: rgb(0, 166, 214);
+border:none;</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
            <property name="spacing">
@@ -334,7 +414,7 @@ background-color: rgb(0, 187, 255);</string>
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QWidget" name="leftBodyFrameTrain" native="true">
+         <widget class="QWidget" name="leftBodyFrameTest" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>50</horstretch>
@@ -366,7 +446,8 @@ background-color: rgb(0, 187, 255);</string>
               </sizepolicy>
              </property>
              <property name="styleSheet">
-              <string notr="true">background-color: rgb(0, 0, 0);</string>
+              <string notr="true">background-color: rgb(0, 0, 0);
+border:none;</string>
              </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
@@ -415,6 +496,9 @@ background-color: rgb(0, 187, 255);</string>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
               <item>
@@ -437,10 +521,13 @@ background-color: rgb(0, 187, 255);</string>
                  <string notr="true">background-color: rgb(255, 255, 255);</string>
                 </property>
                 <property name="text">
-                 <string>Left/Right</string>
+                 <string>Direction</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -468,6 +555,9 @@ background-color: rgb(0, 187, 255);</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -506,6 +596,9 @@ background-color: rgb(0, 187, 255);</string>
                       <pointsize>16</pointsize>
                      </font>
                     </property>
+                    <property name="styleSheet">
+                     <string notr="true">border:none;</string>
+                    </property>
                     <property name="text">
                      <string>x:</string>
                     </property>
@@ -526,6 +619,9 @@ background-color: rgb(0, 187, 255);</string>
                      <font>
                       <pointsize>16</pointsize>
                      </font>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">border:none;</string>
                     </property>
                     <property name="text">
                      <string>y:</string>
@@ -598,6 +694,9 @@ background-color: rgb(0, 187, 255);</string>
                       <pointsize>16</pointsize>
                      </font>
                     </property>
+                    <property name="styleSheet">
+                     <string notr="true">border:none;</string>
+                    </property>
                     <property name="text">
                      <string>velocity (pixel/sec):</string>
                     </property>
@@ -618,6 +717,9 @@ background-color: rgb(0, 187, 255);</string>
                      <font>
                       <pointsize>16</pointsize>
                      </font>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">border:none;</string>
                     </property>
                     <property name="text">
                      <string>power (mW):</string>
@@ -992,7 +1094,7 @@ background-color: rgb(0, 187, 255);</string>
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QWidget" name="rightBodyFrameTrain" native="true">
+         <widget class="QWidget" name="rightBodyFrameTest" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>50</horstretch>
@@ -1000,7 +1102,7 @@ background-color: rgb(0, 187, 255);</string>
            </sizepolicy>
           </property>
           <property name="styleSheet">
-           <string notr="true">border-color: rgb(0, 0, 0);</string>
+           <string notr="true">border:none;</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <property name="spacing">
@@ -1122,30 +1224,9 @@ image: url(:/newPrefix/Afbeeldingen/cursor.png);</string>
         <string notr="true">QPushButton{text-align:left; padding:5px 15px;}</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_6">
-        <item row="1" column="0">
-         <widget class="QListWidget" name="usersList">
-          <property name="font">
-           <font>
-            <pointsize>18</pointsize>
-           </font>
-          </property>
-          <property name="autoFillBackground">
-           <bool>false</bool>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background-color: rgb(232, 232, 232);</string>
-          </property>
-          <property name="alternatingRowColors">
-           <bool>true</bool>
-          </property>
-          <property name="selectionBehavior">
-           <enum>QAbstractItemView::SelectRows</enum>
-          </property>
-          <property name="selectionRectVisible">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
+        <property name="bottomMargin">
+         <number>9</number>
+        </property>
         <item row="1" column="1">
          <layout class="QVBoxLayout" name="listBtns">
           <item>
@@ -1169,7 +1250,7 @@ image: url(:/newPrefix/Afbeeldingen/cursor.png);</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(0, 187, 255);
+             <string notr="true">background-color: rgb(0, 166, 214);
 color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
@@ -1185,7 +1266,7 @@ color: rgb(255, 255, 255);</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(0, 187, 255);
+             <string notr="true">background-color: rgb(0, 166, 214);
 color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
@@ -1201,7 +1282,7 @@ color: rgb(255, 255, 255);</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(0, 187, 255);
+             <string notr="true">background-color: rgb(0, 166, 214);
 color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
@@ -1217,7 +1298,7 @@ color: rgb(255, 255, 255);</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(0, 187, 255);
+             <string notr="true">background-color: rgb(0, 166, 214);
 color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
@@ -1233,7 +1314,7 @@ color: rgb(255, 255, 255);</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(0, 187, 255);
+             <string notr="true">background-color: rgb(0, 166, 214);
 color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
@@ -1249,7 +1330,7 @@ color: rgb(255, 255, 255);</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(0, 187, 255);
+             <string notr="true">background-color: rgb(0, 166, 214);
 color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
@@ -1259,12 +1340,42 @@ color: rgb(255, 255, 255);</string>
           </item>
          </layout>
         </item>
-        <item row="0" column="0" colspan="2">
+        <item row="1" column="0">
+         <widget class="QListWidget" name="usersList">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>90</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>18</pointsize>
+           </font>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(232, 232, 232);</string>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <property name="selectionRectVisible">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
          <widget class="QLineEdit" name="usersTitle">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
+            <verstretch>10</verstretch>
            </sizepolicy>
           </property>
           <property name="font">
@@ -1273,83 +1384,59 @@ color: rgb(255, 255, 255);</string>
            </font>
           </property>
           <property name="styleSheet">
-           <string notr="true">border:none;</string>
+           <string notr="true">border:none;
+color: rgb(12, 35, 64);</string>
           </property>
           <property name="text">
            <string>Users</string>
           </property>
           <property name="alignment">
-           <set>Qt::AlignCenter</set>
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
+        </item>
+        <item row="0" column="1">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Minimum</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
       <widget class="QWidget" name="mainBodyContainerTrain">
+       <property name="minimumSize">
+        <size>
+         <width>1122</width>
+         <height>674</height>
+        </size>
+       </property>
        <property name="styleSheet">
-        <string notr="true">border:none;</string>
+        <string notr="true"/>
        </property>
        <layout class="QGridLayout" name="gridLayout_24">
-        <item row="0" column="0" colspan="2">
-         <widget class="QWidget" name="userIDTrain_2" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>1</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>70</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 187, 255);</string>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_36">
-           <property name="spacing">
-            <number>0</number>
-           </property>
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QLineEdit" name="userID_train">
-             <property name="font">
-              <font>
-               <pointsize>28</pointsize>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>User ID</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
+        <property name="bottomMargin">
+         <number>9</number>
+        </property>
         <item row="1" column="0">
-         <widget class="QWidget" name="leftBodyFrameTrain_2" native="true">
+         <widget class="QWidget" name="leftBodyFrameTrain" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>50</horstretch>
             <verstretch>95</verstretch>
            </sizepolicy>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_38">
            <property name="spacing">
@@ -1376,7 +1463,8 @@ background-color: rgb(0, 187, 255);</string>
               </sizepolicy>
              </property>
              <property name="styleSheet">
-              <string notr="true">background-color: rgb(0, 0, 0);</string>
+              <string notr="true">background-color: rgb(0, 0, 0);
+border:none;</string>
              </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
@@ -1425,6 +1513,9 @@ background-color: rgb(0, 187, 255);</string>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
               <item>
@@ -1447,10 +1538,13 @@ background-color: rgb(0, 187, 255);</string>
                  <string notr="true">background-color: rgb(255, 255, 255);</string>
                 </property>
                 <property name="text">
-                 <string>Left/Right</string>
+                 <string>Direction</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -1478,6 +1572,9 @@ background-color: rgb(0, 187, 255);</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -1516,6 +1613,9 @@ background-color: rgb(0, 187, 255);</string>
                       <pointsize>16</pointsize>
                      </font>
                     </property>
+                    <property name="styleSheet">
+                     <string notr="true">border:none;</string>
+                    </property>
                     <property name="text">
                      <string>Batch size:</string>
                     </property>
@@ -1536,6 +1636,9 @@ background-color: rgb(0, 187, 255);</string>
                      <font>
                       <pointsize>16</pointsize>
                      </font>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">border:none;</string>
                     </property>
                     <property name="text">
                      <string>Learning rate:</string>
@@ -1608,6 +1711,9 @@ background-color: rgb(0, 187, 255);</string>
                       <pointsize>16</pointsize>
                      </font>
                     </property>
+                    <property name="styleSheet">
+                     <string notr="true">border:none;</string>
+                    </property>
                     <property name="text">
                      <string>Max iteration:</string>
                     </property>
@@ -1628,6 +1734,9 @@ background-color: rgb(0, 187, 255);</string>
                      <font>
                       <pointsize>16</pointsize>
                      </font>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">border:none;</string>
                     </property>
                     <property name="text">
                      <string>Window Length (&gt;28)</string>
@@ -2008,7 +2117,7 @@ background-color: rgb(0, 187, 255);</string>
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QWidget" name="rightBodyFrameTrain_2" native="true">
+         <widget class="QWidget" name="rightBodyFrameTrain" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>50</horstretch>
@@ -2016,7 +2125,7 @@ background-color: rgb(0, 187, 255);</string>
            </sizepolicy>
           </property>
           <property name="styleSheet">
-           <string notr="true">border-color: rgb(0, 0, 0);</string>
+           <string notr="true">border:none;</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_37">
            <property name="spacing">
@@ -2178,6 +2287,233 @@ background-color: rgb(0, 187, 255);</string>
           </layout>
          </widget>
         </item>
+        <item row="0" column="0" colspan="2">
+         <widget class="QWidget" name="userIDTrain" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>70</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(0, 166, 214);
+border:none;</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_36">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLineEdit" name="userID_train">
+             <property name="font">
+              <font>
+               <pointsize>28</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>User ID</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="2">
+         <widget class="QCustomSlideMenu" name="infoWidgetTrain" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(0, 184, 200);
+color: rgb(255, 255, 255);</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_12">
+           <property name="spacing">
+            <number>9</number>
+           </property>
+           <property name="leftMargin">
+            <number>9</number>
+           </property>
+           <property name="topMargin">
+            <number>9</number>
+           </property>
+           <property name="rightMargin">
+            <number>9</number>
+           </property>
+           <property name="bottomMargin">
+            <number>9</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_13">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Information</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QFrame" name="frame_10">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label_14">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>80</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Training page: Train the user's brain activity using the 'Start training!' button. A new window will appear
+ in which the user can record the brain activity according to the instruction given.
+ For help, click on the help button. While training, the brain waves and training values
+ can be seen on the main window and changed if necessary.
+
+ Testing page: Test the user's brain commands. The resulting commands can be seen
+ in the bottom-right window. The brain waves and values are also displayed.
+
+Users page: Select the user that will train/test. Add or edit a user if necessary.</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QFrame" name="frame_11">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>169</width>
+                  <height>108</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"/>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_13">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QWidget" name="widget_11" native="true">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">image: url(:/newPrefix/Afbeeldingen/EEG cap.png);</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_15">
+                   <property name="font">
+                    <font>
+                     <pointsize>10</pointsize>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Channel numbers with according position</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
        </layout>
       </widget>
      </widget>
@@ -2197,9 +2533,16 @@ background-color: rgb(0, 187, 255);</string>
    <extends>QPushButton</extends>
    <header>Custom_Widgets.QCustomQPushButton.h</header>
   </customwidget>
+  <customwidget>
+   <class>QCustomSlideMenu</class>
+   <extends>QWidget</extends>
+   <header location="global">Custom_Widgets.QCustomSlideMenu.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <resources>
   <include location="image.qrc"/>
+  <include location="resources.qrc"/>
  </resources>
  <connections/>
 </ui>
