@@ -15,6 +15,8 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
+        self.stepsize = 5 # This regulates how fast the "mouse" moves
+
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
@@ -212,6 +214,19 @@ class MainWindow(QMainWindow):
 
     def sortUser(self):
         self.ui.usersList.sortItems()
+
+    # for test controlling the "mouse"
+    # TODO make the ML output prediction do this
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_W:
+            self.ui.widget.move(self.ui.widget.x(), self.ui.widget.y() - self.stepsize)
+        elif event.key() == Qt.Key_A:
+            self.ui.widget.move(self.ui.widget.x() - self.stepsize, self.ui.widget.y())
+        elif event.key() == Qt.Key_S:
+            self.ui.widget.move(self.ui.widget.x(), self.ui.widget.y() + self.stepsize)
+        elif event.key() == Qt.Key_D:
+            self.ui.widget.move(self.ui.widget.x() + self.stepsize, self.ui.widget.y())
+        self.update()
 
 
 #Training window class
