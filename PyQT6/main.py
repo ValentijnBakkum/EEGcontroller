@@ -15,7 +15,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
-        self.stepsize = 5 # This regulates how fast the "mouse" moves
+        self.stepsize = 5
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -40,6 +40,7 @@ class MainWindow(QMainWindow):
         self.ui.trainBtn.clicked.connect(self.changeTrainBtn)
         self.ui.testBtn.clicked.connect(self.changeTestBtn)
         self.ui.usersBtn.clicked.connect(self.changeUsersBtn)
+        self.ui.exitBtn.clicked.connect(self.exitApp)
         #Training window
         self.app = TrainWindow()
         self.ui.startTrainBtn.clicked.connect(self.openTrainWindow)
@@ -59,7 +60,10 @@ class MainWindow(QMainWindow):
         if self.app.isHidden():
             self.app.show()
         else:
-            self.app.hide()            
+            self.app.hide()
+
+    def exitApp(self):
+        QApplication.quit()    
 
     #Function that handles the user based interface
     def ChooseUser(self, item):
@@ -214,18 +218,22 @@ class MainWindow(QMainWindow):
 
     def sortUser(self):
         self.ui.usersList.sortItems()
-
+    
     # for test controlling the "mouse"
     # TODO make the ML output prediction do this
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_W:
-            self.ui.widget.move(self.ui.widget.x(), self.ui.widget.y() - self.stepsize)
+            if self.ui.mouseCursor.y() - self.stepsize > 0:
+                self.ui.mouseCursor.move(self.ui.mouseCursor.x(), self.ui.mouseCursor.y() - self.stepsize)
         elif event.key() == Qt.Key_A:
-            self.ui.widget.move(self.ui.widget.x() - self.stepsize, self.ui.widget.y())
+            if self.ui.mouseCursor.x() - self.stepsize > 0:
+                self.ui.mouseCursor.move(self.ui.mouseCursor.x() - self.stepsize, self.ui.mouseCursor.y())
         elif event.key() == Qt.Key_S:
-            self.ui.widget.move(self.ui.widget.x(), self.ui.widget.y() + self.stepsize)
+            if self.ui.mouseCursor.y() + self.stepsize < (self.ui.frame_9.height() - self.ui.mouseCursor.height()):
+                self.ui.mouseCursor.move(self.ui.mouseCursor.x(), self.ui.mouseCursor.y() + self.stepsize)
         elif event.key() == Qt.Key_D:
-            self.ui.widget.move(self.ui.widget.x() + self.stepsize, self.ui.widget.y())
+            if self.ui.mouseCursor.x() + self.stepsize < (self.ui.frame_9.width() - self.ui.mouseCursor.width()):
+                self.ui.mouseCursor.move(self.ui.mouseCursor.x() + self.stepsize, self.ui.mouseCursor.y())
         self.update()
 
 
@@ -236,7 +244,7 @@ class TrainWindow(QMainWindow):
         self.ui = Ui_TrainWindow()
         self.ui.setupUi(self)
 
-        self.setWindowTitle("Ttraining Window")
+        self.setWindowTitle("Training Window")
 
         #Timer
         self.timer = QTimer()
@@ -248,17 +256,28 @@ class TrainWindow(QMainWindow):
         self.timer.timeout.connect(lambda: self.changePages())
 
     def startRecording(self):
-        self.timer.start(1000)
+        self.timer.start(100)
         global count
+        global pageArray
+        global i
+        i = 0
         count = 0
+        pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0]
 
     def changePages(self):
         global count
-        pageNumber = random.randint(1,4)
+        global pageArray
+        global i
+
+        pageNumber = pageArray[i]
+
         if count % 2 != 0:
             self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
         else:
             self.ui.promptsWidgets.setCurrentIndex(pageNumber)
+            i = i + 1
+        if count == 47:
+            self.timer.stop()
         count = count + 1
 
     def stopRecording(self):

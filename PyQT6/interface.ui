@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1297</width>
-    <height>782</height>
+    <width>1244</width>
+    <height>674</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="image.qrc">
+   <iconset>
     <normaloff>:/newPrefix/Afbeeldingen/EEG.jpg</normaloff>:/newPrefix/Afbeeldingen/EEG.jpg</iconset>
   </property>
   <property name="styleSheet">
@@ -24,7 +24,6 @@
 	padding:0;
 	margin:0;
 	color:#000;
-	border-color: rgb(0, 0, 0);
 }
 
 </string>
@@ -359,6 +358,9 @@ QPushButton{
         <property name="bottomMargin">
          <number>9</number>
         </property>
+        <property name="spacing">
+         <number>6</number>
+        </property>
         <item row="0" column="0" colspan="2">
          <widget class="QWidget" name="userIDTest" native="true">
           <property name="sizePolicy">
@@ -378,7 +380,7 @@ QPushButton{
 background-color: rgb(0, 166, 214);
 border:none;</string>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_7">
+          <layout class="QHBoxLayout" name="horizontalLayout_15">
            <property name="spacing">
             <number>0</number>
            </property>
@@ -389,13 +391,38 @@ border:none;</string>
             <number>0</number>
            </property>
            <property name="rightMargin">
-            <number>0</number>
+            <number>100</number>
            </property>
            <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
+            <widget class="QFrame" name="frame_13">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>10</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">image: url(:/newPrefix/pictures/TUDelft-logo_white.png);</string>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QLineEdit" name="userID_test">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>90</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="font">
               <font>
                <pointsize>28</pointsize>
@@ -802,6 +829,9 @@ border:none;</string>
                <height>0</height>
               </size>
              </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
              </property>
@@ -809,6 +839,9 @@ border:none;</string>
               <enum>QFrame::Raised</enum>
              </property>
              <layout class="QGridLayout" name="gridLayout_3">
+              <property name="spacing">
+               <number>0</number>
+              </property>
               <item row="5" column="1">
                <widget class="QWidget" name="widget_9" native="true">
                 <property name="sizePolicy">
@@ -818,7 +851,7 @@ border:none;</string>
                  </sizepolicy>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                 <string notr="true">image: url(:/newPrefix/pictures/Graph with sample points.png);</string>
                 </property>
                </widget>
               </item>
@@ -834,6 +867,9 @@ border:none;</string>
                  <font>
                   <pointsize>16</pointsize>
                  </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"/>
                 </property>
                 <property name="text">
                  <string>Ch8</string>
@@ -855,7 +891,7 @@ border:none;</string>
                  <cursorShape>ArrowCursor</cursorShape>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                 <string notr="true">image: url(:/newPrefix/pictures/Graph with sample points.png);</string>
                 </property>
                </widget>
               </item>
@@ -868,7 +904,7 @@ border:none;</string>
                  </sizepolicy>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                 <string notr="true">image: url(:/newPrefix/pictures/Graph with sample points.png);</string>
                 </property>
                </widget>
               </item>
@@ -923,7 +959,7 @@ border:none;</string>
                  </sizepolicy>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                 <string notr="true">image: url(:/newPrefix/pictures/Graph with sample points.png);</string>
                 </property>
                </widget>
               </item>
@@ -939,7 +975,7 @@ border:none;</string>
                  <cursorShape>ArrowCursor</cursorShape>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                 <string notr="true">image: url(:/newPrefix/pictures/Graph with sample points.png);</string>
                 </property>
                </widget>
               </item>
@@ -952,7 +988,7 @@ border:none;</string>
                  </sizepolicy>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                 <string notr="true">image: url(:/newPrefix/pictures/Graph with sample points.png);</string>
                 </property>
                </widget>
               </item>
@@ -965,7 +1001,7 @@ border:none;</string>
                  </sizepolicy>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                 <string notr="true">image: url(:/newPrefix/pictures/Graph with sample points.png);</string>
                 </property>
                </widget>
               </item>
@@ -978,7 +1014,7 @@ border:none;</string>
                  </sizepolicy>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                 <string notr="true">image: url(:/newPrefix/pictures/Graph with sample points.png);</string>
                 </property>
                </widget>
               </item>
@@ -1102,7 +1138,7 @@ border:none;</string>
            </sizepolicy>
           </property>
           <property name="styleSheet">
-           <string notr="true">border:none;</string>
+           <string notr="true"/>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <property name="spacing">
@@ -1129,7 +1165,7 @@ border:none;</string>
               </sizepolicy>
              </property>
              <property name="styleSheet">
-              <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+              <string notr="true"/>
              </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
@@ -1137,6 +1173,30 @@ border:none;</string>
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
              </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QWidget" name="widget_12" native="true">
+                <property name="styleSheet">
+                 <string notr="true">image: url(:/newPrefix/pictures/Graph with sample points.png);</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
            <item>
@@ -1153,11 +1213,23 @@ border:none;</string>
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
              </property>
-             <layout class="QGridLayout" name="gridLayout_5">
-              <item row="0" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_10">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
                <widget class="QWidget" name="widget_2" native="true">
                 <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/column plot.png);</string>
+                 <string notr="true">image: url(:/newPrefix/pictures/column plot.png);</string>
                 </property>
                </widget>
               </item>
@@ -1173,7 +1245,7 @@ border:none;</string>
               </sizepolicy>
              </property>
              <property name="styleSheet">
-              <string notr="true">background-color: rgb(0, 0, 0);</string>
+              <string notr="true"/>
              </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
@@ -1181,7 +1253,7 @@ border:none;</string>
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
              </property>
-             <layout class="QGridLayout" name="gridLayout_4">
+             <layout class="QHBoxLayout" name="horizontalLayout_13">
               <property name="leftMargin">
                <number>3</number>
               </property>
@@ -1194,20 +1266,26 @@ border:none;</string>
               <property name="bottomMargin">
                <number>3</number>
               </property>
-              <item row="0" column="0">
-               <widget class="QWidget" name="widget" native="true">
+              <item>
+               <widget class="QWidget" name="mouseCursor" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
                 <property name="cursor">
                  <cursorShape>ArrowCursor</cursorShape>
                 </property>
                 <property name="styleSheet">
                  <string notr="true">background-color: rgb(255, 255, 255);
-image: url(:/newPrefix/Afbeeldingen/cursor.png);</string>
+image: url(:/newPrefix/pictures/cursor.png);</string>
                 </property>
                </widget>
               </item>
@@ -1370,31 +1448,6 @@ color: rgb(255, 255, 255);</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="0">
-         <widget class="QLineEdit" name="usersTitle">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>10</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>50</pointsize>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">border:none;
-color: rgb(12, 35, 64);</string>
-          </property>
-          <property name="text">
-           <string>Users</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="1">
          <spacer name="horizontalSpacer">
           <property name="orientation">
@@ -1410,6 +1463,77 @@ color: rgb(12, 35, 64);</string>
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="0" column="0">
+         <widget class="QWidget" name="widget" native="true">
+          <property name="styleSheet">
+           <string notr="true">background-color:transparent;</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_16">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QFrame" name="frame_14">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>10</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">image: url(:/newPrefix/pictures/flame logo.png);</string>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="usersTitle">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>90</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>50</pointsize>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border:none;
+color: rgb(12, 35, 64);</string>
+             </property>
+             <property name="text">
+              <string>Users</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -1838,7 +1962,7 @@ border:none;</string>
                  <cursorShape>ArrowCursor</cursorShape>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                 <string notr="true">image: url(:/newPrefix/pictures/Graph with sample points.png);</string>
                 </property>
                </widget>
               </item>
@@ -1914,7 +2038,7 @@ border:none;</string>
                  </sizepolicy>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                 <string notr="true">image: url(:/newPrefix/pictures/Graph with sample points.png);</string>
                 </property>
                </widget>
               </item>
@@ -1972,7 +2096,7 @@ border:none;</string>
                  <cursorShape>ArrowCursor</cursorShape>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                 <string notr="true">image: url(:/newPrefix/pictures/Graph with sample points.png);</string>
                 </property>
                </widget>
               </item>
@@ -1985,7 +2109,7 @@ border:none;</string>
                  </sizepolicy>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                 <string notr="true">image: url(:/newPrefix/pictures/Graph with sample points.png);</string>
                 </property>
                </widget>
               </item>
@@ -1998,7 +2122,7 @@ border:none;</string>
                  </sizepolicy>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                 <string notr="true">image: url(:/newPrefix/pictures/Graph with sample points.png);</string>
                 </property>
                </widget>
               </item>
@@ -2056,7 +2180,7 @@ border:none;</string>
                  <cursorShape>ArrowCursor</cursorShape>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                 <string notr="true">image: url(:/newPrefix/pictures/Graph with sample points.png);</string>
                 </property>
                </widget>
               </item>
@@ -2093,7 +2217,7 @@ border:none;</string>
                  <cursorShape>ArrowCursor</cursorShape>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                 <string notr="true">image: url(:/newPrefix/pictures/Graph with sample points.png);</string>
                 </property>
                </widget>
               </item>
@@ -2106,7 +2230,7 @@ border:none;</string>
                  </sizepolicy>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+                 <string notr="true">image: url(:/newPrefix/pictures/Graph with sample points.png);</string>
                 </property>
                </widget>
               </item>
@@ -2152,7 +2276,7 @@ border:none;</string>
               </sizepolicy>
              </property>
              <property name="styleSheet">
-              <string notr="true">image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);</string>
+              <string notr="true"/>
              </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
@@ -2160,6 +2284,30 @@ border:none;</string>
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
              </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_7">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QWidget" name="widget_13" native="true">
+                <property name="styleSheet">
+                 <string notr="true">image: url(:/newPrefix/pictures/Graph with sample points.png);</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
            <item>
@@ -2176,11 +2324,26 @@ border:none;</string>
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
              </property>
-             <layout class="QGridLayout" name="gridLayout_20">
-              <item row="0" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
                <widget class="QWidget" name="widget_18" native="true">
                 <property name="styleSheet">
-                 <string notr="true">image: url(:/newPrefix/Afbeeldingen/column plot.png);</string>
+                 <string notr="true">image: url(:/newPrefix/pictures/column plot.png);</string>
                 </property>
                </widget>
               </item>
@@ -2204,7 +2367,7 @@ border:none;</string>
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
              </property>
-             <layout class="QGridLayout" name="gridLayout_21">
+             <layout class="QHBoxLayout" name="horizontalLayout_9">
               <property name="leftMargin">
                <number>3</number>
               </property>
@@ -2217,7 +2380,7 @@ border:none;</string>
               <property name="bottomMargin">
                <number>3</number>
               </property>
-              <item row="0" column="0">
+              <item>
                <widget class="QWidget" name="widget_24" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -2306,7 +2469,7 @@ border:none;</string>
 background-color: rgb(0, 166, 214);
 border:none;</string>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_36">
+          <layout class="QHBoxLayout" name="horizontalLayout_14">
            <property name="spacing">
             <number>0</number>
            </property>
@@ -2317,13 +2480,38 @@ border:none;</string>
             <number>0</number>
            </property>
            <property name="rightMargin">
-            <number>0</number>
+            <number>100</number>
            </property>
            <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
+            <widget class="QFrame" name="frame_12">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>10</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">image: url(:/newPrefix/pictures/TUDelft-logo_white.png);</string>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QLineEdit" name="userID_train">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>90</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="font">
               <font>
                <pointsize>28</pointsize>
@@ -2335,6 +2523,9 @@ border:none;</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
+             </property>
+             <property name="readOnly">
+              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -2355,7 +2546,7 @@ color: rgb(255, 255, 255);</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_12">
            <property name="spacing">
-            <number>9</number>
+            <number>0</number>
            </property>
            <property name="leftMargin">
             <number>9</number>
@@ -2489,7 +2680,7 @@ Users page: Select the user that will train/test. Add or edit a user if necessar
                     </sizepolicy>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">image: url(:/newPrefix/Afbeeldingen/EEG cap.png);</string>
+                    <string notr="true">image: url(:/newPrefix/pictures/EEG cap.png);</string>
                    </property>
                   </widget>
                  </item>

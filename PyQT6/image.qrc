@@ -1,10 +1,12 @@
 <RCC>
   <qresource prefix="newPrefix">
-    <file>../../../../Afbeeldingen/calibartion_cross.png</file>
-    <file>../../../../Afbeeldingen/EEG cap.png</file>
-    <file>../../../../Afbeeldingen/EEG.jpg</file>
-    <file>../../../../Afbeeldingen/cursor.png</file>
-    <file>../../../../Afbeeldingen/column plot.png</file>
-    <file>../../../../Afbeeldingen/Graph with sample points.png</file>
+    <file>pictures/calibartion_cross.png</file>
+    <file>pictures/column plot.png</file>
+    <file>pictures/cursor.png</file>
+    <file>pictures/EEG cap.png</file>
+    <file>pictures/EEG.jpg</file>
+    <file>pictures/flame logo.png</file>
+    <file>pictures/Graph with sample points.png</file>
+    <file>pictures/TUDelft-logo_white.png</file>
   </qresource>
 </RCC>
