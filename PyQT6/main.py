@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import QInputDialog, QMessageBox
 from PySide6.QtCore import QTimer, Slot, Signal
 
 
+
 #Mainwindow from which everything can be called
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -52,16 +53,19 @@ class MainWindow(QMainWindow):
                 currentIndex = self.ui.usersList.currentRow()
                 self.ui.usersList.insertItem(currentIndex, row["Name"])
         
-
+        global initRec
+        initRec = False
         self.show()
 
     #Call the training window
     def openTrainWindow(self):
+        global initRec
         if self.app.isHidden():
             self.app.show()
-            
+            initRec = True
         else:
             self.app.hide()
+            initRec = False
 
     def exitApp(self):
         QApplication.quit()    
