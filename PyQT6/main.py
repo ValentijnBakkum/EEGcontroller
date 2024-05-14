@@ -7,7 +7,15 @@ from ui_interface import *
 from ui_trainWindow import Ui_TrainWindow
 from Custom_Widgets import *
 from PyQt6.QtWidgets import QInputDialog, QMessageBox
+from PySide6 import QtCore
 from PySide6.QtCore import QTimer, Slot, Signal
+import random
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+matplotlib.use('QtAgg')
+import time
+from pylsl import StreamInlet, resolve_stream
 
 
 #Mainwindow from which everything can be called
@@ -15,6 +23,8 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
+        self.streams = resolve_stream()
+        self.inlet = StreamInlet(self.streams[0])
         self.stepsize = 5
 
         self.ui = Ui_MainWindow()
@@ -51,9 +61,54 @@ class MainWindow(QMainWindow):
             for row in user_reader:
                 currentIndex = self.ui.usersList.currentRow()
                 self.ui.usersList.insertItem(currentIndex, row["Name"])
-        
+
+        self.i = 0
+        self.j = 0
+        self.duration = 4
+        self.sampling_frequency = 250
+        self.down_sampling_ratio = 10
+        self.choosen_electrode = 1
+
+        self.xdata = np.zeros((int(self.duration * self.sampling_frequency / self.down_sampling_ratio)))
+        self.ydata = np.zeros((int(self.duration * self.sampling_frequency / self.down_sampling_ratio)))
+        self.update_plot()
 
         self.show()
+
+        # Setup a timer to trigger the redraw by calling update_plot.
+        self.timer = QtCore.QTimer()
+        self.timer.setInterval(0)
+        self.timer.timeout.connect(self.update_plot)
+        self.timer.start()
+
+    def update_plot(self):
+        self.j = self.i // self.down_sampling_ratio
+
+        # gathering the data from the EEG cap
+        sample, timestamp = inlet.pull_sample()
+        # sample, timestamp = self.generate_random_sample() # for testing purposes when not connected to cap
+        sample_timestamp = sample[15]
+
+        if self.i % self.down_sampling_ratio == 0:
+            if self.j < self.ydata.size:
+                self.xdata[self.j:] = sample_timestamp
+                # y[j] = sample[choosen_electrode]
+                self.ydata[self.j:] = sample[0]
+            else:
+                self.ydata = np.append(self.ydata[1:], sample[0])
+                self.xdata = np.append(self.xdata[1:], sample_timestamp)
+
+        # Trigger the canvas to update and redraw.
+        self.ui.widget_9.axes.cla()  # Clear the canvas.
+        self.ui.widget_9.axes.plot(self.xdata, self.ydata, 'r')
+        self.i += 1
+        self.ui.widget_9.draw()
+
+    # for testing purposes
+    def generate_random_sample(self):
+        # Simulate random data generation
+        return random.random(), time.time()
+
 
     #Call the training window
     def openTrainWindow(self):

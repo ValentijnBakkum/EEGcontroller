@@ -25,6 +25,15 @@ from Custom_Widgets.QCustomQStackedWidget import QCustomQStackedWidget
 from Custom_Widgets.QCustomSlideMenu import QCustomSlideMenu
 import image_rc
 import resources_rc
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
+
+class MplCanvas(FigureCanvasQTAgg):
+    def __init__(self, parent=None, width=5, height=1, dpi=100):
+        fig = Figure(figsize=(width, height), dpi=dpi)
+        self.axes = fig.add_subplot(111)
+        super(MplCanvas, self).__init__(fig)
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -449,14 +458,14 @@ class Ui_MainWindow(object):
         self.gridLayout_3 = QGridLayout(self.frame_6)
         self.gridLayout_3.setSpacing(0)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.widget_9 = QWidget(self.frame_6)
+        self.widget_9 = MplCanvas(self, width=5, height=2, dpi=100)
         self.widget_9.setObjectName(u"widget_9")
         sizePolicy11 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         sizePolicy11.setHorizontalStretch(90)
         sizePolicy11.setVerticalStretch(0)
         sizePolicy11.setHeightForWidth(self.widget_9.sizePolicy().hasHeightForWidth())
-        self.widget_9.setSizePolicy(sizePolicy11)
-        self.widget_9.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
+        self.widget_9.setSizePolicy(sizePolicy9)
+        # self.widget_9.setStyleSheet(u"image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);")
 
         self.gridLayout_3.addWidget(self.widget_9, 5, 1, 1, 1)
 
