@@ -102,7 +102,7 @@ class Vaucluse(nn.Module):
             B,T,C = logits.shape
             logits = logits.view(B*T,C)
             targets = targets.view(B*T)
-            loss = F.cross_entropy(logits,targets)
+            loss = F.mse_loss(logits,targets)
         return logits,loss
     def generate(self,idx,max_new_tokens):
         for _ in range(max_new_tokens):
