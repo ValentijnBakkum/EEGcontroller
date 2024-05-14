@@ -235,6 +235,8 @@ class MainWindow(QMainWindow):
         elif event.key() == Qt.Key_D:
             if self.ui.mouseCursor.x() + self.stepsize < (self.ui.frame_9.width() - self.ui.mouseCursor.width()):
                 self.ui.mouseCursor.move(self.ui.mouseCursor.x() + self.stepsize, self.ui.mouseCursor.y())
+        self.ui.lineEdit_5.setText(str(self.ui.mouseCursor.x()))
+        self.ui.lineEdit_6.setText(str(self.ui.mouseCursor.y()))
         self.update()
 
 
@@ -257,7 +259,7 @@ class TrainWindow(QMainWindow):
         self.timer.timeout.connect(lambda: self.changePages())
 
     def startRecording(self):
-        self.timer.start(100)
+        self.timer.start(6000)
         global count
         global pageArray
         global i
