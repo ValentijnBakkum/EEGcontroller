@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'interfaceMjOPOt.ui'
+## Form generated from reading UI file 'interfaceaMzLTr.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -244,7 +244,7 @@ class Ui_MainWindow(object):
 
         self.leftBodyFrameTest = QWidget(self.mainBodyContainerTest)
         self.leftBodyFrameTest.setObjectName(u"leftBodyFrameTest")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy4 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         sizePolicy4.setHorizontalStretch(50)
         sizePolicy4.setVerticalStretch(95)
         sizePolicy4.setHeightForWidth(self.leftBodyFrameTest.sizePolicy().hasHeightForWidth())
@@ -322,7 +322,7 @@ class Ui_MainWindow(object):
         sizePolicy8.setVerticalStretch(15)
         sizePolicy8.setHeightForWidth(self.frame_5.sizePolicy().hasHeightForWidth())
         self.frame_5.setSizePolicy(sizePolicy8)
-        self.frame_5.setMaximumSize(QSize(594, 108))
+        self.frame_5.setMaximumSize(QSize(16777215, 107))
         self.frame_5.setFrameShape(QFrame.StyledPanel)
         self.frame_5.setFrameShadow(QFrame.Raised)
         self.gridLayout_2 = QGridLayout(self.frame_5)
@@ -603,7 +603,7 @@ class Ui_MainWindow(object):
         self.rightBodyFrameTest.setObjectName(u"rightBodyFrameTest")
         sizePolicy4.setHeightForWidth(self.rightBodyFrameTest.sizePolicy().hasHeightForWidth())
         self.rightBodyFrameTest.setSizePolicy(sizePolicy4)
-        self.rightBodyFrameTest.setStyleSheet(u"")
+        self.rightBodyFrameTest.setStyleSheet(u"border:none;")
         self.verticalLayout_6 = QVBoxLayout(self.rightBodyFrameTest)
         self.verticalLayout_6.setSpacing(0)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
@@ -991,6 +991,7 @@ class Ui_MainWindow(object):
         self.frame_36.setFrameShape(QFrame.StyledPanel)
         self.frame_36.setFrameShadow(QFrame.Raised)
         self.gridLayout_23 = QGridLayout(self.frame_36)
+        self.gridLayout_23.setSpacing(0)
         self.gridLayout_23.setObjectName(u"gridLayout_23")
         self.widget_25 = MplCanvas(self.frame_36)
         self.widget_25.setObjectName(u"widget_25")

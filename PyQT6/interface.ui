@@ -443,7 +443,7 @@ border:none;</string>
         <item row="1" column="0">
          <widget class="QWidget" name="leftBodyFrameTest" native="true">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
             <horstretch>50</horstretch>
             <verstretch>95</verstretch>
            </sizepolicy>
@@ -601,8 +601,8 @@ border:none;</string>
              </property>
              <property name="maximumSize">
               <size>
-               <width>594</width>
-               <height>108</height>
+               <width>16777215</width>
+               <height>107</height>
               </size>
              </property>
              <property name="frameShape">
@@ -1138,13 +1138,13 @@ border:none;</string>
         <item row="1" column="1">
          <widget class="QWidget" name="rightBodyFrameTest" native="true">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
             <horstretch>50</horstretch>
             <verstretch>95</verstretch>
            </sizepolicy>
           </property>
           <property name="styleSheet">
-           <string notr="true"/>
+           <string notr="true">border:none;</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <property name="spacing">
@@ -1560,7 +1560,7 @@ color: rgb(12, 35, 64);</string>
         <item row="1" column="0">
          <widget class="QWidget" name="leftBodyFrameTrain" native="true">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
             <horstretch>50</horstretch>
             <verstretch>95</verstretch>
            </sizepolicy>
@@ -1962,6 +1962,9 @@ border:none;</string>
               <enum>QFrame::Raised</enum>
              </property>
              <layout class="QGridLayout" name="gridLayout_23">
+              <property name="spacing">
+               <number>0</number>
+              </property>
               <item row="0" column="1">
                <widget class="MplCanvas" name="widget_25" native="true">
                 <property name="sizePolicy">
@@ -2255,7 +2258,7 @@ border:none;</string>
         <item row="1" column="1">
          <widget class="QWidget" name="rightBodyFrameTrain" native="true">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
             <horstretch>50</horstretch>
             <verstretch>95</verstretch>
            </sizepolicy>
