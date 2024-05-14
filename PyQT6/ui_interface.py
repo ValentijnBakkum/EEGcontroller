@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'interfaceaMzLTr.ui'
+## Form generated from reading UI file 'interfacesDkoNE.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -23,7 +23,7 @@ from PySide6.QtWidgets import (QAbstractItemView, QApplication, QFrame, QGridLay
 from Custom_Widgets.QCustomQPushButton import QCustomQPushButton
 from Custom_Widgets.QCustomQStackedWidget import QCustomQStackedWidget
 from Custom_Widgets.QCustomSlideMenu import QCustomSlideMenu
-from myWidgets import MplCanvas
+from pyqtgraph import PlotWidget
 import image_rc
 import resources_rc
 
@@ -31,9 +31,9 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1250, 686)
+        MainWindow.resize(1244, 674)
         icon = QIcon()
-        icon.addFile(u":/newPrefix/Afbeeldingen/EEG.jpg", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u":/newPrefix/pictures/EEG.jpg", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
         MainWindow.setStyleSheet(u"*{\n"
 "	background-color:transparent;\n"
@@ -451,16 +451,50 @@ class Ui_MainWindow(object):
         self.gridLayout_3 = QGridLayout(self.frame_6)
         self.gridLayout_3.setSpacing(0)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.widget_9 = MplCanvas(self.frame_6)
-        self.widget_9.setObjectName(u"widget_9")
-        sizePolicy11 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
-        sizePolicy11.setHorizontalStretch(90)
-        sizePolicy11.setVerticalStretch(0)
-        sizePolicy11.setHeightForWidth(self.widget_9.sizePolicy().hasHeightForWidth())
-        self.widget_9.setSizePolicy(sizePolicy11)
-        self.widget_9.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
+        self.label_8 = QLabel(self.frame_6)
+        self.label_8.setObjectName(u"label_8")
+        sizePolicy2.setHeightForWidth(self.label_8.sizePolicy().hasHeightForWidth())
+        self.label_8.setSizePolicy(sizePolicy2)
+        self.label_8.setFont(font4)
+        self.label_8.setAlignment(Qt.AlignCenter)
 
-        self.gridLayout_3.addWidget(self.widget_9, 5, 1, 1, 1)
+        self.gridLayout_3.addWidget(self.label_8, 1, 0, 1, 1)
+
+        self.label_12 = QLabel(self.frame_6)
+        self.label_12.setObjectName(u"label_12")
+        sizePolicy2.setHeightForWidth(self.label_12.sizePolicy().hasHeightForWidth())
+        self.label_12.setSizePolicy(sizePolicy2)
+        self.label_12.setFont(font4)
+        self.label_12.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_3.addWidget(self.label_12, 5, 0, 1, 1)
+
+        self.label_5 = QLabel(self.frame_6)
+        self.label_5.setObjectName(u"label_5")
+        sizePolicy2.setHeightForWidth(self.label_5.sizePolicy().hasHeightForWidth())
+        self.label_5.setSizePolicy(sizePolicy2)
+        self.label_5.setFont(font4)
+        self.label_5.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_3.addWidget(self.label_5, 0, 0, 1, 1)
+
+        self.label_6 = QLabel(self.frame_6)
+        self.label_6.setObjectName(u"label_6")
+        sizePolicy2.setHeightForWidth(self.label_6.sizePolicy().hasHeightForWidth())
+        self.label_6.setSizePolicy(sizePolicy2)
+        self.label_6.setFont(font4)
+        self.label_6.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_3.addWidget(self.label_6, 6, 0, 1, 1)
+
+        self.label_10 = QLabel(self.frame_6)
+        self.label_10.setObjectName(u"label_10")
+        sizePolicy2.setHeightForWidth(self.label_10.sizePolicy().hasHeightForWidth())
+        self.label_10.setSizePolicy(sizePolicy2)
+        self.label_10.setFont(font4)
+        self.label_10.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_3.addWidget(self.label_10, 3, 0, 1, 1)
 
         self.label_7 = QLabel(self.frame_6)
         self.label_7.setObjectName(u"label_7")
@@ -472,90 +506,14 @@ class Ui_MainWindow(object):
 
         self.gridLayout_3.addWidget(self.label_7, 7, 0, 1, 1)
 
-        self.widget_3 = MplCanvas(self.frame_6)
-        self.widget_3.setObjectName(u"widget_3")
-        sizePolicy11.setHeightForWidth(self.widget_3.sizePolicy().hasHeightForWidth())
-        self.widget_3.setSizePolicy(sizePolicy11)
-        self.widget_3.setCursor(QCursor(Qt.ArrowCursor))
-        self.widget_3.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
+        self.label_11 = QLabel(self.frame_6)
+        self.label_11.setObjectName(u"label_11")
+        sizePolicy2.setHeightForWidth(self.label_11.sizePolicy().hasHeightForWidth())
+        self.label_11.setSizePolicy(sizePolicy2)
+        self.label_11.setFont(font4)
+        self.label_11.setAlignment(Qt.AlignCenter)
 
-        self.gridLayout_3.addWidget(self.widget_3, 0, 1, 1, 1)
-
-        self.widget_6 = MplCanvas(self.frame_6)
-        self.widget_6.setObjectName(u"widget_6")
-        sizePolicy11.setHeightForWidth(self.widget_6.sizePolicy().hasHeightForWidth())
-        self.widget_6.setSizePolicy(sizePolicy11)
-        self.widget_6.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
-
-        self.gridLayout_3.addWidget(self.widget_6, 3, 1, 1, 1)
-
-        self.label_6 = QLabel(self.frame_6)
-        self.label_6.setObjectName(u"label_6")
-        sizePolicy2.setHeightForWidth(self.label_6.sizePolicy().hasHeightForWidth())
-        self.label_6.setSizePolicy(sizePolicy2)
-        self.label_6.setFont(font4)
-        self.label_6.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_3.addWidget(self.label_6, 6, 0, 1, 1)
-
-        self.label_5 = QLabel(self.frame_6)
-        self.label_5.setObjectName(u"label_5")
-        sizePolicy2.setHeightForWidth(self.label_5.sizePolicy().hasHeightForWidth())
-        self.label_5.setSizePolicy(sizePolicy2)
-        self.label_5.setFont(font4)
-        self.label_5.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_3.addWidget(self.label_5, 0, 0, 1, 1)
-
-        self.widget_5 = MplCanvas(self.frame_6)
-        self.widget_5.setObjectName(u"widget_5")
-        sizePolicy11.setHeightForWidth(self.widget_5.sizePolicy().hasHeightForWidth())
-        self.widget_5.setSizePolicy(sizePolicy11)
-        self.widget_5.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
-
-        self.gridLayout_3.addWidget(self.widget_5, 7, 1, 1, 1)
-
-        self.widget_7 = MplCanvas(self.frame_6)
-        self.widget_7.setObjectName(u"widget_7")
-        sizePolicy11.setHeightForWidth(self.widget_7.sizePolicy().hasHeightForWidth())
-        self.widget_7.setSizePolicy(sizePolicy11)
-        self.widget_7.setCursor(QCursor(Qt.ArrowCursor))
-        self.widget_7.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
-
-        self.gridLayout_3.addWidget(self.widget_7, 2, 1, 1, 1)
-
-        self.widget_8 = MplCanvas(self.frame_6)
-        self.widget_8.setObjectName(u"widget_8")
-        sizePolicy11.setHeightForWidth(self.widget_8.sizePolicy().hasHeightForWidth())
-        self.widget_8.setSizePolicy(sizePolicy11)
-        self.widget_8.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
-
-        self.gridLayout_3.addWidget(self.widget_8, 1, 1, 1, 1)
-
-        self.widget_4 = MplCanvas(self.frame_6)
-        self.widget_4.setObjectName(u"widget_4")
-        sizePolicy11.setHeightForWidth(self.widget_4.sizePolicy().hasHeightForWidth())
-        self.widget_4.setSizePolicy(sizePolicy11)
-        self.widget_4.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
-
-        self.gridLayout_3.addWidget(self.widget_4, 6, 1, 1, 1)
-
-        self.widget_10 = MplCanvas(self.frame_6)
-        self.widget_10.setObjectName(u"widget_10")
-        sizePolicy11.setHeightForWidth(self.widget_10.sizePolicy().hasHeightForWidth())
-        self.widget_10.setSizePolicy(sizePolicy11)
-        self.widget_10.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
-
-        self.gridLayout_3.addWidget(self.widget_10, 4, 1, 1, 1)
-
-        self.label_8 = QLabel(self.frame_6)
-        self.label_8.setObjectName(u"label_8")
-        sizePolicy2.setHeightForWidth(self.label_8.sizePolicy().hasHeightForWidth())
-        self.label_8.setSizePolicy(sizePolicy2)
-        self.label_8.setFont(font4)
-        self.label_8.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_3.addWidget(self.label_8, 1, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.label_11, 4, 0, 1, 1)
 
         self.label_9 = QLabel(self.frame_6)
         self.label_9.setObjectName(u"label_9")
@@ -566,32 +524,88 @@ class Ui_MainWindow(object):
 
         self.gridLayout_3.addWidget(self.label_9, 2, 0, 1, 1)
 
-        self.label_10 = QLabel(self.frame_6)
-        self.label_10.setObjectName(u"label_10")
-        sizePolicy2.setHeightForWidth(self.label_10.sizePolicy().hasHeightForWidth())
-        self.label_10.setSizePolicy(sizePolicy2)
-        self.label_10.setFont(font4)
-        self.label_10.setAlignment(Qt.AlignCenter)
+        self.graphicsView_9 = PlotWidget(self.frame_6)
+        self.graphicsView_9.setObjectName(u"graphicsView_9")
+        sizePolicy11 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy11.setHorizontalStretch(90)
+        sizePolicy11.setVerticalStretch(0)
+        sizePolicy11.setHeightForWidth(self.graphicsView_9.sizePolicy().hasHeightForWidth())
+        self.graphicsView_9.setSizePolicy(sizePolicy11)
+        brush = QBrush(QColor(255, 255, 255, 255))
+        brush.setStyle(Qt.NoBrush)
+        self.graphicsView_9.setBackgroundBrush(brush)
 
-        self.gridLayout_3.addWidget(self.label_10, 3, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.graphicsView_9, 0, 1, 1, 1)
 
-        self.label_11 = QLabel(self.frame_6)
-        self.label_11.setObjectName(u"label_11")
-        sizePolicy2.setHeightForWidth(self.label_11.sizePolicy().hasHeightForWidth())
-        self.label_11.setSizePolicy(sizePolicy2)
-        self.label_11.setFont(font4)
-        self.label_11.setAlignment(Qt.AlignCenter)
+        self.graphicsView_10 = PlotWidget(self.frame_6)
+        self.graphicsView_10.setObjectName(u"graphicsView_10")
+        sizePolicy11.setHeightForWidth(self.graphicsView_10.sizePolicy().hasHeightForWidth())
+        self.graphicsView_10.setSizePolicy(sizePolicy11)
+        brush1 = QBrush(QColor(255, 255, 255, 255))
+        brush1.setStyle(Qt.NoBrush)
+        self.graphicsView_10.setBackgroundBrush(brush1)
 
-        self.gridLayout_3.addWidget(self.label_11, 4, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.graphicsView_10, 1, 1, 1, 1)
 
-        self.label_12 = QLabel(self.frame_6)
-        self.label_12.setObjectName(u"label_12")
-        sizePolicy2.setHeightForWidth(self.label_12.sizePolicy().hasHeightForWidth())
-        self.label_12.setSizePolicy(sizePolicy2)
-        self.label_12.setFont(font4)
-        self.label_12.setAlignment(Qt.AlignCenter)
+        self.graphicsView_11 = PlotWidget(self.frame_6)
+        self.graphicsView_11.setObjectName(u"graphicsView_11")
+        sizePolicy11.setHeightForWidth(self.graphicsView_11.sizePolicy().hasHeightForWidth())
+        self.graphicsView_11.setSizePolicy(sizePolicy11)
+        brush2 = QBrush(QColor(255, 255, 255, 255))
+        brush2.setStyle(Qt.NoBrush)
+        self.graphicsView_11.setBackgroundBrush(brush2)
 
-        self.gridLayout_3.addWidget(self.label_12, 5, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.graphicsView_11, 2, 1, 1, 1)
+
+        self.graphicsView_12 = PlotWidget(self.frame_6)
+        self.graphicsView_12.setObjectName(u"graphicsView_12")
+        sizePolicy11.setHeightForWidth(self.graphicsView_12.sizePolicy().hasHeightForWidth())
+        self.graphicsView_12.setSizePolicy(sizePolicy11)
+        brush3 = QBrush(QColor(255, 255, 255, 255))
+        brush3.setStyle(Qt.NoBrush)
+        self.graphicsView_12.setBackgroundBrush(brush3)
+
+        self.gridLayout_3.addWidget(self.graphicsView_12, 3, 1, 1, 1)
+
+        self.graphicsView_13 = PlotWidget(self.frame_6)
+        self.graphicsView_13.setObjectName(u"graphicsView_13")
+        sizePolicy11.setHeightForWidth(self.graphicsView_13.sizePolicy().hasHeightForWidth())
+        self.graphicsView_13.setSizePolicy(sizePolicy11)
+        brush4 = QBrush(QColor(255, 255, 255, 255))
+        brush4.setStyle(Qt.NoBrush)
+        self.graphicsView_13.setBackgroundBrush(brush4)
+
+        self.gridLayout_3.addWidget(self.graphicsView_13, 4, 1, 1, 1)
+
+        self.graphicsView_14 = PlotWidget(self.frame_6)
+        self.graphicsView_14.setObjectName(u"graphicsView_14")
+        sizePolicy11.setHeightForWidth(self.graphicsView_14.sizePolicy().hasHeightForWidth())
+        self.graphicsView_14.setSizePolicy(sizePolicy11)
+        brush5 = QBrush(QColor(255, 255, 255, 255))
+        brush5.setStyle(Qt.NoBrush)
+        self.graphicsView_14.setBackgroundBrush(brush5)
+
+        self.gridLayout_3.addWidget(self.graphicsView_14, 5, 1, 1, 1)
+
+        self.graphicsView_15 = PlotWidget(self.frame_6)
+        self.graphicsView_15.setObjectName(u"graphicsView_15")
+        sizePolicy11.setHeightForWidth(self.graphicsView_15.sizePolicy().hasHeightForWidth())
+        self.graphicsView_15.setSizePolicy(sizePolicy11)
+        brush6 = QBrush(QColor(255, 255, 255, 255))
+        brush6.setStyle(Qt.NoBrush)
+        self.graphicsView_15.setBackgroundBrush(brush6)
+
+        self.gridLayout_3.addWidget(self.graphicsView_15, 6, 1, 1, 1)
+
+        self.graphicsView_16 = PlotWidget(self.frame_6)
+        self.graphicsView_16.setObjectName(u"graphicsView_16")
+        sizePolicy11.setHeightForWidth(self.graphicsView_16.sizePolicy().hasHeightForWidth())
+        self.graphicsView_16.setSizePolicy(sizePolicy11)
+        brush7 = QBrush(QColor(255, 255, 255, 255))
+        brush7.setStyle(Qt.NoBrush)
+        self.graphicsView_16.setBackgroundBrush(brush7)
+
+        self.gridLayout_3.addWidget(self.graphicsView_16, 7, 1, 1, 1)
 
 
         self.verticalLayout_3.addWidget(self.frame_6)
@@ -605,7 +619,7 @@ class Ui_MainWindow(object):
         self.rightBodyFrameTest.setSizePolicy(sizePolicy4)
         self.rightBodyFrameTest.setStyleSheet(u"border:none;")
         self.verticalLayout_6 = QVBoxLayout(self.rightBodyFrameTest)
-        self.verticalLayout_6.setSpacing(0)
+        self.verticalLayout_6.setSpacing(9)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.frame_7 = QFrame(self.rightBodyFrameTest)
@@ -622,11 +636,13 @@ class Ui_MainWindow(object):
         self.horizontalLayout_6.setSpacing(0)
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
         self.horizontalLayout_6.setContentsMargins(0, 0, 0, 0)
-        self.widget_12 = QWidget(self.frame_7)
-        self.widget_12.setObjectName(u"widget_12")
-        self.widget_12.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
+        self.graphicsView_19 = PlotWidget(self.frame_7)
+        self.graphicsView_19.setObjectName(u"graphicsView_19")
+        brush8 = QBrush(QColor(255, 255, 255, 255))
+        brush8.setStyle(Qt.NoBrush)
+        self.graphicsView_19.setBackgroundBrush(brush8)
 
-        self.horizontalLayout_6.addWidget(self.widget_12)
+        self.horizontalLayout_6.addWidget(self.graphicsView_19)
 
 
         self.verticalLayout_6.addWidget(self.frame_7)
@@ -640,11 +656,13 @@ class Ui_MainWindow(object):
         self.horizontalLayout_10 = QHBoxLayout(self.frame_8)
         self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
         self.horizontalLayout_10.setContentsMargins(0, 0, 0, 0)
-        self.widget_2 = QWidget(self.frame_8)
-        self.widget_2.setObjectName(u"widget_2")
-        self.widget_2.setStyleSheet(u"image: url(:/newPrefix/pictures/column plot.png);")
+        self.graphicsView_20 = PlotWidget(self.frame_8)
+        self.graphicsView_20.setObjectName(u"graphicsView_20")
+        brush9 = QBrush(QColor(255, 255, 255, 255))
+        brush9.setStyle(Qt.NoBrush)
+        self.graphicsView_20.setBackgroundBrush(brush9)
 
-        self.horizontalLayout_10.addWidget(self.widget_2)
+        self.horizontalLayout_10.addWidget(self.graphicsView_20)
 
 
         self.verticalLayout_6.addWidget(self.frame_8)
@@ -993,14 +1011,50 @@ class Ui_MainWindow(object):
         self.gridLayout_23 = QGridLayout(self.frame_36)
         self.gridLayout_23.setSpacing(0)
         self.gridLayout_23.setObjectName(u"gridLayout_23")
-        self.widget_25 = MplCanvas(self.frame_36)
-        self.widget_25.setObjectName(u"widget_25")
-        sizePolicy11.setHeightForWidth(self.widget_25.sizePolicy().hasHeightForWidth())
-        self.widget_25.setSizePolicy(sizePolicy11)
-        self.widget_25.setCursor(QCursor(Qt.ArrowCursor))
-        self.widget_25.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
+        self.label_36 = QLabel(self.frame_36)
+        self.label_36.setObjectName(u"label_36")
+        sizePolicy2.setHeightForWidth(self.label_36.sizePolicy().hasHeightForWidth())
+        self.label_36.setSizePolicy(sizePolicy2)
+        self.label_36.setFont(font4)
+        self.label_36.setAlignment(Qt.AlignCenter)
 
-        self.gridLayout_23.addWidget(self.widget_25, 0, 1, 1, 1)
+        self.gridLayout_23.addWidget(self.label_36, 1, 0, 1, 1)
+
+        self.label_35 = QLabel(self.frame_36)
+        self.label_35.setObjectName(u"label_35")
+        sizePolicy2.setHeightForWidth(self.label_35.sizePolicy().hasHeightForWidth())
+        self.label_35.setSizePolicy(sizePolicy2)
+        self.label_35.setFont(font4)
+        self.label_35.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_23.addWidget(self.label_35, 7, 0, 1, 1)
+
+        self.label_40 = QLabel(self.frame_36)
+        self.label_40.setObjectName(u"label_40")
+        sizePolicy2.setHeightForWidth(self.label_40.sizePolicy().hasHeightForWidth())
+        self.label_40.setSizePolicy(sizePolicy2)
+        self.label_40.setFont(font4)
+        self.label_40.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_23.addWidget(self.label_40, 5, 0, 1, 1)
+
+        self.label_33 = QLabel(self.frame_36)
+        self.label_33.setObjectName(u"label_33")
+        sizePolicy2.setHeightForWidth(self.label_33.sizePolicy().hasHeightForWidth())
+        self.label_33.setSizePolicy(sizePolicy2)
+        self.label_33.setFont(font4)
+        self.label_33.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_23.addWidget(self.label_33, 0, 0, 1, 1)
+
+        self.label_37 = QLabel(self.frame_36)
+        self.label_37.setObjectName(u"label_37")
+        sizePolicy2.setHeightForWidth(self.label_37.sizePolicy().hasHeightForWidth())
+        self.label_37.setSizePolicy(sizePolicy2)
+        self.label_37.setFont(font4)
+        self.label_37.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_23.addWidget(self.label_37, 2, 0, 1, 1)
 
         self.label_34 = QLabel(self.frame_36)
         self.label_34.setObjectName(u"label_34")
@@ -1020,93 +1074,6 @@ class Ui_MainWindow(object):
 
         self.gridLayout_23.addWidget(self.label_39, 4, 0, 1, 1)
 
-        self.label_36 = QLabel(self.frame_36)
-        self.label_36.setObjectName(u"label_36")
-        sizePolicy2.setHeightForWidth(self.label_36.sizePolicy().hasHeightForWidth())
-        self.label_36.setSizePolicy(sizePolicy2)
-        self.label_36.setFont(font4)
-        self.label_36.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_23.addWidget(self.label_36, 1, 0, 1, 1)
-
-        self.widget_26 = MplCanvas(self.frame_36)
-        self.widget_26.setObjectName(u"widget_26")
-        sizePolicy11.setHeightForWidth(self.widget_26.sizePolicy().hasHeightForWidth())
-        self.widget_26.setSizePolicy(sizePolicy11)
-        self.widget_26.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
-
-        self.gridLayout_23.addWidget(self.widget_26, 6, 1, 1, 1)
-
-        self.label_37 = QLabel(self.frame_36)
-        self.label_37.setObjectName(u"label_37")
-        sizePolicy2.setHeightForWidth(self.label_37.sizePolicy().hasHeightForWidth())
-        self.label_37.setSizePolicy(sizePolicy2)
-        self.label_37.setFont(font4)
-        self.label_37.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_23.addWidget(self.label_37, 2, 0, 1, 1)
-
-        self.label_35 = QLabel(self.frame_36)
-        self.label_35.setObjectName(u"label_35")
-        sizePolicy2.setHeightForWidth(self.label_35.sizePolicy().hasHeightForWidth())
-        self.label_35.setSizePolicy(sizePolicy2)
-        self.label_35.setFont(font4)
-        self.label_35.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_23.addWidget(self.label_35, 7, 0, 1, 1)
-
-        self.widget_28 = MplCanvas(self.frame_36)
-        self.widget_28.setObjectName(u"widget_28")
-        sizePolicy11.setHeightForWidth(self.widget_28.sizePolicy().hasHeightForWidth())
-        self.widget_28.setSizePolicy(sizePolicy11)
-        self.widget_28.setCursor(QCursor(Qt.ArrowCursor))
-        self.widget_28.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
-
-        self.gridLayout_23.addWidget(self.widget_28, 1, 1, 1, 1)
-
-        self.widget_27 = MplCanvas(self.frame_36)
-        self.widget_27.setObjectName(u"widget_27")
-        sizePolicy11.setHeightForWidth(self.widget_27.sizePolicy().hasHeightForWidth())
-        self.widget_27.setSizePolicy(sizePolicy11)
-        self.widget_27.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
-
-        self.gridLayout_23.addWidget(self.widget_27, 7, 1, 1, 1)
-
-        self.widget_31 = MplCanvas(self.frame_36)
-        self.widget_31.setObjectName(u"widget_31")
-        sizePolicy11.setHeightForWidth(self.widget_31.sizePolicy().hasHeightForWidth())
-        self.widget_31.setSizePolicy(sizePolicy11)
-        self.widget_31.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
-
-        self.gridLayout_23.addWidget(self.widget_31, 5, 1, 1, 1)
-
-        self.label_33 = QLabel(self.frame_36)
-        self.label_33.setObjectName(u"label_33")
-        sizePolicy2.setHeightForWidth(self.label_33.sizePolicy().hasHeightForWidth())
-        self.label_33.setSizePolicy(sizePolicy2)
-        self.label_33.setFont(font4)
-        self.label_33.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_23.addWidget(self.label_33, 0, 0, 1, 1)
-
-        self.label_40 = QLabel(self.frame_36)
-        self.label_40.setObjectName(u"label_40")
-        sizePolicy2.setHeightForWidth(self.label_40.sizePolicy().hasHeightForWidth())
-        self.label_40.setSizePolicy(sizePolicy2)
-        self.label_40.setFont(font4)
-        self.label_40.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_23.addWidget(self.label_40, 5, 0, 1, 1)
-
-        self.widget_30 = MplCanvas(self.frame_36)
-        self.widget_30.setObjectName(u"widget_30")
-        sizePolicy11.setHeightForWidth(self.widget_30.sizePolicy().hasHeightForWidth())
-        self.widget_30.setSizePolicy(sizePolicy11)
-        self.widget_30.setCursor(QCursor(Qt.ArrowCursor))
-        self.widget_30.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
-
-        self.gridLayout_23.addWidget(self.widget_30, 2, 1, 1, 1)
-
         self.label_38 = QLabel(self.frame_36)
         self.label_38.setObjectName(u"label_38")
         sizePolicy2.setHeightForWidth(self.label_38.sizePolicy().hasHeightForWidth())
@@ -1116,22 +1083,85 @@ class Ui_MainWindow(object):
 
         self.gridLayout_23.addWidget(self.label_38, 3, 0, 1, 1)
 
-        self.widget_29 = MplCanvas(self.frame_36)
-        self.widget_29.setObjectName(u"widget_29")
-        sizePolicy11.setHeightForWidth(self.widget_29.sizePolicy().hasHeightForWidth())
-        self.widget_29.setSizePolicy(sizePolicy11)
-        self.widget_29.setCursor(QCursor(Qt.ArrowCursor))
-        self.widget_29.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
+        self.graphicsView = PlotWidget(self.frame_36)
+        self.graphicsView.setObjectName(u"graphicsView")
+        sizePolicy11.setHeightForWidth(self.graphicsView.sizePolicy().hasHeightForWidth())
+        self.graphicsView.setSizePolicy(sizePolicy11)
+        brush10 = QBrush(QColor(255, 255, 255, 255))
+        brush10.setStyle(Qt.NoBrush)
+        self.graphicsView.setBackgroundBrush(brush10)
 
-        self.gridLayout_23.addWidget(self.widget_29, 3, 1, 1, 1)
+        self.gridLayout_23.addWidget(self.graphicsView, 0, 1, 1, 1)
 
-        self.widget_32 = MplCanvas(self.frame_36)
-        self.widget_32.setObjectName(u"widget_32")
-        sizePolicy11.setHeightForWidth(self.widget_32.sizePolicy().hasHeightForWidth())
-        self.widget_32.setSizePolicy(sizePolicy11)
-        self.widget_32.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
+        self.graphicsView_2 = PlotWidget(self.frame_36)
+        self.graphicsView_2.setObjectName(u"graphicsView_2")
+        sizePolicy11.setHeightForWidth(self.graphicsView_2.sizePolicy().hasHeightForWidth())
+        self.graphicsView_2.setSizePolicy(sizePolicy11)
+        brush11 = QBrush(QColor(255, 255, 255, 255))
+        brush11.setStyle(Qt.NoBrush)
+        self.graphicsView_2.setBackgroundBrush(brush11)
 
-        self.gridLayout_23.addWidget(self.widget_32, 4, 1, 1, 1)
+        self.gridLayout_23.addWidget(self.graphicsView_2, 1, 1, 1, 1)
+
+        self.graphicsView_3 = PlotWidget(self.frame_36)
+        self.graphicsView_3.setObjectName(u"graphicsView_3")
+        sizePolicy11.setHeightForWidth(self.graphicsView_3.sizePolicy().hasHeightForWidth())
+        self.graphicsView_3.setSizePolicy(sizePolicy11)
+        brush12 = QBrush(QColor(255, 255, 255, 255))
+        brush12.setStyle(Qt.NoBrush)
+        self.graphicsView_3.setBackgroundBrush(brush12)
+
+        self.gridLayout_23.addWidget(self.graphicsView_3, 2, 1, 1, 1)
+
+        self.graphicsView_4 = PlotWidget(self.frame_36)
+        self.graphicsView_4.setObjectName(u"graphicsView_4")
+        sizePolicy11.setHeightForWidth(self.graphicsView_4.sizePolicy().hasHeightForWidth())
+        self.graphicsView_4.setSizePolicy(sizePolicy11)
+        brush13 = QBrush(QColor(255, 255, 255, 255))
+        brush13.setStyle(Qt.NoBrush)
+        self.graphicsView_4.setBackgroundBrush(brush13)
+
+        self.gridLayout_23.addWidget(self.graphicsView_4, 3, 1, 1, 1)
+
+        self.graphicsView_5 = PlotWidget(self.frame_36)
+        self.graphicsView_5.setObjectName(u"graphicsView_5")
+        sizePolicy11.setHeightForWidth(self.graphicsView_5.sizePolicy().hasHeightForWidth())
+        self.graphicsView_5.setSizePolicy(sizePolicy11)
+        brush14 = QBrush(QColor(255, 255, 255, 255))
+        brush14.setStyle(Qt.NoBrush)
+        self.graphicsView_5.setBackgroundBrush(brush14)
+
+        self.gridLayout_23.addWidget(self.graphicsView_5, 4, 1, 1, 1)
+
+        self.graphicsView_6 = PlotWidget(self.frame_36)
+        self.graphicsView_6.setObjectName(u"graphicsView_6")
+        sizePolicy11.setHeightForWidth(self.graphicsView_6.sizePolicy().hasHeightForWidth())
+        self.graphicsView_6.setSizePolicy(sizePolicy11)
+        brush15 = QBrush(QColor(255, 255, 255, 255))
+        brush15.setStyle(Qt.NoBrush)
+        self.graphicsView_6.setBackgroundBrush(brush15)
+
+        self.gridLayout_23.addWidget(self.graphicsView_6, 5, 1, 1, 1)
+
+        self.graphicsView_7 = PlotWidget(self.frame_36)
+        self.graphicsView_7.setObjectName(u"graphicsView_7")
+        sizePolicy11.setHeightForWidth(self.graphicsView_7.sizePolicy().hasHeightForWidth())
+        self.graphicsView_7.setSizePolicy(sizePolicy11)
+        brush16 = QBrush(QColor(255, 255, 255, 255))
+        brush16.setStyle(Qt.NoBrush)
+        self.graphicsView_7.setBackgroundBrush(brush16)
+
+        self.gridLayout_23.addWidget(self.graphicsView_7, 6, 1, 1, 1)
+
+        self.graphicsView_8 = PlotWidget(self.frame_36)
+        self.graphicsView_8.setObjectName(u"graphicsView_8")
+        sizePolicy11.setHeightForWidth(self.graphicsView_8.sizePolicy().hasHeightForWidth())
+        self.graphicsView_8.setSizePolicy(sizePolicy11)
+        brush17 = QBrush(QColor(255, 255, 255, 255))
+        brush17.setStyle(Qt.NoBrush)
+        self.graphicsView_8.setBackgroundBrush(brush17)
+
+        self.gridLayout_23.addWidget(self.graphicsView_8, 7, 1, 1, 1)
 
 
         self.verticalLayout_38.addWidget(self.frame_36)
@@ -1145,7 +1175,7 @@ class Ui_MainWindow(object):
         self.rightBodyFrameTrain.setSizePolicy(sizePolicy4)
         self.rightBodyFrameTrain.setStyleSheet(u"border:none;")
         self.verticalLayout_37 = QVBoxLayout(self.rightBodyFrameTrain)
-        self.verticalLayout_37.setSpacing(0)
+        self.verticalLayout_37.setSpacing(9)
         self.verticalLayout_37.setObjectName(u"verticalLayout_37")
         self.verticalLayout_37.setContentsMargins(0, 0, 0, 0)
         self.frame_31 = QFrame(self.rightBodyFrameTrain)
@@ -1159,11 +1189,13 @@ class Ui_MainWindow(object):
         self.horizontalLayout_7.setSpacing(0)
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
         self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
-        self.widget_13 = QWidget(self.frame_31)
-        self.widget_13.setObjectName(u"widget_13")
-        self.widget_13.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
+        self.graphicsView_17 = PlotWidget(self.frame_31)
+        self.graphicsView_17.setObjectName(u"graphicsView_17")
+        brush18 = QBrush(QColor(255, 255, 255, 255))
+        brush18.setStyle(Qt.NoBrush)
+        self.graphicsView_17.setBackgroundBrush(brush18)
 
-        self.horizontalLayout_7.addWidget(self.widget_13)
+        self.horizontalLayout_7.addWidget(self.graphicsView_17)
 
 
         self.verticalLayout_37.addWidget(self.frame_31)
@@ -1178,11 +1210,13 @@ class Ui_MainWindow(object):
         self.horizontalLayout_8.setSpacing(0)
         self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
         self.horizontalLayout_8.setContentsMargins(0, 0, 0, 0)
-        self.widget_18 = QWidget(self.frame_32)
-        self.widget_18.setObjectName(u"widget_18")
-        self.widget_18.setStyleSheet(u"image: url(:/newPrefix/pictures/column plot.png);")
+        self.graphicsView_18 = PlotWidget(self.frame_32)
+        self.graphicsView_18.setObjectName(u"graphicsView_18")
+        brush19 = QBrush(QColor(255, 255, 255, 255))
+        brush19.setStyle(Qt.NoBrush)
+        self.graphicsView_18.setBackgroundBrush(brush19)
 
-        self.horizontalLayout_8.addWidget(self.widget_18)
+        self.horizontalLayout_8.addWidget(self.graphicsView_18)
 
 
         self.verticalLayout_37.addWidget(self.frame_32)
@@ -1384,14 +1418,14 @@ class Ui_MainWindow(object):
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"power (mW):", None))
         self.lineEdit_7.setText(QCoreApplication.translate("MainWindow", u"50", None))
         self.lineEdit_8.setText(QCoreApplication.translate("MainWindow", u"7", None))
-        self.label_7.setText(QCoreApplication.translate("MainWindow", u"Ch8", None))
-        self.label_6.setText(QCoreApplication.translate("MainWindow", u"Ch7", None))
-        self.label_5.setText(QCoreApplication.translate("MainWindow", u"Ch1", None))
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"Ch2", None))
-        self.label_9.setText(QCoreApplication.translate("MainWindow", u"Ch3", None))
-        self.label_10.setText(QCoreApplication.translate("MainWindow", u"Ch4", None))
-        self.label_11.setText(QCoreApplication.translate("MainWindow", u"Ch5", None))
         self.label_12.setText(QCoreApplication.translate("MainWindow", u"Ch6", None))
+        self.label_5.setText(QCoreApplication.translate("MainWindow", u"Ch1", None))
+        self.label_6.setText(QCoreApplication.translate("MainWindow", u"Ch7", None))
+        self.label_10.setText(QCoreApplication.translate("MainWindow", u"Ch4", None))
+        self.label_7.setText(QCoreApplication.translate("MainWindow", u"Ch8", None))
+        self.label_11.setText(QCoreApplication.translate("MainWindow", u"Ch5", None))
+        self.label_9.setText(QCoreApplication.translate("MainWindow", u"Ch3", None))
         self.addBtn.setText(QCoreApplication.translate("MainWindow", u"ADD", None))
         self.editBtn.setText(QCoreApplication.translate("MainWindow", u"EDIT", None))
         self.removeBtn.setText(QCoreApplication.translate("MainWindow", u"REMOVE", None))
@@ -1410,13 +1444,13 @@ class Ui_MainWindow(object):
         self.label_32.setText(QCoreApplication.translate("MainWindow", u"Window Length (>28)", None))
         self.lineEdit_40.setText(QCoreApplication.translate("MainWindow", u"10", None))
         self.lineEdit_41.setText(QCoreApplication.translate("MainWindow", u"1000", None))
+        self.label_36.setText(QCoreApplication.translate("MainWindow", u"Ch2", None))
+        self.label_35.setText(QCoreApplication.translate("MainWindow", u"Ch8", None))
+        self.label_40.setText(QCoreApplication.translate("MainWindow", u"Ch6", None))
+        self.label_33.setText(QCoreApplication.translate("MainWindow", u"Ch1", None))
+        self.label_37.setText(QCoreApplication.translate("MainWindow", u"Ch3", None))
         self.label_34.setText(QCoreApplication.translate("MainWindow", u"Ch7", None))
         self.label_39.setText(QCoreApplication.translate("MainWindow", u"Ch5", None))
-        self.label_36.setText(QCoreApplication.translate("MainWindow", u"Ch2", None))
-        self.label_37.setText(QCoreApplication.translate("MainWindow", u"Ch3", None))
-        self.label_35.setText(QCoreApplication.translate("MainWindow", u"Ch8", None))
-        self.label_33.setText(QCoreApplication.translate("MainWindow", u"Ch1", None))
-        self.label_40.setText(QCoreApplication.translate("MainWindow", u"Ch6", None))
         self.label_38.setText(QCoreApplication.translate("MainWindow", u"Ch4", None))
         self.startTrainBtn.setText(QCoreApplication.translate("MainWindow", u"Start training!", None))
         self.userID_train.setText(QCoreApplication.translate("MainWindow", u"User ID", None))

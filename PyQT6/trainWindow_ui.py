@@ -26,6 +26,9 @@ class Ui_TrainWindow(object):
         if not TrainWindow.objectName():
             TrainWindow.setObjectName(u"TrainWindow")
         TrainWindow.resize(939, 659)
+        icon = QIcon()
+        icon.addFile(u":/icons/icons/training.svg", QSize(), QIcon.Normal, QIcon.Off)
+        TrainWindow.setWindowIcon(icon)
         TrainWindow.setStyleSheet(u"color: rgb(0, 0, 0);\n"
 "background-color: rgb(255, 255, 255);")
         self.centralwidget = QWidget(TrainWindow)
@@ -38,18 +41,18 @@ class Ui_TrainWindow(object):
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.startRecordingBtn = QPushButton(self.widget)
         self.startRecordingBtn.setObjectName(u"startRecordingBtn")
-        icon = QIcon()
-        icon.addFile(u":/icons/icons/red circle.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.startRecordingBtn.setIcon(icon)
+        icon1 = QIcon()
+        icon1.addFile(u":/icons/icons/red circle.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.startRecordingBtn.setIcon(icon1)
         self.startRecordingBtn.setIconSize(QSize(25, 25))
 
         self.horizontalLayout.addWidget(self.startRecordingBtn)
 
         self.stopRecordingBtn = QPushButton(self.widget)
         self.stopRecordingBtn.setObjectName(u"stopRecordingBtn")
-        icon1 = QIcon()
-        icon1.addFile(u":/icons/icons/black square.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.stopRecordingBtn.setIcon(icon1)
+        icon2 = QIcon()
+        icon2.addFile(u":/icons/icons/black square.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.stopRecordingBtn.setIcon(icon2)
         self.stopRecordingBtn.setIconSize(QSize(25, 25))
 
         self.horizontalLayout.addWidget(self.stopRecordingBtn)
@@ -59,9 +62,9 @@ class Ui_TrainWindow(object):
         font = QFont()
         font.setPointSize(14)
         self.helpBtn.setFont(font)
-        icon2 = QIcon()
-        icon2.addFile(u":/icons/icons/black help-circle.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.helpBtn.setIcon(icon2)
+        icon3 = QIcon()
+        icon3.addFile(u":/icons/icons/black help-circle.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.helpBtn.setIcon(icon3)
         self.helpBtn.setIconSize(QSize(25, 25))
 
         self.horizontalLayout.addWidget(self.helpBtn)
