@@ -10,6 +10,8 @@ from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QHBoxLayout,
     QMainWindow, QPushButton, QSizePolicy, QSpacerItem,
     QTextEdit, QVBoxLayout, QWidget)
 import csv
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
 
 # For user name text editing
 class UserTextEdit(QTextEdit):
@@ -42,4 +44,10 @@ class UserTextEdit(QTextEdit):
 
     def set_user_id(self, id):
         self.user_id = id
+
+class MplCanvas(FigureCanvasQTAgg):
+    def __init__(self, parent=None, width=5, height=1, dpi=100):
+        fig = Figure(figsize=(width, height), dpi=dpi)
+        self.axes = fig.add_subplot(111)
+        super(MplCanvas, self).__init__(fig)
         

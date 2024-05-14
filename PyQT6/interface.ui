@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1244</width>
-    <height>674</height>
+    <width>1250</width>
+    <height>686</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -599,6 +599,12 @@ border:none;</string>
                <verstretch>15</verstretch>
               </sizepolicy>
              </property>
+             <property name="maximumSize">
+              <size>
+               <width>594</width>
+               <height>108</height>
+              </size>
+             </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
              </property>
@@ -843,7 +849,7 @@ border:none;</string>
                <number>0</number>
               </property>
               <item row="5" column="1">
-               <widget class="QWidget" name="widget_9" native="true">
+               <widget class="MplCanvas" name="widget_9" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                   <horstretch>90</horstretch>
@@ -880,7 +886,7 @@ border:none;</string>
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QWidget" name="widget_3" native="true">
+               <widget class="MplCanvas" name="widget_3" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                   <horstretch>90</horstretch>
@@ -896,7 +902,7 @@ border:none;</string>
                </widget>
               </item>
               <item row="3" column="1">
-               <widget class="QWidget" name="widget_6" native="true">
+               <widget class="MplCanvas" name="widget_6" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                   <horstretch>90</horstretch>
@@ -951,7 +957,7 @@ border:none;</string>
                </widget>
               </item>
               <item row="7" column="1">
-               <widget class="QWidget" name="widget_5" native="true">
+               <widget class="MplCanvas" name="widget_5" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                   <horstretch>90</horstretch>
@@ -964,7 +970,7 @@ border:none;</string>
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QWidget" name="widget_7" native="true">
+               <widget class="MplCanvas" name="widget_7" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                   <horstretch>90</horstretch>
@@ -980,7 +986,7 @@ border:none;</string>
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QWidget" name="widget_8" native="true">
+               <widget class="MplCanvas" name="widget_8" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                   <horstretch>90</horstretch>
@@ -993,7 +999,7 @@ border:none;</string>
                </widget>
               </item>
               <item row="6" column="1">
-               <widget class="QWidget" name="widget_4" native="true">
+               <widget class="MplCanvas" name="widget_4" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                   <horstretch>90</horstretch>
@@ -1006,7 +1012,7 @@ border:none;</string>
                </widget>
               </item>
               <item row="4" column="1">
-               <widget class="QWidget" name="widget_10" native="true">
+               <widget class="MplCanvas" name="widget_10" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                   <horstretch>90</horstretch>
@@ -1713,6 +1719,12 @@ border:none;</string>
                <verstretch>15</verstretch>
               </sizepolicy>
              </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>107</height>
+              </size>
+             </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
              </property>
@@ -1951,7 +1963,7 @@ border:none;</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_23">
               <item row="0" column="1">
-               <widget class="QWidget" name="widget_25" native="true">
+               <widget class="MplCanvas" name="widget_25" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                   <horstretch>90</horstretch>
@@ -2030,7 +2042,7 @@ border:none;</string>
                </widget>
               </item>
               <item row="6" column="1">
-               <widget class="QWidget" name="widget_26" native="true">
+               <widget class="MplCanvas" name="widget_26" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                   <horstretch>90</horstretch>
@@ -2085,7 +2097,7 @@ border:none;</string>
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QWidget" name="widget_28" native="true">
+               <widget class="MplCanvas" name="widget_28" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                   <horstretch>90</horstretch>
@@ -2101,7 +2113,7 @@ border:none;</string>
                </widget>
               </item>
               <item row="7" column="1">
-               <widget class="QWidget" name="widget_27" native="true">
+               <widget class="MplCanvas" name="widget_27" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                   <horstretch>90</horstretch>
@@ -2114,7 +2126,7 @@ border:none;</string>
                </widget>
               </item>
               <item row="5" column="1">
-               <widget class="QWidget" name="widget_31" native="true">
+               <widget class="MplCanvas" name="widget_31" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                   <horstretch>90</horstretch>
@@ -2169,7 +2181,7 @@ border:none;</string>
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QWidget" name="widget_30" native="true">
+               <widget class="MplCanvas" name="widget_30" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                   <horstretch>90</horstretch>
@@ -2206,7 +2218,7 @@ border:none;</string>
                </widget>
               </item>
               <item row="3" column="1">
-               <widget class="QWidget" name="widget_29" native="true">
+               <widget class="MplCanvas" name="widget_29" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                   <horstretch>90</horstretch>
@@ -2222,7 +2234,7 @@ border:none;</string>
                </widget>
               </item>
               <item row="4" column="1">
-               <widget class="QWidget" name="widget_32" native="true">
+               <widget class="MplCanvas" name="widget_32" native="true">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                   <horstretch>90</horstretch>
@@ -2540,6 +2552,12 @@ border:none;</string>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(0, 184, 200);
 color: rgb(255, 255, 255);</string>
@@ -2728,6 +2746,12 @@ Users page: Select the user that will train/test. Add or edit a user if necessar
    <class>QCustomSlideMenu</class>
    <extends>QWidget</extends>
    <header location="global">Custom_Widgets.QCustomSlideMenu.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MplCanvas</class>
+   <extends>QWidget</extends>
+   <header location="global">myWidgets.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

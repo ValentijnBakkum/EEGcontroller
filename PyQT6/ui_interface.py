@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'interfacePoxVJF.ui'
+## Form generated from reading UI file 'interfaceMjOPOt.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -23,23 +23,15 @@ from PySide6.QtWidgets import (QAbstractItemView, QApplication, QFrame, QGridLay
 from Custom_Widgets.QCustomQPushButton import QCustomQPushButton
 from Custom_Widgets.QCustomQStackedWidget import QCustomQStackedWidget
 from Custom_Widgets.QCustomSlideMenu import QCustomSlideMenu
+from myWidgets import MplCanvas
 import image_rc
 import resources_rc
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
-
-class MplCanvas(FigureCanvasQTAgg):
-    def __init__(self, parent=None, width=5, height=1, dpi=100):
-        fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
-        super(MplCanvas, self).__init__(fig)
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1244, 674)
+        MainWindow.resize(1250, 686)
         icon = QIcon()
         icon.addFile(u":/newPrefix/Afbeeldingen/EEG.jpg", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -330,6 +322,7 @@ class Ui_MainWindow(object):
         sizePolicy8.setVerticalStretch(15)
         sizePolicy8.setHeightForWidth(self.frame_5.sizePolicy().hasHeightForWidth())
         self.frame_5.setSizePolicy(sizePolicy8)
+        self.frame_5.setMaximumSize(QSize(594, 108))
         self.frame_5.setFrameShape(QFrame.StyledPanel)
         self.frame_5.setFrameShadow(QFrame.Raised)
         self.gridLayout_2 = QGridLayout(self.frame_5)
@@ -458,14 +451,14 @@ class Ui_MainWindow(object):
         self.gridLayout_3 = QGridLayout(self.frame_6)
         self.gridLayout_3.setSpacing(0)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.widget_9 = MplCanvas(self, width=5, height=2, dpi=100)
+        self.widget_9 = MplCanvas(self.frame_6)
         self.widget_9.setObjectName(u"widget_9")
         sizePolicy11 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         sizePolicy11.setHorizontalStretch(90)
         sizePolicy11.setVerticalStretch(0)
         sizePolicy11.setHeightForWidth(self.widget_9.sizePolicy().hasHeightForWidth())
-        self.widget_9.setSizePolicy(sizePolicy9)
-        # self.widget_9.setStyleSheet(u"image: url(:/newPrefix/Afbeeldingen/Graph with sample points.png);")
+        self.widget_9.setSizePolicy(sizePolicy11)
+        self.widget_9.setStyleSheet(u"image: url(:/newPrefix/pictures/Graph with sample points.png);")
 
         self.gridLayout_3.addWidget(self.widget_9, 5, 1, 1, 1)
 
@@ -479,7 +472,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_3.addWidget(self.label_7, 7, 0, 1, 1)
 
-        self.widget_3 = QWidget(self.frame_6)
+        self.widget_3 = MplCanvas(self.frame_6)
         self.widget_3.setObjectName(u"widget_3")
         sizePolicy11.setHeightForWidth(self.widget_3.sizePolicy().hasHeightForWidth())
         self.widget_3.setSizePolicy(sizePolicy11)
@@ -488,7 +481,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_3.addWidget(self.widget_3, 0, 1, 1, 1)
 
-        self.widget_6 = QWidget(self.frame_6)
+        self.widget_6 = MplCanvas(self.frame_6)
         self.widget_6.setObjectName(u"widget_6")
         sizePolicy11.setHeightForWidth(self.widget_6.sizePolicy().hasHeightForWidth())
         self.widget_6.setSizePolicy(sizePolicy11)
@@ -514,7 +507,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_3.addWidget(self.label_5, 0, 0, 1, 1)
 
-        self.widget_5 = QWidget(self.frame_6)
+        self.widget_5 = MplCanvas(self.frame_6)
         self.widget_5.setObjectName(u"widget_5")
         sizePolicy11.setHeightForWidth(self.widget_5.sizePolicy().hasHeightForWidth())
         self.widget_5.setSizePolicy(sizePolicy11)
@@ -522,7 +515,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_3.addWidget(self.widget_5, 7, 1, 1, 1)
 
-        self.widget_7 = QWidget(self.frame_6)
+        self.widget_7 = MplCanvas(self.frame_6)
         self.widget_7.setObjectName(u"widget_7")
         sizePolicy11.setHeightForWidth(self.widget_7.sizePolicy().hasHeightForWidth())
         self.widget_7.setSizePolicy(sizePolicy11)
@@ -531,7 +524,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_3.addWidget(self.widget_7, 2, 1, 1, 1)
 
-        self.widget_8 = QWidget(self.frame_6)
+        self.widget_8 = MplCanvas(self.frame_6)
         self.widget_8.setObjectName(u"widget_8")
         sizePolicy11.setHeightForWidth(self.widget_8.sizePolicy().hasHeightForWidth())
         self.widget_8.setSizePolicy(sizePolicy11)
@@ -539,7 +532,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_3.addWidget(self.widget_8, 1, 1, 1, 1)
 
-        self.widget_4 = QWidget(self.frame_6)
+        self.widget_4 = MplCanvas(self.frame_6)
         self.widget_4.setObjectName(u"widget_4")
         sizePolicy11.setHeightForWidth(self.widget_4.sizePolicy().hasHeightForWidth())
         self.widget_4.setSizePolicy(sizePolicy11)
@@ -547,7 +540,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_3.addWidget(self.widget_4, 6, 1, 1, 1)
 
-        self.widget_10 = QWidget(self.frame_6)
+        self.widget_10 = MplCanvas(self.frame_6)
         self.widget_10.setObjectName(u"widget_10")
         sizePolicy11.setHeightForWidth(self.widget_10.sizePolicy().hasHeightForWidth())
         self.widget_10.setSizePolicy(sizePolicy11)
@@ -880,6 +873,7 @@ class Ui_MainWindow(object):
         self.frame_35.setObjectName(u"frame_35")
         sizePolicy8.setHeightForWidth(self.frame_35.sizePolicy().hasHeightForWidth())
         self.frame_35.setSizePolicy(sizePolicy8)
+        self.frame_35.setMaximumSize(QSize(16777215, 107))
         self.frame_35.setFrameShape(QFrame.StyledPanel)
         self.frame_35.setFrameShadow(QFrame.Raised)
         self.gridLayout_22 = QGridLayout(self.frame_35)
@@ -998,7 +992,7 @@ class Ui_MainWindow(object):
         self.frame_36.setFrameShadow(QFrame.Raised)
         self.gridLayout_23 = QGridLayout(self.frame_36)
         self.gridLayout_23.setObjectName(u"gridLayout_23")
-        self.widget_25 = QWidget(self.frame_36)
+        self.widget_25 = MplCanvas(self.frame_36)
         self.widget_25.setObjectName(u"widget_25")
         sizePolicy11.setHeightForWidth(self.widget_25.sizePolicy().hasHeightForWidth())
         self.widget_25.setSizePolicy(sizePolicy11)
@@ -1034,7 +1028,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_23.addWidget(self.label_36, 1, 0, 1, 1)
 
-        self.widget_26 = QWidget(self.frame_36)
+        self.widget_26 = MplCanvas(self.frame_36)
         self.widget_26.setObjectName(u"widget_26")
         sizePolicy11.setHeightForWidth(self.widget_26.sizePolicy().hasHeightForWidth())
         self.widget_26.setSizePolicy(sizePolicy11)
@@ -1060,7 +1054,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_23.addWidget(self.label_35, 7, 0, 1, 1)
 
-        self.widget_28 = QWidget(self.frame_36)
+        self.widget_28 = MplCanvas(self.frame_36)
         self.widget_28.setObjectName(u"widget_28")
         sizePolicy11.setHeightForWidth(self.widget_28.sizePolicy().hasHeightForWidth())
         self.widget_28.setSizePolicy(sizePolicy11)
@@ -1069,7 +1063,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_23.addWidget(self.widget_28, 1, 1, 1, 1)
 
-        self.widget_27 = QWidget(self.frame_36)
+        self.widget_27 = MplCanvas(self.frame_36)
         self.widget_27.setObjectName(u"widget_27")
         sizePolicy11.setHeightForWidth(self.widget_27.sizePolicy().hasHeightForWidth())
         self.widget_27.setSizePolicy(sizePolicy11)
@@ -1077,7 +1071,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_23.addWidget(self.widget_27, 7, 1, 1, 1)
 
-        self.widget_31 = QWidget(self.frame_36)
+        self.widget_31 = MplCanvas(self.frame_36)
         self.widget_31.setObjectName(u"widget_31")
         sizePolicy11.setHeightForWidth(self.widget_31.sizePolicy().hasHeightForWidth())
         self.widget_31.setSizePolicy(sizePolicy11)
@@ -1103,7 +1097,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_23.addWidget(self.label_40, 5, 0, 1, 1)
 
-        self.widget_30 = QWidget(self.frame_36)
+        self.widget_30 = MplCanvas(self.frame_36)
         self.widget_30.setObjectName(u"widget_30")
         sizePolicy11.setHeightForWidth(self.widget_30.sizePolicy().hasHeightForWidth())
         self.widget_30.setSizePolicy(sizePolicy11)
@@ -1121,7 +1115,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_23.addWidget(self.label_38, 3, 0, 1, 1)
 
-        self.widget_29 = QWidget(self.frame_36)
+        self.widget_29 = MplCanvas(self.frame_36)
         self.widget_29.setObjectName(u"widget_29")
         sizePolicy11.setHeightForWidth(self.widget_29.sizePolicy().hasHeightForWidth())
         self.widget_29.setSizePolicy(sizePolicy11)
@@ -1130,7 +1124,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_23.addWidget(self.widget_29, 3, 1, 1, 1)
 
-        self.widget_32 = QWidget(self.frame_36)
+        self.widget_32 = MplCanvas(self.frame_36)
         self.widget_32.setObjectName(u"widget_32")
         sizePolicy11.setHeightForWidth(self.widget_32.sizePolicy().hasHeightForWidth())
         self.widget_32.setSizePolicy(sizePolicy11)
@@ -1277,6 +1271,7 @@ class Ui_MainWindow(object):
         sizePolicy15.setVerticalStretch(0)
         sizePolicy15.setHeightForWidth(self.infoWidgetTrain.sizePolicy().hasHeightForWidth())
         self.infoWidgetTrain.setSizePolicy(sizePolicy15)
+        self.infoWidgetTrain.setMaximumSize(QSize(16777215, 0))
         self.infoWidgetTrain.setStyleSheet(u"background-color: rgb(0, 184, 200);\n"
 "color: rgb(255, 255, 255);")
         self.verticalLayout_12 = QVBoxLayout(self.infoWidgetTrain)
