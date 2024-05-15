@@ -3,6 +3,7 @@ import sys
 import json
 import csv
 import random
+import subprocess
 from ui_interface import *
 from ui_trainWindow import Ui_TrainWindow
 from Custom_Widgets import *
@@ -53,19 +54,16 @@ class MainWindow(QMainWindow):
                 currentIndex = self.ui.usersList.currentRow()
                 self.ui.usersList.insertItem(currentIndex, row["Name"])
         
-        global initRec
-        initRec = False
         self.show()
 
     #Call the training window
     def openTrainWindow(self):
-        global initRec
+        global recProcess
+        recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
         if self.app.isHidden():
             self.app.show()
-            initRec = True
         else:
             self.app.hide()
-            initRec = False
 
     def exitApp(self):
         QApplication.quit()    
@@ -263,6 +261,8 @@ class TrainWindow(QMainWindow):
         self.timer.timeout.connect(lambda: self.changePages())
 
     def startRecording(self):
+        recProcess.stdout.read1(1)
+        recProcess.stdin.write(b"G\n") # G for go
         self.timer.start(6000)
         global count
         global pageArray
