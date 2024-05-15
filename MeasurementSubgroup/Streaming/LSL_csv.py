@@ -12,8 +12,6 @@ inlet = StreamInlet(streams[0])
 columns=['FZ', 'C3', 'CZ', 'C4', 'PZ', 'PO7', 'OZ', 'PO8']
 data_dict = dict((k, []) for k in columns)
 
-wait
-
 while not finished:
    # get the streamed data. Columns of sample are equal to the columns variable, only the first element being timestamp
    # concatenate timestamp and data in 1 list
