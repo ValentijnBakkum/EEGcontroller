@@ -30,6 +30,7 @@ from pylsl import StreamInlet, resolve_stream
 
 def filter(y):
     from scipy.signal import butter, lfilter
+    from scipy import signal
 
     # Define the filter parameters
     lowcut = 2
@@ -43,7 +44,19 @@ def filter(y):
     b, a = butter(4, [low, high], btype='band')
 
     # Apply the filter to each column of the DataFrame
-    y_filtered = lfilter(b, a, np.array(y))
+    y_filtered_band = lfilter(b, a, np.array(y))
+
+    # Define the notch filter parameters
+    fs = 250  # Sampling frequency
+    f0 = 50  # Notch frequency
+    Q = 5 # Quality factor
+
+    # Design the notch filter
+    b, a = signal.iirnotch(f0, Q, fs)
+
+    # Apply the filter to each column of the DataFrame
+    y_filtered = lfilter(b, a, y_filtered_band)
+
     return y_filtered
 
 # Data settings
