@@ -7,7 +7,7 @@ mne.set_log_level('WARNING')
 # Constants
 num_components = 8
 
-allOutputs = np.genfromtxt('DataCollection/CSVFiles/Teeth clincing.csv', delimiter=',')
+allOutputs = np.genfromtxt('MeasurementSubgroup/Our_measurements/EEGdata-2024-137--16-06-51.csv', delimiter=',')
 
 channels = allOutputs[1:, 0:8].transpose()
 

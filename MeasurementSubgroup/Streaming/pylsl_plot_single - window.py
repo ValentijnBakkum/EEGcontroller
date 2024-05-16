@@ -83,7 +83,6 @@ aborted = False
 # main loop
 while not aborted:
     # Get data from LSL interface
-    print(sample)
     sample,timestamp = inlet.pull_sample() 
     
     #calculate sample overlap
@@ -141,4 +140,4 @@ while not aborted:
     #if i % 500 == 0:
     #    plt.cla() 
 
-    plt.show()
+plt.show()
