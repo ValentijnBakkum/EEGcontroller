@@ -59,12 +59,8 @@ def filter(y):
 
     return y_filtered
 
-# Data settings
-duration = 10
-sampling_frequency = 250
-
 # Window settings
-window = 30
+window = 200
 overlap = 0.5
 
 # Plot settings

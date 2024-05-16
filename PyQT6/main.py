@@ -3,6 +3,7 @@ import sys
 import json
 import csv
 from random import randint
+import subprocess
 from ui_interface import *
 from ui_trainWindow import Ui_TrainWindow
 from Custom_Widgets import *
@@ -12,6 +13,7 @@ import random
 import numpy as np
 import time
 from pylsl import StreamInlet, resolve_stream
+
 
 
 #Mainwindow from which everything can be called
@@ -61,7 +63,6 @@ class MainWindow(QMainWindow):
             for row in user_reader:
                 currentIndex = self.ui.usersList.currentRow()
                 self.ui.usersList.insertItem(currentIndex, row["Name"])
-
         
         #Data live plotting
         self.i = 0
@@ -316,6 +317,9 @@ class MainWindow(QMainWindow):
 
     #Call the training window
     def openTrainWindow(self):
+        global recProcess
+        recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
+
         if self.app.isHidden():
             self.app.show()
         else:
@@ -540,6 +544,9 @@ class TrainWindow(QMainWindow):
         self.timer.timeout.connect(lambda: self.changePages())
 
     def startRecording(self):
+        recProcess.stdout.read1(1)
+        recProcess.stdin.write(b"G\n") # G for go
+        recProcess.stdin.flush()
         self.timer.start(6000)
         global count
         global pageArray
@@ -565,6 +572,7 @@ class TrainWindow(QMainWindow):
         count = count + 1
 
     def stopRecording(self):
+        recProcess.kill()
         self.timer.stop()
         self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
     
