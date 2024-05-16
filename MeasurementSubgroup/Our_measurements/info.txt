@@ -1,0 +1,3 @@
+This folder has our measurements from the prompitng software
+
+The automatic names of the files are in the format "EEGdata-seconds-minutes-hours--day of the year-year.csv"

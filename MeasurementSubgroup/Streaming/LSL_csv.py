@@ -1,5 +1,6 @@
 
 from pylsl import StreamInlet, resolve_stream
+from datetime import datetime
 import pandas as pd
 
 # initialize the streaming layer
@@ -34,4 +35,5 @@ while not finished:
 
 # lastly, we can save our data to a CSV format.
 data_df = pd.DataFrame.from_dict(data_dict)
-data_df.to_csv('EEGdata.csv', index = False)
+now = datetime.now()
+data_df.to_csv('MeasurementSubgroup/Our_measurements/EEGdata-' + now.strftime("%S-%M-%H--%j-%Y") + '.csv', index = False)
