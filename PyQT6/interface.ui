@@ -133,7 +133,7 @@ QPushButton{
                 <string>Menu</string>
                </property>
                <property name="icon">
-                <iconset resource="resources.qrc">
+                <iconset>
                  <normaloff>:/icons/icons/menu.svg</normaloff>:/icons/icons/menu.svg</iconset>
                </property>
                <property name="iconSize">
@@ -185,7 +185,7 @@ QPushButton{
                 <string>Train</string>
                </property>
                <property name="icon">
-                <iconset resource="resources.qrc">
+                <iconset>
                  <normaloff>:/icons/icons/sliders.svg</normaloff>:/icons/icons/sliders.svg</iconset>
                </property>
                <property name="iconSize">
@@ -210,7 +210,7 @@ QPushButton{
                 <string>Test</string>
                </property>
                <property name="icon">
-                <iconset resource="resources.qrc">
+                <iconset>
                  <normaloff>:/icons/icons/target.svg</normaloff>:/icons/icons/target.svg</iconset>
                </property>
                <property name="iconSize">
@@ -232,7 +232,7 @@ QPushButton{
                 <string>Users</string>
                </property>
                <property name="icon">
-                <iconset resource="resources.qrc">
+                <iconset>
                  <normaloff>:/icons/icons/users.svg</normaloff>:/icons/icons/users.svg</iconset>
                </property>
                <property name="iconSize">
@@ -294,7 +294,7 @@ QPushButton{
                 <string>Info</string>
                </property>
                <property name="icon">
-                <iconset resource="resources.qrc">
+                <iconset>
                  <normaloff>:/icons/icons/info.svg</normaloff>:/icons/icons/info.svg</iconset>
                </property>
                <property name="iconSize">
@@ -316,7 +316,7 @@ QPushButton{
                 <string>Exit</string>
                </property>
                <property name="icon">
-                <iconset resource="resources.qrc">
+                <iconset>
                  <normaloff>:/icons/icons/x-circle.svg</normaloff>:/icons/icons/x-circle.svg</iconset>
                </property>
                <property name="iconSize">
@@ -1859,7 +1859,7 @@ border:none;</string>
                      <cursorShape>ArrowCursor</cursorShape>
                     </property>
                     <property name="text">
-                     <string>1000</string>
+                     <string>80</string>
                     </property>
                    </widget>
                   </item>

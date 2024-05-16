@@ -14,8 +14,8 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
-    <normaloff>:/icons/icons/training.svg</normaloff>:/icons/icons/training.svg</iconset>
+   <iconset resource="image.qrc">
+    <normaloff>:/newPrefix/pictures/EEG.jpg</normaloff>:/newPrefix/pictures/EEG.jpg</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">color: rgb(0, 0, 0);

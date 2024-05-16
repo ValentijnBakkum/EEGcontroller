@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import csv
-import random
+from random import randint
 from ui_interface import *
 from ui_trainWindow import Ui_TrainWindow
 from Custom_Widgets import *
@@ -52,8 +52,145 @@ class MainWindow(QMainWindow):
             for row in user_reader:
                 currentIndex = self.ui.usersList.currentRow()
                 self.ui.usersList.insertItem(currentIndex, row["Name"])
+
+        
+        #Data live plotting
+        x_axis_range = 80
+        symbol_sign = None
+
+        pen = pg.mkPen(color=(255, 0, 0))
+        self.time = list(range(x_axis_range))
+        self.power = [randint(20, 40) for _ in range(x_axis_range)]
+        self.power_2 = [randint(20, 40) for _ in range(x_axis_range)]
+        self.power_3 = [randint(20, 40) for _ in range(x_axis_range)]
+        self.power_4 = [randint(20, 40) for _ in range(x_axis_range)]
+        self.power_5 = [randint(20, 40) for _ in range(x_axis_range)]
+        self.power_6 = [randint(20, 40) for _ in range(x_axis_range)]
+        self.power_7 = [randint(20, 40) for _ in range(x_axis_range)]
+        self.power_8 = [randint(20, 40) for _ in range(x_axis_range)]
+        # Get a line reference
+        self.line = self.ui.graphicsView.plot(
+            self.time,
+            self.power,
+            name="Power Sensor",
+            pen=pen,
+            symbol=symbol_sign,
+            symbolSize=5,
+            symbolBrush="b",
+        )
+        self.line_2 = self.ui.graphicsView_2.plot(
+            self.time,
+            self.power_2,
+            name="Power Sensor",
+            pen=pen,
+            symbol=symbol_sign,
+            symbolSize=5,
+            symbolBrush="b",
+        )
+        self.line_3 = self.ui.graphicsView_3.plot(
+            self.time,
+            self.power_3,
+            name="Power Sensor",
+            pen=pen,
+            symbol=symbol_sign,
+            symbolSize=5,
+            symbolBrush="b",
+        )
+        self.line_4 = self.ui.graphicsView_4.plot(
+            self.time,
+            self.power_4,
+            name="Power Sensor",
+            pen=pen,
+            symbol=symbol_sign,
+            symbolSize=5,
+            symbolBrush="b",
+        )
+        self.line_5 = self.ui.graphicsView_5.plot(
+            self.time,
+            self.power_5,
+            name="Power Sensor",
+            pen=pen,
+            symbol=symbol_sign,
+            symbolSize=5,
+            symbolBrush="b",
+        )
+        self.line_6 = self.ui.graphicsView_6.plot(
+            self.time,
+            self.power_6,
+            name="Power Sensor",
+            pen=pen,
+            symbol=symbol_sign,
+            symbolSize=5,
+            symbolBrush="b",
+        )
+        self.line_7 = self.ui.graphicsView_7.plot(
+            self.time,
+            self.power_7,
+            name="Power Sensor",
+            pen=pen,
+            symbol=symbol_sign,
+            symbolSize=5,
+            symbolBrush="b",
+        )
+        self.line_8 = self.ui.graphicsView_8.plot(
+            self.time,
+            self.power_8,
+            name="Power Sensor",
+            pen=pen,
+            symbol=symbol_sign,
+            symbolSize=5,
+            symbolBrush="b",
+        )
+        self.line_17 = self.ui.graphicsView_17.plot(
+            self.time,
+            self.power,
+            name="Power Sensor",
+            pen=pen,
+            symbol=symbol_sign,
+            symbolSize=5,
+            symbolBrush="b",
+        )
+        self.line_17.setFftMode(True)
+        # Add a timer to simulate new temperature measurements
+        self.timer = QTimer()
+        self.timer.setInterval(100)
+        self.timer.timeout.connect(self.update_plot)
+        self.timer.start()
+
         
         self.show()
+        
+    # Update graphs
+    def update_plot(self):
+        self.time = self.time[1:]
+
+        self.time.append(self.time[-1] + 1)
+        self.power = self.power[1:]
+        self.power.append(randint(20, 40))
+        self.power_2 = self.power_2[1:]
+        self.power_2.append(randint(20, 40))
+        self.power_3 = self.power_3[1:]
+        self.power_3.append(randint(20, 40))
+        self.power_4 = self.power_4[1:]
+        self.power_4.append(randint(20, 40))
+        self.power_5 = self.power_5[1:]
+        self.power_5.append(randint(20, 40))
+        self.power_6 = self.power_6[1:]
+        self.power_6.append(randint(20, 40))
+        self.power_7 = self.power_7[1:]
+        self.power_7.append(randint(20, 40))
+        self.power_8 = self.power_8[1:]
+        self.power_8.append(randint(20, 40))
+
+        self.line.setData(self.time, self.power)
+        self.line_2.setData(self.time, self.power_2)
+        self.line_3.setData(self.time, self.power_3)
+        self.line_4.setData(self.time, self.power_4)
+        self.line_5.setData(self.time, self.power_5)
+        self.line_6.setData(self.time, self.power_6)
+        self.line_7.setData(self.time, self.power_7)
+        self.line_8.setData(self.time, self.power_8)
+        self.line_17.setData(self.time, self.power)
 
     #Call the training window
     def openTrainWindow(self):

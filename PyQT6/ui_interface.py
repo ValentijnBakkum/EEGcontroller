@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'interfacesDkoNE.ui'
+## Form generated from reading UI file 'interfaceAgSHhX.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -24,6 +24,7 @@ from Custom_Widgets.QCustomQPushButton import QCustomQPushButton
 from Custom_Widgets.QCustomQStackedWidget import QCustomQStackedWidget
 from Custom_Widgets.QCustomSlideMenu import QCustomSlideMenu
 from pyqtgraph import PlotWidget
+import pyqtgraph as pg
 import image_rc
 import resources_rc
 
@@ -1438,7 +1439,7 @@ class Ui_MainWindow(object):
         self.lineEdit_37.setText(QCoreApplication.translate("MainWindow", u"End", None))
         self.label_29.setText(QCoreApplication.translate("MainWindow", u"Batch size:", None))
         self.label_30.setText(QCoreApplication.translate("MainWindow", u"Learning rate:", None))
-        self.lineEdit_38.setText(QCoreApplication.translate("MainWindow", u"1000", None))
+        self.lineEdit_38.setText(QCoreApplication.translate("MainWindow", u"80", None))
         self.lineEdit_39.setText(QCoreApplication.translate("MainWindow", u"44100", None))
         self.label_31.setText(QCoreApplication.translate("MainWindow", u"Max iteration:", None))
         self.label_32.setText(QCoreApplication.translate("MainWindow", u"Window Length (>28)", None))
