@@ -14,7 +14,6 @@ import time
 from pylsl import StreamInlet, resolve_stream
 
 
-
 #Mainwindow from which everything can be called
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -22,6 +21,7 @@ class MainWindow(QMainWindow):
 
         self.stepsize = 5
         self.startFFT = False
+        self.done_recording = False
 
         # for EEG cap data
         self.streams = resolve_stream()
@@ -72,6 +72,10 @@ class MainWindow(QMainWindow):
         self.xdata = np.zeros(self.max_graph_width)
         self.ydata = [np.zeros(self.max_graph_width) for _ in range(8)]
         symbol_sign = None
+
+        # ML plots
+        self.accuracy_data = np.zeros(1)
+        self.accuracy_data_iter = np.zeros(1)
 
         pen = pg.mkPen(color=(255, 0, 0))
         # Get a line reference
@@ -289,7 +293,7 @@ class MainWindow(QMainWindow):
             self.line_6.setData(self.xdata, self.ydata[5])
             self.line_7.setData(self.xdata, self.ydata[6])
             self.line_8.setData(self.xdata, self.ydata[7])
-            if self.startFFT:
+            if self.startFFT and not self.done_recording:
                 self.line_17.setData(self.xdata, self.ydata[0])
         if self.ui.mainPages.currentIndex() == 0:  # testing mode
             self.line_9.setData(self.xdata, self.ydata[0])
@@ -300,7 +304,7 @@ class MainWindow(QMainWindow):
             self.line_14.setData(self.xdata, self.ydata[5])
             self.line_15.setData(self.xdata, self.ydata[6])
             self.line_16.setData(self.xdata, self.ydata[7])
-            if self.startFFT:
+            if self.startFFT and not self.done_recording:
                 self.line_19.setData(self.xdata, self.ydata[0])
 
         self.i += 1
@@ -491,7 +495,30 @@ class MainWindow(QMainWindow):
                 self.ui.mouseCursor.move(self.ui.mouseCursor.x() + self.stepsize, self.ui.mouseCursor.y())
         self.ui.lineEdit_5.setText(str(self.ui.mouseCursor.x()))
         self.ui.lineEdit_6.setText(str(self.ui.mouseCursor.y()))
+
+        # to simulate the accuracy plot
+        if event.key() == Qt.Key_P:
+            self.accuracy_data = np.append(self.accuracy_data, random.sample(range(int(self.accuracy_data[-1]), 100), 1))
+            self.accuracy_data_iter = np.append(self.accuracy_data_iter, self.accuracy_data_iter[-1] + 1)
+            self.update_accuracy()
+
         self.update()
+
+    def update_accuracy(self):
+        if self.done_recording == False:
+            self.done_recording = True
+            pen = pg.mkPen(color=(255, 0, 0))
+            symbol_sign = None
+            self.line_17 = self.ui.graphicsView_17.plot(
+                self.accuracy_data_iter,
+                self.accuracy_data,
+                name="Power Sensor",
+                pen=pen,
+                symbol=symbol_sign,
+                symbolSize=5,
+                symbolBrush="b",
+            )
+        self.line_17.setData(self.accuracy_data_iter, self.accuracy_data)
 
 
 #Training window class
