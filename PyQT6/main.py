@@ -60,6 +60,7 @@ class MainWindow(QMainWindow):
     def openTrainWindow(self):
         global recProcess
         recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
+
         if self.app.isHidden():
             self.app.show()
         else:
@@ -263,6 +264,7 @@ class TrainWindow(QMainWindow):
     def startRecording(self):
         recProcess.stdout.read1(1)
         recProcess.stdin.write(b"G\n") # G for go
+        recProcess.stdin.flush()
         self.timer.start(6000)
         global count
         global pageArray

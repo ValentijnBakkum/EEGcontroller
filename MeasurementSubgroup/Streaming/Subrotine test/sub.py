@@ -2,9 +2,18 @@
 #from pylsl import StreamInlet, resolve_stream
 import pandas as pd
 import time
+import logging
 
 # initialize the streaming layer
 finished = False
+
+
+logger = logging.getLogger(__name__)
+
+logging.basicConfig(filename = "test.log", level = logging.INFO)
+logger.info("1")
+logger.info("Init")
+
 #streams = resolve_stream()
 #inlet = StreamInlet(streams[0])
 
@@ -13,8 +22,14 @@ finished = False
 columns=['FZ', 'C3', 'CZ', 'C4', 'PZ', 'PO7', 'OZ', 'PO8']
 data_dict = dict((k, []) for k in columns)
 
+logger.info("Before Rprint")
 print("R") #R for ready
+
+logger.info("Before input")
+
 recieved = input()
+logger.info("Past input")
+logger.info(str(recieved))
 
 time.sleep(5)
 

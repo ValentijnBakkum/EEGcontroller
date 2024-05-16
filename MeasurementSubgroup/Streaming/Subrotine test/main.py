@@ -6,6 +6,6 @@ process = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/Subr
 
 character = process.stdout.read1(1)
 process.stdin.write(b"G\n") # G for go
-#process.stdin.flush()
+process.stdin.flush()
 
 process.communicate()
