@@ -8,6 +8,10 @@ from ui_trainWindow import Ui_TrainWindow
 from Custom_Widgets import *
 from PyQt6.QtWidgets import QInputDialog, QMessageBox
 from PySide6.QtCore import QTimer, Slot, Signal
+import random
+import numpy as np
+import time
+from pylsl import StreamInlet, resolve_stream
 
 
 
@@ -17,6 +21,11 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
 
         self.stepsize = 5
+        self.startFFT = False
+
+        # for EEG cap data
+        self.streams = resolve_stream()
+        # self.inlet = StreamInlet(self.streams[0])
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -55,23 +64,20 @@ class MainWindow(QMainWindow):
 
         
         #Data live plotting
-        x_axis_range = 80
+        self.i = 0
+        self.j = 0
+        self.max_graph_width = 75
+        self.plot_delay = 5
+
+        self.xdata = np.zeros(self.max_graph_width)
+        self.ydata = [np.zeros(self.max_graph_width) for _ in range(8)]
         symbol_sign = None
 
         pen = pg.mkPen(color=(255, 0, 0))
-        self.time = list(range(x_axis_range))
-        self.power = [randint(20, 40) for _ in range(x_axis_range)]
-        self.power_2 = [randint(20, 40) for _ in range(x_axis_range)]
-        self.power_3 = [randint(20, 40) for _ in range(x_axis_range)]
-        self.power_4 = [randint(20, 40) for _ in range(x_axis_range)]
-        self.power_5 = [randint(20, 40) for _ in range(x_axis_range)]
-        self.power_6 = [randint(20, 40) for _ in range(x_axis_range)]
-        self.power_7 = [randint(20, 40) for _ in range(x_axis_range)]
-        self.power_8 = [randint(20, 40) for _ in range(x_axis_range)]
         # Get a line reference
         self.line = self.ui.graphicsView.plot(
-            self.time,
-            self.power,
+            self.xdata,
+            self.ydata[0],
             name="Power Sensor",
             pen=pen,
             symbol=symbol_sign,
@@ -79,8 +85,8 @@ class MainWindow(QMainWindow):
             symbolBrush="b",
         )
         self.line_2 = self.ui.graphicsView_2.plot(
-            self.time,
-            self.power_2,
+            self.xdata,
+            self.ydata[1],
             name="Power Sensor",
             pen=pen,
             symbol=symbol_sign,
@@ -88,8 +94,8 @@ class MainWindow(QMainWindow):
             symbolBrush="b",
         )
         self.line_3 = self.ui.graphicsView_3.plot(
-            self.time,
-            self.power_3,
+            self.xdata,
+            self.ydata[2],
             name="Power Sensor",
             pen=pen,
             symbol=symbol_sign,
@@ -97,8 +103,8 @@ class MainWindow(QMainWindow):
             symbolBrush="b",
         )
         self.line_4 = self.ui.graphicsView_4.plot(
-            self.time,
-            self.power_4,
+            self.xdata,
+            self.ydata[3],
             name="Power Sensor",
             pen=pen,
             symbol=symbol_sign,
@@ -106,8 +112,8 @@ class MainWindow(QMainWindow):
             symbolBrush="b",
         )
         self.line_5 = self.ui.graphicsView_5.plot(
-            self.time,
-            self.power_5,
+            self.xdata,
+            self.ydata[4],
             name="Power Sensor",
             pen=pen,
             symbol=symbol_sign,
@@ -115,8 +121,8 @@ class MainWindow(QMainWindow):
             symbolBrush="b",
         )
         self.line_6 = self.ui.graphicsView_6.plot(
-            self.time,
-            self.power_6,
+            self.xdata,
+            self.ydata[5],
             name="Power Sensor",
             pen=pen,
             symbol=symbol_sign,
@@ -124,8 +130,8 @@ class MainWindow(QMainWindow):
             symbolBrush="b",
         )
         self.line_7 = self.ui.graphicsView_7.plot(
-            self.time,
-            self.power_7,
+            self.xdata,
+            self.ydata[6],
             name="Power Sensor",
             pen=pen,
             symbol=symbol_sign,
@@ -133,24 +139,87 @@ class MainWindow(QMainWindow):
             symbolBrush="b",
         )
         self.line_8 = self.ui.graphicsView_8.plot(
-            self.time,
-            self.power_8,
+            self.xdata,
+            self.ydata[7],
             name="Power Sensor",
             pen=pen,
             symbol=symbol_sign,
             symbolSize=5,
             symbolBrush="b",
         )
-        self.line_17 = self.ui.graphicsView_17.plot(
-            self.time,
-            self.power,
+        self.line_9 = self.ui.graphicsView_9.plot(
+            self.xdata,
+            self.ydata[0],
             name="Power Sensor",
             pen=pen,
             symbol=symbol_sign,
             symbolSize=5,
             symbolBrush="b",
         )
-        self.line_17.setFftMode(True)
+        self.line_10 = self.ui.graphicsView_10.plot(
+            self.xdata,
+            self.ydata[1],
+            name="Power Sensor",
+            pen=pen,
+            symbol=symbol_sign,
+            symbolSize=5,
+            symbolBrush="b",
+        )
+        self.line_11 = self.ui.graphicsView_11.plot(
+            self.xdata,
+            self.ydata[2],
+            name="Power Sensor",
+            pen=pen,
+            symbol=symbol_sign,
+            symbolSize=5,
+            symbolBrush="b",
+        )
+        self.line_12 = self.ui.graphicsView_12.plot(
+            self.xdata,
+            self.ydata[3],
+            name="Power Sensor",
+            pen=pen,
+            symbol=symbol_sign,
+            symbolSize=5,
+            symbolBrush="b",
+        )
+        self.line_13 = self.ui.graphicsView_13.plot(
+            self.xdata,
+            self.ydata[4],
+            name="Power Sensor",
+            pen=pen,
+            symbol=symbol_sign,
+            symbolSize=5,
+            symbolBrush="b",
+        )
+        self.line_14 = self.ui.graphicsView_14.plot(
+            self.xdata,
+            self.ydata[5],
+            name="Power Sensor",
+            pen=pen,
+            symbol=symbol_sign,
+            symbolSize=5,
+            symbolBrush="b",
+        )
+        self.line_15 = self.ui.graphicsView_15.plot(
+            self.xdata,
+            self.ydata[6],
+            name="Power Sensor",
+            pen=pen,
+            symbol=symbol_sign,
+            symbolSize=5,
+            symbolBrush="b",
+        )
+        self.line_16 = self.ui.graphicsView_16.plot(
+            self.xdata,
+            self.ydata[7],
+            name="Power Sensor",
+            pen=pen,
+            symbol=symbol_sign,
+            symbolSize=5,
+            symbolBrush="b",
+        )
+
         # Add a timer to simulate new temperature measurements
         self.timer = QTimer()
         self.timer.setInterval(100)
@@ -162,35 +231,84 @@ class MainWindow(QMainWindow):
         
     # Update graphs
     def update_plot(self):
-        self.time = self.time[1:]
+        self.j = self.i // self.plot_delay
 
-        self.time.append(self.time[-1] + 1)
-        self.power = self.power[1:]
-        self.power.append(randint(20, 40))
-        self.power_2 = self.power_2[1:]
-        self.power_2.append(randint(20, 40))
-        self.power_3 = self.power_3[1:]
-        self.power_3.append(randint(20, 40))
-        self.power_4 = self.power_4[1:]
-        self.power_4.append(randint(20, 40))
-        self.power_5 = self.power_5[1:]
-        self.power_5.append(randint(20, 40))
-        self.power_6 = self.power_6[1:]
-        self.power_6.append(randint(20, 40))
-        self.power_7 = self.power_7[1:]
-        self.power_7.append(randint(20, 40))
-        self.power_8 = self.power_8[1:]
-        self.power_8.append(randint(20, 40))
+        if self.i % self.plot_delay:
+            # gathering the data from the EEG cap
+            # sample, timestamp = inlet.pull_sample()
+            sample, timestamp = self.generate_random_sample()  # for testing purposes when not connected to cap
+            sample_timestamp = sample[15]
 
-        self.line.setData(self.time, self.power)
-        self.line_2.setData(self.time, self.power_2)
-        self.line_3.setData(self.time, self.power_3)
-        self.line_4.setData(self.time, self.power_4)
-        self.line_5.setData(self.time, self.power_5)
-        self.line_6.setData(self.time, self.power_6)
-        self.line_7.setData(self.time, self.power_7)
-        self.line_8.setData(self.time, self.power_8)
-        self.line_17.setData(self.time, self.power)
+            if self.j < self.ydata[0].size:
+                self.xdata[self.j:] = sample_timestamp
+            else:
+                self.xdata = np.append(self.xdata[1:], sample_timestamp)
+                # start creating the FFT plot
+                if self.startFFT == False:
+                    pen = pg.mkPen(color=(255, 0, 0))
+                    symbol_sign = None
+                    self.line_17 = self.ui.graphicsView_17.plot(
+                        self.xdata,
+                        self.ydata[0],
+                        name="Power Sensor",
+                        pen=pen,
+                        symbol=symbol_sign,
+                        symbolSize=5,
+                        symbolBrush="b",
+                    )
+                    self.line_17.setFftMode(True)
+                    self.line_19 = self.ui.graphicsView_19.plot(
+                        self.xdata,
+                        self.ydata[0],
+                        name="Power Sensor",
+                        pen=pen,
+                        symbol=symbol_sign,
+                        symbolSize=5,
+                        symbolBrush="b",
+                    )
+                    self.line_19.setFftMode(True)
+                    self.startFFT = True
+
+            # update the data arrays
+            k = 0
+            while k < 8:
+                if self.j < self.ydata[0].size:
+                    self.ydata[k][self.j:] = sample[k]
+                else:
+                    self.ydata[k] = np.append(self.ydata[k][1:], sample[k])
+                k += 1
+
+        # update the plots with the new data
+        # depending on which screen is active
+        if self.ui.mainPages.currentIndex() == 2:  # training mode
+            self.line.setData(self.xdata, self.ydata[0])
+            self.line_2.setData(self.xdata, self.ydata[1])
+            self.line_3.setData(self.xdata, self.ydata[2])
+            self.line_4.setData(self.xdata, self.ydata[3])
+            self.line_5.setData(self.xdata, self.ydata[4])
+            self.line_6.setData(self.xdata, self.ydata[5])
+            self.line_7.setData(self.xdata, self.ydata[6])
+            self.line_8.setData(self.xdata, self.ydata[7])
+            if self.startFFT:
+                self.line_17.setData(self.xdata, self.ydata[0])
+        if self.ui.mainPages.currentIndex() == 0:  # testing mode
+            self.line_9.setData(self.xdata, self.ydata[0])
+            self.line_10.setData(self.xdata, self.ydata[1])
+            self.line_11.setData(self.xdata, self.ydata[2])
+            self.line_12.setData(self.xdata, self.ydata[3])
+            self.line_13.setData(self.xdata, self.ydata[4])
+            self.line_14.setData(self.xdata, self.ydata[5])
+            self.line_15.setData(self.xdata, self.ydata[6])
+            self.line_16.setData(self.xdata, self.ydata[7])
+            if self.startFFT:
+                self.line_19.setData(self.xdata, self.ydata[0])
+
+        self.i += 1
+
+    # for testing purposes
+    def generate_random_sample(self):
+        # Simulate random data generation
+        return random.sample(range(0, 100), 15) + [time.time()], 0
 
     #Call the training window
     def openTrainWindow(self):
