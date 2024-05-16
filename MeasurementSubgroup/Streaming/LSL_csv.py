@@ -36,4 +36,4 @@ while not finished:
 # lastly, we can save our data to a CSV format.
 data_df = pd.DataFrame.from_dict(data_dict)
 now = datetime.now()
-data_df.to_csv('MeasurementSubgroup/Our_measurements/EEGdata-' + now.strftime("%S-%M-%H--%j-%Y") + '.csv', index = False)
+data_df.to_csv('MeasurementSubgroup/Our_measurements/EEGdata-' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
