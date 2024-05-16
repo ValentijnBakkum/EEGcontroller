@@ -290,6 +290,7 @@ class TrainWindow(QMainWindow):
         count = count + 1
 
     def stopRecording(self):
+        recProcess.kill()
         self.timer.stop()
         self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
     
