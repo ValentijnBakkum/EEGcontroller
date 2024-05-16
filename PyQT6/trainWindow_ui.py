@@ -27,7 +27,7 @@ class Ui_TrainWindow(object):
             TrainWindow.setObjectName(u"TrainWindow")
         TrainWindow.resize(939, 659)
         icon = QIcon()
-        icon.addFile(u":/icons/icons/training.svg", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u":/newPrefix/pictures/EEG.jpg", QSize(), QIcon.Normal, QIcon.Off)
         TrainWindow.setWindowIcon(icon)
         TrainWindow.setStyleSheet(u"color: rgb(0, 0, 0);\n"
 "background-color: rgb(255, 255, 255);")

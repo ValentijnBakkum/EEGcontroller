@@ -2,33 +2,24 @@ import msvcrt
 import numpy as np
 import matplotlib.pyplot as plt
 
+from scipy.fft import rfft, rfftfreq 
+from scipy import signal
+from scipy.fft import fftshift
+from scipy.signal import butter, lfilter, lfilter_zi
+
 from pylsl import StreamInlet, resolve_stream
 
 # Data settings
 duration = 10
 sampling_frequency = 250
-down_sampling_ratio = 10
 
 # Window settings
-window = 10
-overlap = 0.1
+window = 50
+overlap = 0.5
 
 # Plot settings
 pause = 0.01
 time_plot = 50
-
-i, j, k, l = 0, 0, 0, 0
-
-y = np.zeros(window)  # array of size of window
-y_r1 = np.zeros(int(window / 2))  # array of size of window
-y_r2 = np.zeros(window)  # array of size of window
-y_l1 = []
-y_win = np.zeros(window)  # window array
-
-t_r1 = np.zeros(int(window / 2))  # array of size of window
-t_r2 = np.zeros(window)  # array of size of window
-t_l1 = []
-t_win = np.zeros(window)  # window array
 
 choosen_electrode = 0 #int(input("Which electrode should be plotted? (0-7)")) # Electrode election
 print("Press 'ESC' to stop the plot") # Stop the plot
@@ -82,194 +73,116 @@ sample = [
     2.107, 3.496, 3.839, 3.533, 3.155, 3.103, 3.464
 ]
 
-t = [
-    9257, 9258, 9259, 9260, 9261, 9262, 9263, 9264, 9265, 9266,
-    9267, 9268, 9269, 9270, 9271, 9272, 9273, 9274, 9275, 9276,
-    9277, 9278, 9279, 9280, 9281, 9282, 9283, 9284, 9285, 9286,
-    9287, 9288, 9289, 9290, 9291, 9292, 9293, 9294, 9295, 9296,
-    9297, 9298, 9299, 9300, 9301, 9302, 9303, 9304, 9305, 9306,
-    9307, 9308, 9309, 9310, 9311, 9312, 9313, 9314, 9315, 9316,
-    9317, 9318, 9319, 9320, 9321, 9322, 9323, 9324, 9325, 9326,
-    9327, 9328, 9329, 9330, 9331, 9332, 9333, 9334, 9335, 9336,
-    9337, 9338, 9339, 9340, 9341, 9342, 9343, 9344, 9345, 9346,
-    9347, 9348, 9349, 9350, 9351, 9352, 9353, 9354, 9355, 9356,
-    9357, 9358, 9359, 9360, 9361, 9362, 9363, 9364, 9365, 9366,
-    9367, 9368, 9369, 9370, 9371, 9372, 9373, 9374, 9375, 9376,
-    9377, 9378, 9379, 9380, 9381, 9382, 9383, 9384, 9385, 9386,
-    9387, 9388, 9389, 9390, 9391, 9392, 9393, 9394, 9395, 9396,
-    9397, 9398, 9399, 9400, 9401, 9402, 9403, 9404, 9405, 9406,
-    9407, 9408, 9409, 9410, 9411, 9412, 9413, 9414, 9415, 9416,
-    9417, 9418, 9419, 9420, 9421, 9422, 9423, 9424, 9425, 9426,
-    9427, 9428, 9429, 9430, 9431, 9432, 9433, 9434, 9435, 9436,
-    9437, 9438, 9439, 9440, 9441, 9442, 9443, 9444, 9445, 9446,
-    9447, 9448, 9449, 9450, 9451, 9452, 9453, 9454, 9455, 9456,
-    9457, 9458, 9459, 9460, 9461, 9462, 9463, 9464, 9465, 9466,
-    9467, 9468, 9469, 9470, 9471, 9472, 9473, 9474, 9475, 9476,
-    9477, 9478, 9479, 9480, 9481, 9482, 9483, 9484, 9485, 9486,
-    9487, 9488, 9489, 9490, 9491, 9492, 9493, 9494, 9495, 9496,
-    9497, 9498, 9499, 9500, 9501, 9502, 9503, 9504, 9505, 9506,
-    9507, 9508, 9509, 9510, 9511, 9512, 9513, 9514, 9515, 9516,
-    9517, 9518, 9519, 9520, 9521, 9522, 9523, 9524, 9525, 9526,
-    9527, 9528, 9529, 9530, 9531, 9532, 9533, 9534, 9535, 9536,
-    9537, 9538, 9539, 9540, 9541, 9542, 9543, 9544, 9545, 9546,
-    9547, 9548, 9549, 9550, 9551, 9552, 9553, 9554, 9555, 9556,
-    9557, 9558, 9559, 9560, 9561, 9562, 9563, 9564, 9565, 9566,
-    9567, 9568, 9569, 9570, 9571, 9572, 9573, 9574, 9575, 9576,
-    9577, 9578, 9579, 9580, 9581, 9582, 9583, 9584, 9585, 9586,
-    9587, 9588, 9589, 9590, 9591, 9592, 9593, 9594, 9595, 9596,
-    9597, 9598, 9599, 9600, 9601, 9602, 9603, 9604, 9605, 9606,
-    9607, 9608, 9609, 9610, 9611, 9612, 9613, 9614, 9615, 9616,
-    9617, 9618, 9619, 9620, 9621, 9622, 9623, 9624, 9625, 9626,
-    9627, 9628, 9629, 9630, 9631, 9632, 9633, 9634, 9635, 9636,
-    9637, 9638, 9639, 9640, 9641, 9642, 9643, 9644, 9645, 9646,
-    9647, 9648, 9649, 9650, 9651, 9652, 9653, 9654, 9655, 9656,
-    9657, 9658, 9659, 9660, 9661, 9662, 9663, 9664, 9665, 9666,
-    9667, 9668, 9669, 9670, 9671, 9672, 9673, 9674, 9675, 9676,
-    9677, 9678, 9679, 9680, 9681, 9682, 9683, 9684, 9685, 9686,
-    9687, 9688, 9689, 9690, 9691, 9692, 9693, 9694, 9695, 9696,
-    9697, 9698, 9699, 9700, 9701, 9702, 9703, 9704, 9705, 9706,
-    9707, 9708, 9709, 9710, 9711, 9712, 9713, 9714, 9715, 9716,
-    9717, 9718, 9719, 9720, 9721, 9722, 9723, 9724, 9725, 9726,
-    9727, 9728, 9729, 9730, 9731, 9732, 9733, 9734, 9735, 9736,
-    9737, 9738, 9739, 9740, 9741, 9742, 9743, 9744, 9745, 9746,
-    9747, 9748, 9749, 9750, 9751, 9752, 9753, 9754, 9755, 9756,
-    9757, 9758, 9759, 9760, 9761, 9762, 9763, 9764, 9765, 9766,
-    9767, 9768, 9769, 9770, 9771, 9772, 9773, 9774, 9775, 9776,
-    9777, 9778, 9779, 9780, 9781, 9782, 9783, 9784, 9785, 9786,
-    9787, 9788, 9789, 9790, 9791, 9792, 9793, 9794, 9795, 9796,
-    9797, 9798, 9799, 9800, 9801, 9802, 9803, 9804, 9805, 9806,
-    9807, 9808, 9809, 9810, 9811, 9812, 9813, 9814, 9815, 9816,
-    9817, 9818, 9819, 9820, 9821, 9822, 9823, 9824, 9825, 9826,
-    9827, 9828, 9829, 9830, 9831, 9832, 9833, 9834, 9835, 9836,
-    9837, 9838, 9839, 9840, 9841, 9842, 9843, 9844, 9845, 9846,
-    9847, 9848, 9849, 9850, 9851, 9852, 9853, 9854, 9855, 9856,
-    9857, 9858, 9859, 9860, 9861, 9862, 9863, 9864, 9865, 9866,
-    9867, 9868, 9869, 9870, 9871, 9872, 9873, 9874, 9875, 9876,
-    9877, 9878, 9879, 9880, 9881, 9882, 9883, 9884, 9885, 9886,
-    9887, 9888, 9889, 9890, 9891, 9892, 9893, 9894, 9895, 9896,
-    9897, 9898, 9899, 9900, 9901, 9902, 9903, 9904, 9905, 9906,
-    9907, 9908, 9909, 9910, 9911, 9912, 9913, 9914, 9915, 9916,
-    9917, 9918, 9919, 9920, 9921, 9922, 9923, 9924, 9925, 9926,
-    9927, 9928, 9929, 9930, 9931, 9932, 9933, 9934, 9935, 9936,
-    9937, 9938, 9939, 9940, 9941, 9942, 9943, 9944, 9945, 9946,
-    9947, 9948, 9949, 9950, 9951, 9952, 9953, 9954, 9955, 9956,
-    9957, 9958, 9959, 9960, 9961, 9962, 9963, 9964, 9965, 9966,
-    9967, 9968, 9969, 9970, 9971, 9972, 9973, 9974, 9975, 9976]
+# Parameters
+fs = 250  # Sampling frequency (Hz)
+t = np.arange(0, 1.8, 1/fs)  # Time array, 1.8 seconds with fs=250 Hz
 
+# Signal frequencies
+signal_freq = 10  # Signal frequency (Hz)
+noise_freq = 100  # Noise frequency (Hz)
+
+# Generate signal and noise
+signal = np.sin(2 * np.pi * signal_freq * t)
+noise = 0.5 * np.sin(2 * np.pi * noise_freq * t)
+
+# Combine signal and noise
+sample = signal + noise
+
+# initial values
+y_win = np.zeros(window)  # window array
+t_win = np.zeros(window)  # time array
+t = 1
+i = 1
 aborted = False
 
+#functions
 def flatten(xss):
     return [x for xs in xss for x in xs]
 
+def filter(y):
+    from scipy.signal import butter, lfilter
+    from scipy import signal
+
+    # Define the filter parameters
+    lowcut = 2
+    highcut = 30
+    fs = 250  # Sampling frequency
+
+    # Calculate the filter coefficients
+    nyquist = 0.5 * fs
+    low = lowcut / nyquist
+    high = highcut / nyquist
+    b, a = butter(4, [low, high], btype='band')
+
+    # Apply the filter to each column of the DataFrame
+    y_filtered_band = lfilter(b, a, np.array(y))
+
+    # Define the notch filter parameters
+    fs = 250  # Sampling frequency
+    f0 = 50  # Notch frequency
+    Q = 5 # Quality factor
+
+    # Design the notch filter
+    b, a = signal.iirnotch(f0, Q, fs)
+
+    # Apply the filter to each column of the DataFrame
+    y_filtered = lfilter(b, a, y_filtered_band)
+
+    return y_filtered
+
+# main loop
 while not aborted:
-    print(sample[i], t[i])
-    # Get a new sample when window is full
-    if i % window != 0:
-        y_win[k] = sample[i] 
-        t_win[k] = t[i] 
-    # Reset the k when window is full
-    else:
-        k = 0
-        y_win[k] = sample[i]
-        t_win[k] = t[i] 
+    #calculate sample overlap
+    overlap_win = int(overlap * window)
 
-    # Get the next sample
-    k += 1
+    # assign EEG data to array
+    y_win[0] = sample[i]
+    t_win[0] = t
+
+    # Shift the array with one index
+    y_win = np.roll(y_win, -1)
+    t_win = np.roll(t_win, -1)
+
+    #print(y_win, "window input")
+    #print(t_win)
+
+    # When the overlap is reached but not at i = 0 or i = overlap
+    if i % overlap_win == 0 and i != overlap_win and i != 0:
+        # apply filter to window
+        y_win_filt = filter(y_win)
+
+        # Take the samples that are overlapped
+        y_shift = y_win_filt[0:overlap_win+1]
+        t_shift = t_win[0:overlap_win+1]
+
+        # Assign the values to an array
+        y_shift = np.array(y_shift)
+        t_shift = np.array(t_shift)
+
+        # Make the overlapped samples 0 in the original array
+        y_win_filt[0:overlap_win] = np.zeros(overlap_win)
+        t_win[0:overlap_win] = np.zeros(overlap_win)
+
+        # axis settings
+        y_min = np.min(y_shift) - np.std(y_shift) * 5
+        y_max = np.max(y_shift) + np.std(y_shift) * 5
+        t_min = np.min(t_shift) - np.std(t_shift) * 10
+        t_max = np.max(t_shift) + np.std(t_shift) * 2
+
+        #plot the shifted data points
+        plt.axis([t_min, t_max, y_min, y_max])
+        plt.plot(t_shift, y_shift, 'o-')
+        plt.pause(pause)
+
+    # increment
     i += 1
-
-    # If i is greater than window (initialized window), increment j
-    if i > window:
-        j += 1
-
-    #print(y_win, "win")
-
-    # Shift the window
-    if i % window == 0 and j == 0:  # when i is a multiple of window and j is 0
-        # y 
-        y_l = y_win[:int(overlap * window)]  # left side of the shifted window
-        y_r = y_win[int(overlap * window):]  # right side of the shifted window
-
-        #y_l1.append(y_l.tolist())  # append the shifted values to the list
-        #print(y_l)
-        y_l1 = y_l.tolist()
-
-        y_out = np.concatenate((y_l, y_r))  # concatenate the left and right side of the shifted window
-
-        # t
-        t_l = t_win[:int(overlap * window)]  # left side of the shifted window
-        t_r = t_win[int(overlap * window):]  # right side of the shifted window
-
-        #t_l1.append(t_l.tolist())  # append the shifted values to the list
-        t_l1 = t_l.tolist()
-
-        t_out = np.concatenate((t_l, t_r))  # concatenate the left and right side of the shifted window
-
-        l = 1  # l counter to 1
-        #print(t_out, "out1")
-
-        y_min = np.min(y_out) - np.std(y_out) * 2
-        y_max = np.max(y_out) + np.std(y_out) * 2
-
-        #plot the shifted data points
-        plt.axis([t_out[0]-time_plot, t_out[window-1], y_min, y_max])
-        plt.plot(t_l1, y_l1, 'o-')
-        plt.pause(pause)
-
-    elif j % int(window * overlap) == 0 and l != 0:  # when j is a multiple of window*overlap and l is not 0
-        overlap_win = int(overlap * window * l) % window # calculate the overlap
-        overlap_win1 = int(overlap * window * (l + 1)) % window # calculate the overlap
-
-        if overlap_win1 < overlap_win:
-            y_l = np.concatenate((y_win[overlap_win:], np.array(y_win[:overlap_win1+1])))  # part of window that is shifted and will be used for the plot
-            t_l = np.concatenate((t_win[overlap_win:], np.array(t_win[:overlap_win1+1])))  # part of window that is shifted and will be used for the plot
-        else:
-            y_l = y_win[overlap_win:overlap_win1+1]  # part of window that is shifted and will be used for the plot
-            t_l = t_win[overlap_win:overlap_win1+1]  # part of window that is shifted and will be used for the plot
-
-        #print(y_l, "overlap")
-        # y
-        #y_l1.append(y_l.tolist())  # append the shifted values to the list
-        #print(y_l)
-        y_l1 = y_l.tolist()
-
-        y_l = y_win[:overlap_win]  # left side of the shifted window
-
-        y_out = np.concatenate((y_r, y_l))  # concatenate the left and right side of the shifted window
-
-        y_r = y_win[overlap_win1:]  # new right side of the shifted window
-
-        # t
-        #t_l1.append(t_l.tolist())  # append the shifted values to the list
-        t_l1 = t_l.tolist()
-
-        t_l = t_win[:overlap_win]  # left side of the shifted window
-
-        t_out = np.concatenate((t_r, t_l))  # concatenate the left and right side of the shifted window
-
-        t_r = t_win[overlap_win1:]  # new right side of the shifted window
-
-
-        l += 1  # increment l counter
-
-        #print(t_out, "out2")
-
-        y_min = np.min(y_out) - np.std(y_out) * 2
-        y_max = np.max(y_out) + np.std(y_out) * 2
-
-        #plot the shifted data points
-        plt.axis([t_out[0]-time_plot, t_out[window-1], y_max, y_min])
-        plt.plot(t_l1, y_l1, 'o-')
-        plt.pause(pause)
+    t += 1
 
     if i > len(sample) - 1:
         aborted = True
 
-    if i % 100 == 0:
-        plt.cla() 
-
-
-#y_l1 = flatten(y_l1)
-#t_l1 = flatten(t_l1)
+    #if i % 100 == 0:
+    #    plt.cla() 
 
 plt.show()
 

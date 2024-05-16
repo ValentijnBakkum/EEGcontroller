@@ -1,5 +1,6 @@
 import numpy as np
 import mne
+from mne_icalabel import label_components
 
 # config
 mne.set_log_level('WARNING')
@@ -28,7 +29,12 @@ raw.set_montage(mne.channels.make_standard_montage("standard_1005"))
 #actual code
 raw.filter(0.5, 40)
 
-ica = mne.preprocessing.ICA(n_components=num_components, random_state=97, max_iter=400)
+ica = mne.preprocessing.ICA(n_components=num_components, random_state=0, max_iter=1000)
 ica.fit(raw)
 
+# assuming you have a Raw and ICA instance previously fitted
+labels = label_components(raw, ica, method='iclabel')
+print(labels)
+
 ica.plot_components(picks=range(num_components), ch_type='eeg')
+
