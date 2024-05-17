@@ -29,8 +29,11 @@ from scipy.signal import butter, lfilter, lfilter_zi
 from pylsl import StreamInlet, resolve_stream
 
 def filter(y):
-    from scipy.signal import butter, lfilter
+    from scipy.signal import butter, lfilter, lfiltic
     from scipy import signal
+
+    # Remove the DC component
+    y = signal.detrend(y, axis=0)
 
     # Define the filter parameters
     lowcut = 2
@@ -41,30 +44,32 @@ def filter(y):
     nyquist = 0.5 * fs
     low = lowcut / nyquist
     high = highcut / nyquist
-    b, a = butter(4, [low, high], btype='band')
+    b, a = butter(8, [low, high], btype='band')
+    zi = lfilter_zi(b,a)*y[0]
 
-    # Apply the filter to each column of the DataFrame
-    y_filtered_band = lfilter(b, a, np.array(y))
+    # Apply the filter to each column of the DataFram
+    y_filtered_band, _ = lfilter(b, a, np.array(y), zi=zi)
 
     # Define the notch filter parameters
     fs = 250  # Sampling frequency
     f0 = 50  # Notch frequency
-    Q = 5 # Quality factor
+    Q = 1 # Quality factor
 
     # Design the notch filter
     b, a = signal.iirnotch(f0, Q, fs)
+    zi = lfilter_zi(b,a)*y[0]
 
     # Apply the filter to each column of the DataFrame
-    y_filtered = lfilter(b, a, y_filtered_band)
+    y_filtered, _ = lfilter(b, a, np.array(y), zi=zi)
 
     return y_filtered
 
 # Window settings
-window = 200
+window = 50
 overlap = 0.5
 
 # Plot settings
-pause = 0.001
+pause = 0.1
 
 streams = resolve_stream()
 inlet = StreamInlet(streams[0])
@@ -84,7 +89,7 @@ aborted = False
 while not aborted:
     # Get data from LSL interface
     sample,timestamp = inlet.pull_sample() 
-    
+
     #calculate sample overlap
     overlap_win = int(overlap * window)
 
@@ -102,6 +107,7 @@ while not aborted:
     # When the overlap is reached but not at i = 0 or i = overlap
     if i % overlap_win == 0 and i != overlap_win and i != 0:
         # apply filter to window
+
         y_win_filt = filter(y_win)
 
         # Take the samples that are overlapped
@@ -139,5 +145,3 @@ while not aborted:
 
     #if i % 500 == 0:
     #    plt.cla() 
-
-plt.show()

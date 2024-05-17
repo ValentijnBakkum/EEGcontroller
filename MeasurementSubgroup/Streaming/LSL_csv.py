@@ -1,3 +1,5 @@
+# Source: https://medium.com/the-ultimate-bedroom-bci-guide/collecting-brain-signal-data-using-the-g-tec-unicorn-eeg-headset-in-python-65240c741693
+
 from pylsl import StreamInlet, resolve_stream
 from datetime import datetime
 import pandas as pd

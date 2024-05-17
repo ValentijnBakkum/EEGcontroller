@@ -103,6 +103,10 @@ def filter(y):
     from scipy.signal import butter, lfilter
     from scipy import signal
 
+    # Remove the DC component
+    y = signal.detrend(y, axis=0)
+
+
     # Define the filter parameters
     lowcut = 2
     highcut = 30
@@ -120,7 +124,7 @@ def filter(y):
     # Define the notch filter parameters
     fs = 250  # Sampling frequency
     f0 = 50  # Notch frequency
-    Q = 5 # Quality factor
+    Q = 1 # Quality factor
 
     # Design the notch filter
     b, a = signal.iirnotch(f0, Q, fs)
