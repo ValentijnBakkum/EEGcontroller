@@ -12,8 +12,8 @@ from PySide6.QtCore import QTimer, Slot, Signal
 import random
 import numpy as np
 import time
+import pyqtgraph as pg
 from pylsl import StreamInlet, resolve_stream
-
 
 
 #Mainwindow from which everything can be called
@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
 
         # for EEG cap data
         self.streams = resolve_stream()
-        # self.inlet = StreamInlet(self.streams[0])
+        self.inlet = StreamInlet(self.streams[0])
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -63,15 +63,20 @@ class MainWindow(QMainWindow):
             for row in user_reader:
                 currentIndex = self.ui.usersList.currentRow()
                 self.ui.usersList.insertItem(currentIndex, row["Name"])
+
         
         #Data live plotting
         self.i = 0
         self.j = 0
         self.max_graph_width = 75
         self.plot_delay = 5
+        self.columns = 5
+        self.av_height = int(self.max_graph_width/self.columns)
+        self.channel = 1
 
         self.xdata = np.zeros(self.max_graph_width)
         self.ydata = [np.zeros(self.max_graph_width) for _ in range(8)]
+        self.yBarGraph = np.zeros(self.columns)
         symbol_sign = None
 
         # ML plots
@@ -224,6 +229,15 @@ class MainWindow(QMainWindow):
             symbolSize=5,
             symbolBrush="b",
         )
+        # Bar graph power band
+        self.xBarGraph = [5,15,25,35,45] #Center points of the columns with according width /<--
+        self.line_18 = pg.BarGraphItem(x=self.xBarGraph, height = self.yBarGraph, width = 10, brush = 'b')
+        self.ui.graphicsView_18.addItem(self.line_18)
+        self.ui.graphicsView_18.setYRange(0,100)
+
+        self.line_20 = pg.BarGraphItem(x=self.xBarGraph, height = self.yBarGraph, width = 10, brush = 'b')
+        self.ui.graphicsView_20.addItem(self.line_20)
+        self.ui.graphicsView_20.setYRange(0,100)
 
         # Add a timer to simulate new temperature measurements
         self.timer = QTimer()
@@ -240,7 +254,7 @@ class MainWindow(QMainWindow):
 
         if self.i % self.plot_delay:
             # gathering the data from the EEG cap
-            # sample, timestamp = inlet.pull_sample()
+            sample, timestamp = self.inlet.pull_sample()
             sample, timestamp = self.generate_random_sample()  # for testing purposes when not connected to cap
             sample_timestamp = sample[15]
 
@@ -283,6 +297,23 @@ class MainWindow(QMainWindow):
                     self.ydata[k] = np.append(self.ydata[k][1:], sample[k])
                 k += 1
 
+            if self.channel == 1:
+                self.yBarGraph = [sum(self.ydata[0][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[0]),self.av_height)]
+            elif self.channel == 2:
+                self.yBarGraph = [sum(self.ydata[1][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[1]),self.av_height)]
+            elif self.channel == 3:
+                self.yBarGraph = [sum(self.ydata[2][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[2]),self.av_height)]
+            elif self.channel == 4:
+                self.yBarGraph = [sum(self.ydata[3][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[3]),self.av_height)]
+            elif self.channel == 5:
+                self.yBarGraph = [sum(self.ydata[4][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[4]),self.av_height)]
+            elif self.channel == 6:
+                self.yBarGraph = [sum(self.ydata[5][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[5]),self.av_height)]
+            elif self.channel == 7:
+                self.yBarGraph = [sum(self.ydata[6][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[6]),self.av_height)]
+            elif self.channel == 8:
+                self.yBarGraph = [sum(self.ydata[7][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[7]),self.av_height)]
+
         # update the plots with the new data
         # depending on which screen is active
         if self.ui.mainPages.currentIndex() == 2:  # training mode
@@ -295,7 +326,23 @@ class MainWindow(QMainWindow):
             self.line_7.setData(self.xdata, self.ydata[6])
             self.line_8.setData(self.xdata, self.ydata[7])
             if self.startFFT and not self.done_recording:
-                self.line_17.setData(self.xdata, self.ydata[0])
+                if self.channel == 1:
+                    self.line_17.setData(self.xdata, self.ydata[0])
+                elif self.channel == 2:
+                    self.line_17.setData(self.xdata, self.ydata[1])
+                elif self.channel == 3:
+                    self.line_17.setData(self.xdata, self.ydata[2])
+                elif self.channel == 4:
+                    self.line_17.setData(self.xdata, self.ydata[3])
+                elif self.channel == 5:
+                    self.line_17.setData(self.xdata, self.ydata[4])
+                elif self.channel == 6:
+                    self.line_17.setData(self.xdata, self.ydata[5])
+                elif self.channel == 7:
+                    self.line_17.setData(self.xdata, self.ydata[6])
+                elif self.channel == 8:
+                    self.line_17.setData(self.xdata, self.ydata[7])
+                self.line_18.setOpts(height = self.yBarGraph)
         if self.ui.mainPages.currentIndex() == 0:  # testing mode
             self.line_9.setData(self.xdata, self.ydata[0])
             self.line_10.setData(self.xdata, self.ydata[1])
@@ -306,7 +353,23 @@ class MainWindow(QMainWindow):
             self.line_15.setData(self.xdata, self.ydata[6])
             self.line_16.setData(self.xdata, self.ydata[7])
             if self.startFFT and not self.done_recording:
-                self.line_19.setData(self.xdata, self.ydata[0])
+                if self.channel == 1:
+                    self.line_19.setData(self.xdata, self.ydata[0])
+                elif self.channel == 2:
+                    self.line_19.setData(self.xdata, self.ydata[1])
+                elif self.channel == 3:
+                    self.line_19.setData(self.xdata, self.ydata[2])
+                elif self.channel == 4:
+                    self.line_19.setData(self.xdata, self.ydata[3])
+                elif self.channel == 5:
+                    self.line_19.setData(self.xdata, self.ydata[4])
+                elif self.channel == 6:
+                    self.line_19.setData(self.xdata, self.ydata[5])
+                elif self.channel == 7:
+                    self.line_19.setData(self.xdata, self.ydata[6])
+                elif self.channel == 8:
+                    self.line_19.setData(self.xdata, self.ydata[7])
+                self.line_20.setOpts(height = self.yBarGraph)
 
         self.i += 1
 
@@ -319,7 +382,7 @@ class MainWindow(QMainWindow):
     def openTrainWindow(self):
         global recProcess
         recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
-
+        
         if self.app.isHidden():
             self.app.show()
         else:
@@ -497,6 +560,31 @@ class MainWindow(QMainWindow):
         elif event.key() == Qt.Key_D:
             if self.ui.mouseCursor.x() + self.stepsize < (self.ui.frame_9.width() - self.ui.mouseCursor.width()):
                 self.ui.mouseCursor.move(self.ui.mouseCursor.x() + self.stepsize, self.ui.mouseCursor.y())
+        elif event.key() == Qt.Key_1:
+            self.yBarGraph = [sum(self.ydata[0][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[0]),self.av_height)]
+            self.channel = 1
+        elif event.key() == Qt.Key_2:
+            self.yBarGraph = [sum(self.ydata[1][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[1]),self.av_height)]
+            self.channel = 2
+        elif event.key() == Qt.Key_3:
+            self.yBarGraph = [sum(self.ydata[2][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[2]),self.av_height)]
+            self.channel = 3
+        elif event.key() == Qt.Key_4:
+            self.yBarGraph = [sum(self.ydata[3][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[3]),self.av_height)]
+            self.channel = 4
+        elif event.key() == Qt.Key_5:
+            self.yBarGraph = [sum(self.ydata[4][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[4]),self.av_height)]
+            self.channel = 5
+        elif event.key() == Qt.Key_6:
+            self.yBarGraph = [sum(self.ydata[5][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[5]),self.av_height)]
+            self.channel = 6
+        elif event.key() == Qt.Key_7:
+            self.yBarGraph = [sum(self.ydata[6][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[6]),self.av_height)]
+            self.channel = 7
+        elif event.key() == Qt.Key_8:
+            self.yBarGraph = [sum(self.ydata[7][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[7]),self.av_height)]
+            self.channel = 8
+
         self.ui.lineEdit_5.setText(str(self.ui.mouseCursor.x()))
         self.ui.lineEdit_6.setText(str(self.ui.mouseCursor.y()))
 

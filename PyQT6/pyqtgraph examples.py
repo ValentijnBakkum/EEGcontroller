@@ -1,30 +1,89 @@
-import pyqtgraph.examples
-from random import randint
+#import pyqtgraph.examples
+#pyqtgraph.examples.run()
 
-import pyqtgraph as pg
-from PyQt6.QtWidgets import QApplication, QMainWindow
+"""
+Demonstrates use of PlotWidget class. This is little more than a 
+GraphicsView with a PlotItem placed in its center.
+"""
+
 import numpy as np
 
-class MainWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
+import pyqtgraph as pg
+from pyqtgraph.Qt import QtCore, QtWidgets
 
-        # Create a plot widget
-        self.plot_widget = pg.PlotWidget()
-        self.setCentralWidget(self.plot_widget)
+app = pg.mkQApp()
+mw = QtWidgets.QMainWindow()
+mw.setWindowTitle('pyqtgraph example: PlotWidget')
+mw.resize(800,800)
+cw = QtWidgets.QWidget()
+mw.setCentralWidget(cw)
+l = QtWidgets.QVBoxLayout()
+cw.setLayout(l)
 
-        # Generate some random data for demonstration
-        x = np.linspace(0, 10, 1000)
-        y = np.sin(x)
+pw = pg.PlotWidget(name='Plot1')  ## giving the plots names allows us to link their axes together
+l.addWidget(pw)
+pw2 = pg.PlotWidget(name='Plot2')
+l.addWidget(pw2)
+pw3 = pg.PlotWidget()
+l.addWidget(pw3)
 
-        # Plot the data
-        self.plot_widget.plot(x, y)
+mw.show()
 
-        # Set FFT mode
-        self.plot_widget.setFftMode(True)  # Set FFT mode to True
+## Create an empty plot curve to be filled later, set its pen
+p1 = pw.plot()
+p1.setPen((200,200,100))
+
+## Add in some extra graphics
+rect = QtWidgets.QGraphicsRectItem(QtCore.QRectF(0, 0, 1, 5e-11))
+rect.setPen(pg.mkPen(100, 200, 100))
+pw.addItem(rect)
+
+pw.setLabel('left', 'Value', units='V')
+pw.setLabel('bottom', 'Time', units='s')
+pw.setXRange(0, 2)
+pw.setYRange(0, 1e-10)
+
+def rand(n):
+    data = np.random.random(n)
+    data[int(n*0.1):int(n*0.13)] += .5
+    data[int(n*0.18)] += 2
+    data[int(n*0.1):int(n*0.13)] *= 5
+    data[int(n*0.18)] *= 20
+    data *= 1e-12
+    return data, np.arange(n, n+len(data)) / float(n)
+    
+
+def updateData():
+    yd, xd = rand(10000)
+    p1.setData(y=yd, x=xd)
+
+## Start a timer to rapidly update the plot in pw
+t = QtCore.QTimer()
+t.timeout.connect(updateData)
+t.start(50)
+#updateData()
+
+## Multiple parameterized plots--we can autogenerate averages for these.
+for i in range(0, 5):
+    for j in range(0, 3):
+        yd, xd = rand(10000)
+        pw2.plot(y=yd*(j+1), x=xd, params={'iter': i, 'val': j})
+
+## Test large numbers
+curve = pw3.plot(np.random.normal(size=100)*1e0, clickable=True)
+curve.curve.setClickable(True)
+curve.setPen('w')  ## white pen
+curve.setShadowPen(pg.mkPen((70,70,30), width=6, cosmetic=True))
+
+def clicked():
+    print("curve clicked")
+p1.sigClicked.connect(clicked)
+
+lr = pg.LinearRegionItem([1, 30], bounds=[0,100], movable=True)
+pw3.addItem(lr)
+line = pg.InfiniteLine(angle=90, movable=True)
+pw3.addItem(line)
+line.setBounds([0,200])
 
 if __name__ == '__main__':
-    app = QApplication([])
-    window = MainWindow()
-    window.show()
-    app.exec_()
+    pg.exec()
