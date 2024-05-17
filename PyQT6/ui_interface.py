@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'interfaceAgSHhX.ui'
+## Form generated from reading UI file 'interfacekhKRZE.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -24,7 +24,6 @@ from Custom_Widgets.QCustomQPushButton import QCustomQPushButton
 from Custom_Widgets.QCustomQStackedWidget import QCustomQStackedWidget
 from Custom_Widgets.QCustomSlideMenu import QCustomSlideMenu
 from pyqtgraph import PlotWidget
-import pyqtgraph as pg
 import image_rc
 import resources_rc
 
@@ -32,7 +31,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1244, 674)
+        MainWindow.resize(1244, 808)
         icon = QIcon()
         icon.addFile(u":/newPrefix/pictures/EEG.jpg", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
