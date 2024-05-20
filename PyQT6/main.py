@@ -54,7 +54,6 @@ class MainWindow(QMainWindow):
         self.ui.usersBtn.clicked.connect(self.changeUsersBtn)
         self.ui.exitBtn.clicked.connect(self.exitApp)
         #Training window
-        self.app = TrainWindow()
         self.ui.startTrainBtn.clicked.connect(self.openTrainWindow)
 
         # add users to user list from file
@@ -378,18 +377,24 @@ class MainWindow(QMainWindow):
         # Simulate random data generation
         return random.sample(range(0, 100), 15) + [time.time()], 0
 
+    def setTrainWindow(self, trainWindow):
+        self.trainWindow = trainWindow
+
     #Call the training window
     def openTrainWindow(self):
         global recProcess
         recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
         
-        if self.app.isHidden():
-            self.app.show()
-        else:
-            self.app.hide()
+        self.trainWindow.show()
 
     def exitApp(self):
-        QApplication.quit()    
+        QApplication.quit()
+
+    @Slot()
+    def handle_signal_trainData(self):
+            self.accuracy_data = np.append(self.accuracy_data, random.sample(range(int(self.accuracy_data[-1]), 100), 1))
+            self.accuracy_data_iter = np.append(self.accuracy_data_iter, self.accuracy_data_iter[-1] + 1)
+            self.update_accuracy()
 
     #Function that handles the user based interface
     def ChooseUser(self, item):
@@ -615,6 +620,8 @@ class MainWindow(QMainWindow):
 
 #Training window class
 class TrainWindow(QMainWindow):
+    signal_to_trainData = Signal()
+
     def __init__(self):
         super(TrainWindow, self).__init__()
         self.ui = Ui_TrainWindow()
@@ -630,6 +637,11 @@ class TrainWindow(QMainWindow):
         self.ui.stopRecordingBtn.clicked.connect(self.stopRecording)
         self.ui.helpBtn.clicked.connect(self.help)
         self.timer.timeout.connect(lambda: self.changePages())
+
+        self.ui.dataTrainingBtn.clicked.connect(self.trainingData)
+
+    def trainingData(self):
+        self.signal_to_trainData.emit()
 
     def startRecording(self):
         recProcess.stdout.read1(1)
@@ -680,6 +692,12 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
 
-    window = MainWindow()
-    window.show()
+    window1 = MainWindow()
+    window2 = TrainWindow()
+
+    window1.setTrainWindow(window2)
+    
+    window2.signal_to_trainData.connect(window1.handle_signal_trainData)
+
+    window1.show()
     sys.exit(app.exec_())

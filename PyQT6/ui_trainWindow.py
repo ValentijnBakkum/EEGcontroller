@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'trainWindowLsngKf.ui'
+## Form generated from reading UI file 'trainWindowWFqsmL.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -72,6 +72,11 @@ class Ui_TrainWindow(object):
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer)
+
+        self.dataTrainingBtn = QPushButton(self.widget)
+        self.dataTrainingBtn.setObjectName(u"dataTrainingBtn")
+
+        self.horizontalLayout.addWidget(self.dataTrainingBtn)
 
 
         self.verticalLayout.addWidget(self.widget)
@@ -352,6 +357,7 @@ class Ui_TrainWindow(object):
         self.startRecordingBtn.setText("")
         self.stopRecordingBtn.setText("")
         self.helpBtn.setText("")
+        self.dataTrainingBtn.setText(QCoreApplication.translate("TrainWindow", u"Start training data!", None))
         self.label.setText(QCoreApplication.translate("TrainWindow", u"Right Hand", None))
         self.label_2.setText(QCoreApplication.translate("TrainWindow", u"Left Hand", None))
         self.label_3.setText(QCoreApplication.translate("TrainWindow", u"Tongue", None))

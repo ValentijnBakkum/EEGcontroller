@@ -73,6 +73,11 @@ class Ui_TrainWindow(object):
 
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
+        self.dataTrainingBtn = QPushButton(self.widget)
+        self.dataTrainingBtn.setObjectName(u"dataTrainingBtn")
+
+        self.horizontalLayout.addWidget(self.dataTrainingBtn)
+
 
         self.verticalLayout.addWidget(self.widget)
 
@@ -352,6 +357,7 @@ class Ui_TrainWindow(object):
         self.startRecordingBtn.setText("")
         self.stopRecordingBtn.setText("")
         self.helpBtn.setText("")
+        self.dataTrainingBtn.setText(QCoreApplication.translate("TrainWindow", u"Start training data!", None))
         self.label.setText(QCoreApplication.translate("TrainWindow", u"Right Hand", None))
         self.label_2.setText(QCoreApplication.translate("TrainWindow", u"Left Hand", None))
         self.label_3.setText(QCoreApplication.translate("TrainWindow", u"Tongue", None))
