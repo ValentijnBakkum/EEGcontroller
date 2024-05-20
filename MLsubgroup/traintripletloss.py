@@ -109,7 +109,7 @@ for iter in range(max_iters):
                 inputs_neg = model(negval_tens.to(device))
                 val = loss(inputs_anch,inputs_pos,inputs_neg)
                 vali = torch.mean(val)
-                tlist.append(vali)
+                tlist.append(vali.data.cpu().numpy())
 #-----training loop-----#
 
 torch.save(model.state_dict(),'cnnnet2.pt')
