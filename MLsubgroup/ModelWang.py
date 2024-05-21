@@ -5,6 +5,10 @@ from torchinfo import summary
 from attentionmod import blockblock,multihead
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+#Page array = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0]
+#Mi_dict = {1: “right”, 2: “left”, 3: “tongue”, 4: “feet”}
+#Timestaps are 12*index+6 in seconds. Multiply by 250 for timestamps in samples
+
 #convnet decleration/architecture
 arch_1 = [
     (128,1),
