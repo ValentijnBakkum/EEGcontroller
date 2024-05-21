@@ -29,8 +29,14 @@ class MainWindow(QMainWindow):
         try:
             self.streams = resolve_stream()
             self.inlet = StreamInlet(self.streams[0])
+
+            # Counter init
+            sample, timestamp = self.inlet.pull_sample()
+            self.counter_init = sample[15] 
+
         except:
             self.show_eeg_error("The EEG cap is not connected. Please connect the cap.")
+            self.counter_init = 0
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -76,11 +82,6 @@ class MainWindow(QMainWindow):
         self.columns = 7
         self.av_height = int(self.max_graph_width/self.columns)
         self.channel = 1
-
-        # Counter init
-        self.counter_init = 0
-        sample, timestamp = self.inlet.pull_sample()
-        self.counter_init = sample[15] 
 
         self.xdata = np.zeros(self.max_graph_width)
         self.ydata = [np.zeros(self.max_graph_width) for _ in range(8)]
