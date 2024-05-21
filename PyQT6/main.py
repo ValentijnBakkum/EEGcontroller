@@ -28,6 +28,7 @@ class MainWindow(QMainWindow):
         # for EEG cap data
         self.streams = resolve_stream()
         self.inlet = StreamInlet(self.streams[0])
+        #counter_init, timestamp = self.inlet.pull_sample()
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -249,6 +250,7 @@ class MainWindow(QMainWindow):
         
     # Update graphs
     def update_plot(self):
+        #counter_init, timestamp = self.inlet.pull_sample()
         self.j = self.i // self.plot_delay
 
         if self.i % self.plot_delay:
@@ -256,7 +258,8 @@ class MainWindow(QMainWindow):
             sample, timestamp = self.inlet.pull_sample()
             #sample, timestamp = self.generate_random_sample()  # for testing purposes when not connected to cap
             sample_timestamp = sample[15]
-
+            #sample_timestamp = (sample[15] - counter_init[15])/250
+            
             if self.j < self.ydata[0].size:
                 self.xdata[self.j:] = sample_timestamp
             else:
