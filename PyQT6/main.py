@@ -15,7 +15,6 @@ import time
 import pyqtgraph as pg
 from pylsl import StreamInlet, resolve_stream
 
-
 #Mainwindow from which everything can be called
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -27,8 +26,8 @@ class MainWindow(QMainWindow):
 
         # for EEG cap data
         self.simulate_data = False
-        self.streams = resolve_stream()
         try:
+            self.streams = resolve_stream()
             self.inlet = StreamInlet(self.streams[0])
         except:
             self.show_eeg_error("The EEG cap is not connected. Please connect the cap.")
@@ -77,6 +76,11 @@ class MainWindow(QMainWindow):
         self.columns = 7
         self.av_height = int(self.max_graph_width/self.columns)
         self.channel = 1
+
+        # Counter init
+        self.counter_init = 0
+        sample, timestamp = self.inlet.pull_sample()
+        self.counter_init = sample[15] 
 
         self.xdata = np.zeros(self.max_graph_width)
         self.ydata = [np.zeros(self.max_graph_width) for _ in range(8)]
@@ -266,6 +270,7 @@ class MainWindow(QMainWindow):
 
     def reconnect_cap(self):
         try:
+            self.streams = resolve_stream()
             self.inlet = StreamInlet(self.streams[0])
             dlg = QMessageBox()
             dlg.setWindowTitle("EEG cap connected")
@@ -288,6 +293,7 @@ class MainWindow(QMainWindow):
         if button == QMessageBox.StandardButton.Retry:
             print("retrying....")
             try:
+                self.streams = resolve_stream()
                 self.inlet = StreamInlet(self.streams[0])
                 self.simulate_data = False
             except:
@@ -310,7 +316,7 @@ class MainWindow(QMainWindow):
                 sample, timestamp = self.inlet.pull_sample()
             else:
                 sample, timestamp = self.generate_random_sample()  # for testing purposes when not connected to cap
-            sample_timestamp = sample[15]
+            sample_timestamp = (sample[15] - self.counter_init)
 
             if self.j < self.ydata[0].size:
                 self.xdata[self.j:] = sample_timestamp
