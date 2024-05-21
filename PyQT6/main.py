@@ -254,7 +254,7 @@ class MainWindow(QMainWindow):
         if self.i % self.plot_delay:
             # gathering the data from the EEG cap
             sample, timestamp = self.inlet.pull_sample()
-            sample, timestamp = self.generate_random_sample()  # for testing purposes when not connected to cap
+            #sample, timestamp = self.generate_random_sample()  # for testing purposes when not connected to cap
             sample_timestamp = sample[15]
 
             if self.j < self.ydata[0].size:
@@ -646,14 +646,15 @@ class TrainWindow(QMainWindow):
     def startRecording(self):
         recProcess.stdout.read1(1)
         recProcess.stdin.write(b"G\n") # G for go
-        recProcess.stdin.flush()
+        #recProcess.stdin.flush()
         self.timer.start(6000)
         global count
         global pageArray
         global i
         i = 0
         count = 0
-        pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0]
+        pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0] 
+        # 1: right 2: left 3: tongue 4: feet
 
     def changePages(self):
         global count
