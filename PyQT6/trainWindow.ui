@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>939</width>
-    <height>659</height>
+    <width>945</width>
+    <height>671</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,8 +32,8 @@ background-color: rgb(255, 255, 255);</string>
           <string/>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>:/icons/icons/red circle.svg</normaloff>:/icons/icons/red circle.svg</iconset>
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/Qss/icons/red circle.svg</normaloff>:/icons/Qss/icons/red circle.svg</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -49,8 +49,8 @@ background-color: rgb(255, 255, 255);</string>
           <string/>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>:/icons/icons/black square.svg</normaloff>:/icons/icons/black square.svg</iconset>
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/Qss/icons/black square.svg</normaloff>:/icons/Qss/icons/black square.svg</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -71,8 +71,8 @@ background-color: rgb(255, 255, 255);</string>
           <string/>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>:/icons/icons/black help-circle.svg</normaloff>:/icons/icons/black help-circle.svg</iconset>
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/Qss/icons/black help-circle.svg</normaloff>:/icons/Qss/icons/black help-circle.svg</iconset>
          </property>
          <property name="iconSize">
           <size>

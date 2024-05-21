@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1244</width>
-    <height>808</height>
+    <width>1161</width>
+    <height>674</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -133,8 +133,8 @@ QPushButton{
                 <string>Menu</string>
                </property>
                <property name="icon">
-                <iconset>
-                 <normaloff>:/icons/icons/menu.svg</normaloff>:/icons/icons/menu.svg</iconset>
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/Qss/icons/menu.svg</normaloff>:/icons/Qss/icons/menu.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -185,8 +185,8 @@ QPushButton{
                 <string>Train</string>
                </property>
                <property name="icon">
-                <iconset>
-                 <normaloff>:/icons/icons/sliders.svg</normaloff>:/icons/icons/sliders.svg</iconset>
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/Qss/icons/sliders.svg</normaloff>:/icons/Qss/icons/sliders.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -210,8 +210,8 @@ QPushButton{
                 <string>Test</string>
                </property>
                <property name="icon">
-                <iconset>
-                 <normaloff>:/icons/icons/target.svg</normaloff>:/icons/icons/target.svg</iconset>
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/Qss/icons/target.svg</normaloff>:/icons/Qss/icons/target.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -232,8 +232,8 @@ QPushButton{
                 <string>Users</string>
                </property>
                <property name="icon">
-                <iconset>
-                 <normaloff>:/icons/icons/users.svg</normaloff>:/icons/icons/users.svg</iconset>
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/Qss/icons/users.svg</normaloff>:/icons/Qss/icons/users.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -284,6 +284,28 @@ QPushButton{
               <number>10</number>
              </property>
              <item>
+              <widget class="QPushButton" name="reconnectBtn">
+               <property name="font">
+                <font>
+                 <pointsize>22</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Reconnect</string>
+               </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/Qss/icons/download-cloud.svg</normaloff>:/icons/Qss/icons/download-cloud.svg</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QPushButton" name="infoBtn">
                <property name="font">
                 <font>
@@ -294,8 +316,8 @@ QPushButton{
                 <string>Info</string>
                </property>
                <property name="icon">
-                <iconset>
-                 <normaloff>:/icons/icons/info.svg</normaloff>:/icons/icons/info.svg</iconset>
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/Qss/icons/info.svg</normaloff>:/icons/Qss/icons/info.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -316,8 +338,8 @@ QPushButton{
                 <string>Exit</string>
                </property>
                <property name="icon">
-                <iconset>
-                 <normaloff>:/icons/icons/x-circle.svg</normaloff>:/icons/icons/x-circle.svg</iconset>
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/Qss/icons/x-circle.svg</normaloff>:/icons/Qss/icons/x-circle.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -499,36 +521,6 @@ border:none;</string>
                <number>3</number>
               </property>
               <item>
-               <widget class="QLineEdit" name="lineEdit_2">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>25</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>24</pointsize>
-                 </font>
-                </property>
-                <property name="cursor">
-                 <cursorShape>ArrowCursor</cursorShape>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">background-color: rgb(53, 227, 0);</string>
-                </property>
-                <property name="text">
-                 <string>Start</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
                <widget class="QLineEdit" name="lineEdit_3">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -549,36 +541,6 @@ border:none;</string>
                 </property>
                 <property name="text">
                  <string>Direction</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="lineEdit_4">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>25</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>24</pointsize>
-                 </font>
-                </property>
-                <property name="cursor">
-                 <cursorShape>ArrowCursor</cursorShape>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">background-color: rgb(209, 0, 0);</string>
-                </property>
-                <property name="text">
-                 <string>End</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -1639,133 +1601,6 @@ color: rgb(12, 35, 64);</string>
             <number>0</number>
            </property>
            <item>
-            <widget class="QFrame" name="frame_34">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>10</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">background-color: rgb(0, 0, 0);
-border:none;</string>
-             </property>
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_11">
-              <property name="spacing">
-               <number>3</number>
-              </property>
-              <property name="leftMargin">
-               <number>3</number>
-              </property>
-              <property name="topMargin">
-               <number>3</number>
-              </property>
-              <property name="rightMargin">
-               <number>3</number>
-              </property>
-              <property name="bottomMargin">
-               <number>3</number>
-              </property>
-              <item>
-               <widget class="QLineEdit" name="lineEdit_35">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>25</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>24</pointsize>
-                 </font>
-                </property>
-                <property name="cursor">
-                 <cursorShape>ArrowCursor</cursorShape>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">background-color: rgb(53, 227, 0);</string>
-                </property>
-                <property name="text">
-                 <string>Start</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="lineEdit_36">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>50</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>24</pointsize>
-                 </font>
-                </property>
-                <property name="cursor">
-                 <cursorShape>ArrowCursor</cursorShape>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">background-color: rgb(255, 255, 255);</string>
-                </property>
-                <property name="text">
-                 <string>Direction</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="lineEdit_37">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>25</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>24</pointsize>
-                 </font>
-                </property>
-                <property name="cursor">
-                 <cursorShape>ArrowCursor</cursorShape>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">background-color: rgb(209, 0, 0);</string>
-                </property>
-                <property name="text">
-                 <string>End</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
             <widget class="QFrame" name="frame_35">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -1929,7 +1764,7 @@ border:none;</string>
                      <string notr="true">border:none;</string>
                     </property>
                     <property name="text">
-                     <string>Window Length (&gt;28)</string>
+                     <string>Margin</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -2544,8 +2379,11 @@ border:none;</string>
                    <property name="autoFillBackground">
                     <bool>false</bool>
                    </property>
+                   <property name="styleSheet">
+                    <string notr="true">color: rgb(255, 255, 255);</string>
+                   </property>
                    <property name="text">
-                    <string>Start training!</string>
+                    <string>Start data collection!</string>
                    </property>
                    <property name="autoDefault">
                     <bool>false</bool>

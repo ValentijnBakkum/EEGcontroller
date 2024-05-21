@@ -26,9 +26,12 @@ class MainWindow(QMainWindow):
         self.done_recording = False
 
         # for EEG cap data
+        self.simulate_data = False
         self.streams = resolve_stream()
-        self.inlet = StreamInlet(self.streams[0])
-        #counter_init, timestamp = self.inlet.pull_sample()
+        try:
+            self.inlet = StreamInlet(self.streams[0])
+        except:
+            self.show_eeg_error("The EEG cap is not connected. Please connect the cap.")
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -49,7 +52,8 @@ class MainWindow(QMainWindow):
         self.ui.downBtn.clicked.connect(self.downUser)
         self.ui.sortBtn.clicked.connect(self.sortUser)
         self.ui.usersList.itemClicked.connect(self.ChooseUser)
-
+        #menu
+        self.ui.reconnectBtn.clicked.connect(self.reconnect_cap)
         self.ui.trainBtn.clicked.connect(self.changeTrainBtn)
         self.ui.testBtn.clicked.connect(self.changeTestBtn)
         self.ui.usersBtn.clicked.connect(self.changeUsersBtn)
@@ -68,9 +72,9 @@ class MainWindow(QMainWindow):
         #Data live plotting
         self.i = 0
         self.j = 0
-        self.max_graph_width = 75
+        self.max_graph_width = 70
         self.plot_delay = 5
-        self.columns = 5
+        self.columns = 7
         self.av_height = int(self.max_graph_width/self.columns)
         self.channel = 1
 
@@ -82,6 +86,8 @@ class MainWindow(QMainWindow):
         # ML plots
         self.accuracy_data = np.zeros(1)
         self.accuracy_data_iter = np.zeros(1)
+        self.loss_data = np.array([100])
+        self.loss_data_iter = np.zeros(1)
 
         pen = pg.mkPen(color=(255, 0, 0))
         # Get a line reference
@@ -230,14 +236,24 @@ class MainWindow(QMainWindow):
             symbolBrush="b",
         )
         # Bar graph power band
-        self.xBarGraph = [5,15,25,35,45] #Center points of the columns with according width /<--
-        self.line_18 = pg.BarGraphItem(x=self.xBarGraph, height = self.yBarGraph, width = 10, brush = 'b')
-        self.ui.graphicsView_18.addItem(self.line_18)
-        self.ui.graphicsView_18.setYRange(0,100)
+        self.xBarGraph = np.array([2,6,10,14,18,25,40]) #Center points of the columns with according width /<--
+        self.line_18_1 = pg.BarGraphItem(x=self.xBarGraph[[0,1,2,3,4]], height = self.yBarGraph[[0,1,2,3,4]], width = 4, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.line_18_2 = pg.BarGraphItem(x=self.xBarGraph[[5]], height = self.yBarGraph[[5]], width = 10, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.line_18_3 = pg.BarGraphItem(x=self.xBarGraph[[6]], height = self.yBarGraph[[6]], width = 20, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.ui.graphicsView_18.addItem(self.line_18_1)
+        self.ui.graphicsView_18.addItem(self.line_18_2)
+        self.ui.graphicsView_18.addItem(self.line_18_3)
+        self.ui.graphicsView_18.setYRange(10,100)
+        self.ui.graphicsView_18.setXRange(0,50)
 
-        self.line_20 = pg.BarGraphItem(x=self.xBarGraph, height = self.yBarGraph, width = 10, brush = 'b')
-        self.ui.graphicsView_20.addItem(self.line_20)
-        self.ui.graphicsView_20.setYRange(0,100)
+        self.line_20_1 = pg.BarGraphItem(x=self.xBarGraph[[0,1,2,3,4]], height = self.yBarGraph[[0,1,2,3,4]], width = 4, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.line_20_2 = pg.BarGraphItem(x=self.xBarGraph[[5]], height = self.yBarGraph[[5]], width = 10, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.line_20_3 = pg.BarGraphItem(x=self.xBarGraph[[6]], height = self.yBarGraph[[6]], width = 20, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.ui.graphicsView_20.addItem(self.line_20_1)
+        self.ui.graphicsView_20.addItem(self.line_20_2)
+        self.ui.graphicsView_20.addItem(self.line_20_3)
+        self.ui.graphicsView_20.setYRange(10,100)
+        self.ui.graphicsView_20.setXRange(0,50)
 
         # Add a timer to simulate new temperature measurements
         self.timer = QTimer()
@@ -247,19 +263,55 @@ class MainWindow(QMainWindow):
 
         
         self.show()
+
+    def reconnect_cap(self):
+        try:
+            self.inlet = StreamInlet(self.streams[0])
+            dlg = QMessageBox()
+            dlg.setWindowTitle("EEG cap connected")
+            dlg.setText("The EEG cap is succesfully connected. The data shown will now be the real data.")
+            button = dlg.exec()
+            self.simulate_data = False
+            self.xdata = np.zeros(self.max_graph_width)
+            self.ydata = [np.zeros(self.max_graph_width) for _ in range(8)]
+            self.i = 0
+        except:
+            self.show_eeg_error("The EEG cap could not connect. Please try again.")
+    
+    def show_eeg_error(self, error_text):
+        dlg = QMessageBox()
+        dlg.setWindowTitle("ERROR")
+        dlg.setStandardButtons(QMessageBox.StandardButton.Retry | QMessageBox.StandardButton.Ignore)
+        dlg.setText(error_text)
+        button = dlg.exec()
+
+        if button == QMessageBox.StandardButton.Retry:
+            print("retrying....")
+            try:
+                self.inlet = StreamInlet(self.streams[0])
+                self.simulate_data = False
+            except:
+                self.show_eeg_error(error_text)
+        elif button == QMessageBox.StandardButton.Ignore:
+            dlg = QMessageBox()
+            dlg.setWindowTitle("Ignored")
+            dlg.setText("The program will now run without the EEG cap data and will use simulated data. "
+                        "To use the EEG cap restart the program.")
+            button = dlg.exec()
+            self.simulate_data = True
         
     # Update graphs
     def update_plot(self):
-        #counter_init, timestamp = self.inlet.pull_sample()
         self.j = self.i // self.plot_delay
 
         if self.i % self.plot_delay:
             # gathering the data from the EEG cap
-            sample, timestamp = self.inlet.pull_sample()
-            #sample, timestamp = self.generate_random_sample()  # for testing purposes when not connected to cap
+            if not self.simulate_data:
+                sample, timestamp = self.inlet.pull_sample()
+            else:
+                sample, timestamp = self.generate_random_sample()  # for testing purposes when not connected to cap
             sample_timestamp = sample[15]
-            #sample_timestamp = (sample[15] - counter_init[15])/250
-            
+
             if self.j < self.ydata[0].size:
                 self.xdata[self.j:] = sample_timestamp
             else:
@@ -277,6 +329,7 @@ class MainWindow(QMainWindow):
                         symbolSize=5,
                         symbolBrush="b",
                     )
+                    self.ui.graphicsView_17.setXRange(0,60)
                     self.line_17.setFftMode(True)
                     self.line_19 = self.ui.graphicsView_19.plot(
                         self.xdata,
@@ -287,6 +340,7 @@ class MainWindow(QMainWindow):
                         symbolSize=5,
                         symbolBrush="b",
                     )
+                    self.ui.graphicsView_19.setXRange(0,60)
                     self.line_19.setFftMode(True)
                     self.startFFT = True
 
@@ -300,21 +354,21 @@ class MainWindow(QMainWindow):
                 k += 1
 
             if self.channel == 1:
-                self.yBarGraph = [sum(self.ydata[0][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[0]),self.av_height)]
+                self.yBarGraph = np.array([sum(self.ydata[0][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[0]),self.av_height)])
             elif self.channel == 2:
-                self.yBarGraph = [sum(self.ydata[1][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[1]),self.av_height)]
+                self.yBarGraph = np.array([sum(self.ydata[1][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[1]),self.av_height)])
             elif self.channel == 3:
-                self.yBarGraph = [sum(self.ydata[2][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[2]),self.av_height)]
+                self.yBarGraph = np.array([sum(self.ydata[2][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[2]),self.av_height)])
             elif self.channel == 4:
-                self.yBarGraph = [sum(self.ydata[3][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[3]),self.av_height)]
+                self.yBarGraph = np.array([sum(self.ydata[3][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[3]),self.av_height)])
             elif self.channel == 5:
-                self.yBarGraph = [sum(self.ydata[4][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[4]),self.av_height)]
+                self.yBarGraph = np.array([sum(self.ydata[4][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[4]),self.av_height)])
             elif self.channel == 6:
-                self.yBarGraph = [sum(self.ydata[5][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[5]),self.av_height)]
+                self.yBarGraph = np.array([sum(self.ydata[5][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[5]),self.av_height)])
             elif self.channel == 7:
-                self.yBarGraph = [sum(self.ydata[6][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[6]),self.av_height)]
+                self.yBarGraph = np.array([sum(self.ydata[6][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[6]),self.av_height)])
             elif self.channel == 8:
-                self.yBarGraph = [sum(self.ydata[7][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[7]),self.av_height)]
+                self.yBarGraph = np.array([sum(self.ydata[7][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[7]),self.av_height)])
 
         # update the plots with the new data
         # depending on which screen is active
@@ -344,7 +398,9 @@ class MainWindow(QMainWindow):
                     self.line_17.setData(self.xdata, self.ydata[6])
                 elif self.channel == 8:
                     self.line_17.setData(self.xdata, self.ydata[7])
-                self.line_18.setOpts(height = self.yBarGraph)
+                self.line_18_1.setOpts(height = self.yBarGraph[[0,1,2,3,4]])
+                self.line_18_2.setOpts(height = self.yBarGraph[[5]])
+                self.line_18_3.setOpts(height = self.yBarGraph[[6]])
         if self.ui.mainPages.currentIndex() == 0:  # testing mode
             self.line_9.setData(self.xdata, self.ydata[0])
             self.line_10.setData(self.xdata, self.ydata[1])
@@ -371,7 +427,9 @@ class MainWindow(QMainWindow):
                     self.line_19.setData(self.xdata, self.ydata[6])
                 elif self.channel == 8:
                     self.line_19.setData(self.xdata, self.ydata[7])
-                self.line_20.setOpts(height = self.yBarGraph)
+                self.line_20_1.setOpts(height = self.yBarGraph[[0,1,2,3,4]])
+                self.line_20_2.setOpts(height = self.yBarGraph[[5]])
+                self.line_20_3.setOpts(height = self.yBarGraph[[6]])
 
         self.i += 1
 
@@ -394,10 +452,13 @@ class MainWindow(QMainWindow):
         QApplication.quit()
 
     @Slot()
-    def handle_signal_trainData(self):
-            self.accuracy_data = np.append(self.accuracy_data, random.sample(range(int(self.accuracy_data[-1]), 100), 1))
-            self.accuracy_data_iter = np.append(self.accuracy_data_iter, self.accuracy_data_iter[-1] + 1)
-            self.update_accuracy()
+    def handle_signal_trainData(self):  # will start training the ML model on the new data
+        # TODO sent signal and data to ML part to actually start the training
+        self.accuracy_data = np.append(self.accuracy_data, random.sample(range(int(self.accuracy_data[-1]), 100), 1))
+        self.accuracy_data_iter = np.append(self.accuracy_data_iter, self.accuracy_data_iter[-1] + 1)
+        self.loss_data = np.append(self.loss_data, random.sample(range(0, self.loss_data[-1] + 1), 1))
+        self.loss_data_iter = np.append(self.loss_data_iter, self.loss_data_iter[-1] + 1)
+        self.update_ML_plots()
 
     #Function that handles the user based interface
     def ChooseUser(self, item):
@@ -559,38 +620,42 @@ class MainWindow(QMainWindow):
         if event.key() == Qt.Key_W:
             if self.ui.mouseCursor.y() - self.stepsize > 0:
                 self.ui.mouseCursor.move(self.ui.mouseCursor.x(), self.ui.mouseCursor.y() - self.stepsize)
+                self.ui.lineEdit_3.setText("Up")
         elif event.key() == Qt.Key_A:
             if self.ui.mouseCursor.x() - self.stepsize > 0:
                 self.ui.mouseCursor.move(self.ui.mouseCursor.x() - self.stepsize, self.ui.mouseCursor.y())
+                self.ui.lineEdit_3.setText("Left")
         elif event.key() == Qt.Key_S:
             if self.ui.mouseCursor.y() + self.stepsize < (self.ui.frame_9.height() - self.ui.mouseCursor.height()):
                 self.ui.mouseCursor.move(self.ui.mouseCursor.x(), self.ui.mouseCursor.y() + self.stepsize)
+                self.ui.lineEdit_3.setText("Down")
         elif event.key() == Qt.Key_D:
             if self.ui.mouseCursor.x() + self.stepsize < (self.ui.frame_9.width() - self.ui.mouseCursor.width()):
                 self.ui.mouseCursor.move(self.ui.mouseCursor.x() + self.stepsize, self.ui.mouseCursor.y())
+                self.ui.lineEdit_3.setText("Right")
         elif event.key() == Qt.Key_1:
-            self.yBarGraph = [sum(self.ydata[0][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[0]),self.av_height)]
+            self.yBarGraph = np.array([sum(self.ydata[0][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[0]),self.av_height)])
             self.channel = 1
         elif event.key() == Qt.Key_2:
-            self.yBarGraph = [sum(self.ydata[1][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[1]),self.av_height)]
+            self.yBarGraph = np.array([sum(self.ydata[1][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[1]),self.av_height)])
             self.channel = 2
         elif event.key() == Qt.Key_3:
-            self.yBarGraph = [sum(self.ydata[2][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[2]),self.av_height)]
+            self.yBarGraph = np.array([sum(self.ydata[2][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[2]),self.av_height)])
             self.channel = 3
         elif event.key() == Qt.Key_4:
-            self.yBarGraph = [sum(self.ydata[3][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[3]),self.av_height)]
+            self.yBarGraph = np.array([sum(self.ydata[3][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[3]),self.av_height)])
             self.channel = 4
         elif event.key() == Qt.Key_5:
-            self.yBarGraph = [sum(self.ydata[4][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[4]),self.av_height)]
+            self.yBarGraph = np.array([sum(self.ydata[4][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[4]),self.av_height)])
             self.channel = 5
         elif event.key() == Qt.Key_6:
-            self.yBarGraph = [sum(self.ydata[5][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[5]),self.av_height)]
+            self.yBarGraph = np.array([sum(self.ydata[5][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[5]),self.av_height)])
             self.channel = 6
         elif event.key() == Qt.Key_7:
-            self.yBarGraph = [sum(self.ydata[6][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[6]),self.av_height)]
+            self.yBarGraph = np.array([sum(self.ydata[6][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[6]),self.av_height)])
             self.channel = 7
         elif event.key() == Qt.Key_8:
-            self.yBarGraph = [sum(self.ydata[7][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[7]),self.av_height)]
+            self.yBarGraph = np.array([sum(self.ydata[7][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[7]),self.av_height)])
             self.channel = 8
 
         self.ui.lineEdit_5.setText(str(self.ui.mouseCursor.x()))
@@ -600,12 +665,22 @@ class MainWindow(QMainWindow):
         if event.key() == Qt.Key_P:
             self.accuracy_data = np.append(self.accuracy_data, random.sample(range(int(self.accuracy_data[-1]), 100), 1))
             self.accuracy_data_iter = np.append(self.accuracy_data_iter, self.accuracy_data_iter[-1] + 1)
-            self.update_accuracy()
+            self.loss_data = np.append(self.loss_data, random.sample(range(0, self.loss_data[-1] + 1), 1))
+            self.loss_data_iter = np.append(self.loss_data_iter, self.loss_data_iter[-1] + 1)
+            self.update_ML_plots()
 
         self.update()
 
-    def update_accuracy(self):
+    # updating the Machine Learning plots while training
+    def update_ML_plots(self):
+        # when it's the first time after recording we want to clear the previous plots
         if self.done_recording == False:
+            # if the FFT and frequency band plots were used, clear them
+            if self.startFFT:
+                self.line_17.clear()
+                self.ui.graphicsView_18.clear()
+                self.line_19.clear()
+                self.ui.graphicsView_20.clear()
             self.done_recording = True
             pen = pg.mkPen(color=(255, 0, 0))
             symbol_sign = None
@@ -618,7 +693,39 @@ class MainWindow(QMainWindow):
                 symbolSize=5,
                 symbolBrush="b",
             )
+            self.line_18 = self.ui.graphicsView_18.plot(
+                self.loss_data_iter,
+                self.loss_data,
+                name="Power Sensor",
+                pen=pen,
+                symbol=symbol_sign,
+                symbolSize=5,
+                symbolBrush="b",
+            )
+            self.line_19 = self.ui.graphicsView_19.plot(
+                self.accuracy_data_iter,
+                self.accuracy_data,
+                name="Power Sensor",
+                pen=pen,
+                symbol=symbol_sign,
+                symbolSize=5,
+                symbolBrush="b",
+            )
+            self.line_20 = self.ui.graphicsView_20.plot(
+                self.loss_data_iter,
+                self.loss_data,
+                name="Power Sensor",
+                pen=pen,
+                symbol=symbol_sign,
+                symbolSize=5,
+                symbolBrush="b",
+            )
+
+        # update the plots with the new data
         self.line_17.setData(self.accuracy_data_iter, self.accuracy_data)
+        self.line_18.setData(self.loss_data_iter, self.loss_data)
+        self.line_19.setData(self.accuracy_data_iter, self.accuracy_data)
+        self.line_20.setData(self.loss_data_iter, self.loss_data)
 
 
 #Training window class
@@ -645,19 +752,20 @@ class TrainWindow(QMainWindow):
 
     def trainingData(self):
         self.signal_to_trainData.emit()
+        self.close()
+
 
     def startRecording(self):
         recProcess.stdout.read1(1)
         recProcess.stdin.write(b"G\n") # G for go
-        #recProcess.stdin.flush()
+        recProcess.stdin.flush()
         self.timer.start(6000)
         global count
         global pageArray
         global i
         i = 0
         count = 0
-        pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0] 
-        # 1: right 2: left 3: tongue 4: feet
+        pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0]
 
     def changePages(self):
         global count
@@ -702,6 +810,6 @@ if __name__ == "__main__":
     window1.setTrainWindow(window2)
     
     window2.signal_to_trainData.connect(window1.handle_signal_trainData)
-
+    window1.showMaximized()
     window1.show()
     sys.exit(app.exec_())

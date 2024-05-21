@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'trainWindowWFqsmL.ui'
+## Form generated from reading UI file 'trainWindownNPMkv.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -25,7 +25,7 @@ class Ui_TrainWindow(object):
     def setupUi(self, TrainWindow):
         if not TrainWindow.objectName():
             TrainWindow.setObjectName(u"TrainWindow")
-        TrainWindow.resize(939, 659)
+        TrainWindow.resize(945, 671)
         icon = QIcon()
         icon.addFile(u":/newPrefix/pictures/EEG.jpg", QSize(), QIcon.Normal, QIcon.Off)
         TrainWindow.setWindowIcon(icon)
@@ -42,7 +42,7 @@ class Ui_TrainWindow(object):
         self.startRecordingBtn = QPushButton(self.widget)
         self.startRecordingBtn.setObjectName(u"startRecordingBtn")
         icon1 = QIcon()
-        icon1.addFile(u":/icons/icons/red circle.svg", QSize(), QIcon.Normal, QIcon.Off)
+        icon1.addFile(u":/icons/Qss/icons/red circle.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.startRecordingBtn.setIcon(icon1)
         self.startRecordingBtn.setIconSize(QSize(25, 25))
 
@@ -51,7 +51,7 @@ class Ui_TrainWindow(object):
         self.stopRecordingBtn = QPushButton(self.widget)
         self.stopRecordingBtn.setObjectName(u"stopRecordingBtn")
         icon2 = QIcon()
-        icon2.addFile(u":/icons/icons/black square.svg", QSize(), QIcon.Normal, QIcon.Off)
+        icon2.addFile(u":/icons/Qss/icons/black square.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.stopRecordingBtn.setIcon(icon2)
         self.stopRecordingBtn.setIconSize(QSize(25, 25))
 
@@ -63,7 +63,7 @@ class Ui_TrainWindow(object):
         font.setPointSize(14)
         self.helpBtn.setFont(font)
         icon3 = QIcon()
-        icon3.addFile(u":/icons/icons/black help-circle.svg", QSize(), QIcon.Normal, QIcon.Off)
+        icon3.addFile(u":/icons/Qss/icons/black help-circle.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.helpBtn.setIcon(icon3)
         self.helpBtn.setIconSize(QSize(25, 25))
 
