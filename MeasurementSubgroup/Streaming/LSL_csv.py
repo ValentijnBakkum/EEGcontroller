@@ -38,9 +38,10 @@ while True:
          finished = True                     # 72005 = 250*(6+6)*(4*6)+5
 
    # lastly, we can save our data to a CSV format.
-   data_df = pd.DataFrame.from_dict(data_dict)
+   data_df = pd.DataFrame.from_dict(data_dict) 
    now = datetime.now()
 
    data_df.to_csv('MeasurementSubgroup/Our_measurements/EEGdata-' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
    finished = False
+
 
