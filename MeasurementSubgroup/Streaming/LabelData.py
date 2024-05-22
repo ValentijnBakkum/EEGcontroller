@@ -29,6 +29,7 @@ while True:
          break
 
 # Add column to the data_df called label
+data_df = pd.read_csv("MeasurementSubgroup/Our_measurements/EEGdata-2024-137--16-06-51.csv")
 data_df["Label"] = label # add new column to the Dataframe
 data_df.to_csv('MeasurementSubgroup/Our_measurements/TestLabel' + '.csv', index = False)
 
@@ -42,10 +43,20 @@ for value in unique_values:
     subsets[value] = subset_df
 
 # Assign labels to seperate arrays
-Label1 = np.array(subsets.get(1))
-Label2 = np.array(subsets.get(2))
-Label3 = np.array(subsets.get(3))
-Label4 = np.array(subsets.get(4))
+Label1 = subsets.get(1)
+Label2 = subsets.get(2)
+Label3 = subsets.get(3)
+Label4 = subsets.get(4)
+
+Label1.to_csv('MeasurementSubgroup/Our_measurements/Label1' + '.csv', index = False)
+Label2.to_csv('MeasurementSubgroup/Our_measurements/Label2' + '.csv', index = False)
+Label3.to_csv('MeasurementSubgroup/Our_measurements/Label3' + '.csv', index = False)
+Label4.to_csv('MeasurementSubgroup/Our_measurements/Label4' + '.csv', index = False)
+
+# Label1 = np.array(subsets.get(1))
+# Label2 = np.array(subsets.get(2))
+# Label3 = np.array(subsets.get(3))
+# Label4 = np.array(subsets.get(4))
 
 print(label)
 print(len(label))
