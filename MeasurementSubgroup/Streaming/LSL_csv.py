@@ -3,6 +3,7 @@
 from pylsl import StreamInlet, resolve_stream
 from datetime import datetime
 import pandas as pd
+import numpy as np
 
 # initialize the streaming layer
 finished = False
@@ -64,6 +65,22 @@ while True:
    data_df["Label"] = label # add new column to the Dataframe
 
    data_df.to_csv('MeasurementSubgroup/Our_measurements/EEGdata-' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
+
+   # Get unique values in the 'number' column
+   unique_values = data_df['Label'].unique()[1:]
+   subsets = {}
+
+   # Split the DataFrame and save each subset to a separate dictionary
+   for value in unique_values:
+      subset_df = data_df[data_df['Label'] == value]
+      subsets[value] = subset_df
+
+   # Assign labels to seperate arrays
+   Label1 = np.array(subsets.get(1))
+   Label2 = np.array(subsets.get(2))
+   Label3 = np.array(subsets.get(3))
+   Label4 = np.array(subsets.get(4))
+
    finished = False
 
 
