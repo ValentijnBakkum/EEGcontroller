@@ -1,3 +1,11 @@
 .DS_Store
 /PyQT6/__pycache__
 /PyQT6/__pycache__
+logs/custom_widgets.log
+MeasurementSubgroup/logs/custom_widgets.log
+PyQT6/__pycache__/image_rc.cpython-39.pyc
+PyQT6/__pycache__/resources_rc.cpython-39.pyc
+PyQT6/__pycache__/ui_interface.cpython-39.pyc
+PyQT6/__pycache__/ui_trainWindow.cpython-39.pyc
+users.csv
+/PyQT6/__pycache__
