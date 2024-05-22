@@ -35,5 +35,7 @@ print(label)
 print(len(label))
 print("Finished")  
 
+data_df
+
 # 72005 = sampling_rate * seconds_per_prompt * num_prompts + 5_seconds_leeway
 # 72005 = 250*(6+6)*(4*6)+5
