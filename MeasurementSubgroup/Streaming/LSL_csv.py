@@ -16,6 +16,8 @@ columns = ['FZ', 'C3', 'CZ', 'C4', 'PZ', 'PO7', 'OZ', 'PO8', 'Counter','Validati
 columns_index_dict = {'FZ': 0, 'C3': 1, 'CZ': 2, 'C4': 3,'PZ': 4, 'PO7': 5, 'OZ': 6, 'PO8': 7, 'Counter': 15, 'Validation': 16}
 
 pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0]
+pageNumber = 0
+
 # 1. Right hand, 2. Left hand, 3. Tongue, 4. Feet, 0. Rest
 label = []
 i = 0
@@ -40,9 +42,9 @@ while True:
          data_dict[column].append(all_data[columns_index_dict[column]]) # append the data to the corresponding column
 
       ### Add label column
-      if data_dict['Counter'] % (250*(6+6)) == 0: # Each prompt takes 12 seconds in total. Set pageNumber to 0 which is the rest state
+      if len(data_dict['Counter']) % int(250*(6+6)) == 0: # Each prompt takes 12 seconds in total. Set pageNumber to 0 which is the rest state
          pageNumber = 0
-      elif data_dict['Counter'] % (250*(6)) == 0: # After 6 seconds the action will appear. Set pageNumber to pageArray[i] which is the action
+      elif len(data_dict['Counter']) % int(250*(6)) == 0: # After 6 seconds the action will appear. Set pageNumber to pageArray[i] which is the action
          pageNumber = pageArray[i]
       else: # Else assign the same pageNumber
          pageNumber = pageNumber
@@ -50,11 +52,11 @@ while True:
       label.append(pageNumber) # Append to list label
 
       # After 12 seconds add 1 to i, which goes to the next prompt
-      if data_dict['Counter'] % (250*(6+6)) == 0 and data_dict['Counter'] != 0 :
+      if len(data_dict['Counter']) % int(250*(6+6)) == 0 and len(data_dict['Counter']) != 0 :
          i += 1
       
       # data is collected at 250 Hz. Let's stop data collection after 60 seconds. Meaning we stop when we collected 250*60 samples.
-      if len(data_dict['Counter']) >= 72005: # 72005 = sampling_rate * seconds_per_prompt * num_prompts + 5_seconds_leeway
+      if len(data_dict['Counter']) >= 2005: # 72005 = sampling_rate * seconds_per_prompt * num_prompts + 5_seconds_leeway
          finished = True                     # 72005 = 250*(6+6)*(4*6)+5
 
    # lastly, we can save our data to a CSV format.
@@ -80,6 +82,12 @@ while True:
    Label2 = np.array(subsets.get(2))
    Label3 = np.array(subsets.get(3))
    Label4 = np.array(subsets.get(4))
+
+   # save to csv
+   Label1.to_csv('MeasurementSubgroup/Measurement_labels/Label1' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
+   Label2.to_csv('MeasurementSubgroup/Measurement_labels/Label2' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
+   Label3.to_csv('MeasurementSubgroup/Measurement_labels/Label3' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
+   Label4.to_csv('MeasurementSubgroup/Measurement_labels/Label4' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
 
    finished = False
 

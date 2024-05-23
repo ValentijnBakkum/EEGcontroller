@@ -40,7 +40,7 @@ subsets = {}
 # Split the DataFrame and save each subset to a separate dictionary
 for value in unique_values:
     subset_df = data_df[data_df['Label'] == value]
-    subsets[value] = subset_df
+    subsets[value] = subset_dfs
 
 # Assign labels to seperate arrays
 Label1 = subsets.get(1)
@@ -48,10 +48,10 @@ Label2 = subsets.get(2)
 Label3 = subsets.get(3)
 Label4 = subsets.get(4)
 
-Label1.to_csv('MeasurementSubgroup/Our_measurements/Label1' + '.csv', index = False)
-Label2.to_csv('MeasurementSubgroup/Our_measurements/Label2' + '.csv', index = False)
-Label3.to_csv('MeasurementSubgroup/Our_measurements/Label3' + '.csv', index = False)
-Label4.to_csv('MeasurementSubgroup/Our_measurements/Label4' + '.csv', index = False)
+Label1.to_csv('MeasurementSubgroup/Measurement_labels/Label1Test' + '.csv', index = False)
+Label2.to_csv('MeasurementSubgroup/Measurement_labels/Label2Test' + '.csv', index = False)
+Label3.to_csv('MeasurementSubgroup/Measurement_labels/Label3Test' + '.csv', index = False)
+Label4.to_csv('MeasurementSubgroup/Measurement_labels/Label4Test' + '.csv', index = False)
 
 # Label1 = np.array(subsets.get(1))
 # Label2 = np.array(subsets.get(2))
