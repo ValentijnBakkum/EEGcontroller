@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torchinfo import summary
-from attentionmod import blockblock
+from MLsubgroup_OLD.attentionmod import blockblock
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 #convnet decleration/architecture

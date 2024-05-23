@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import Dataset
-from Main import cnnnet1
+from MLsubgroup_OLD.Main import cnnnet1
 from torch.utils.data import DataLoader
 import numpy as np
 import matplotlib.pyplot as plt 

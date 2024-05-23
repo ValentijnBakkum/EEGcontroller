@@ -3,7 +3,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from Dataloader import DataReader
+from MLsubgroup_OLD.Dataloader import DataReader
 
 files = os.listdir("/Users/pragun/Technical/BAP/Data")
 output_directory = "/Users/pragun/Technical/BAP/EEGcontroller/userfiles"

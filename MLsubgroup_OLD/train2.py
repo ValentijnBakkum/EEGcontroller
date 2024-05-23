@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from ModelWang import cnnnet1
-from attentionmod import blockblock
-from Dataloader import DataReader
+from MLsubgroup_OLD.ModelWang import cnnnet1
+from MLsubgroup_OLD.attentionmod import blockblock
+from MLsubgroup_OLD.Dataloader import DataReader
 import numpy as np
 import matplotlib.pyplot as plt 
 import os
