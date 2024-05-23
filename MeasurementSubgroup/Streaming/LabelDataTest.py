@@ -40,7 +40,7 @@ subsets = {}
 # Split the DataFrame and save each subset to a separate dictionary
 for value in unique_values:
     subset_df = data_df[data_df['Label'] == value]
-    subsets[value] = subset_dfs
+    subsets[value] = subset_df
 
 # Assign labels to seperate arrays
 Label1 = subsets.get(1)

@@ -20,13 +20,15 @@ pageNumber = 0
 
 # 1. Right hand, 2. Left hand, 3. Tongue, 4. Feet, 0. Rest
 label = []
-i = 0
+
 
 while True:
    data_dict = dict((k, []) for k in columns)
 
    print("R") #R for ready
    recieved = input()
+
+   i = 0
 
    while not finished: 
       # get the streamed data. Columns of sample are equal to the columns variable, only the first element being timestamp
@@ -56,7 +58,7 @@ while True:
          i += 1
       
       # data is collected at 250 Hz. Let's stop data collection after 60 seconds. Meaning we stop when we collected 250*60 samples.
-      if len(data_dict['Counter']) >= 2005: # 72005 = sampling_rate * seconds_per_prompt * num_prompts + 5_seconds_leeway
+      if len(data_dict['Counter']) >= 72005: # 72005 = sampling_rate * seconds_per_prompt * num_prompts + 5_seconds_leeway
          finished = True                     # 72005 = 250*(6+6)*(4*6)+5
 
    # lastly, we can save our data to a CSV format.
@@ -78,16 +80,16 @@ while True:
       subsets[value] = subset_df
 
    # Assign labels to seperate arrays
-   Label1 = np.array(subsets.get(1))
-   Label2 = np.array(subsets.get(2))
-   Label3 = np.array(subsets.get(3))
-   Label4 = np.array(subsets.get(4))
+   Label1 = subsets.get(1)
+   Label2 = subsets.get(2)
+   Label3 = subsets.get(3)
+   Label4 = subsets.get(4)
 
    # save to csv
-   Label1.to_csv('MeasurementSubgroup/Measurement_labels/Label1' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
-   Label2.to_csv('MeasurementSubgroup/Measurement_labels/Label2' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
-   Label3.to_csv('MeasurementSubgroup/Measurement_labels/Label3' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
-   Label4.to_csv('MeasurementSubgroup/Measurement_labels/Label4' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
+   #Label1.to_csv('MeasurementSubgroup/Measurement_labels/Label1' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
+   # Label2.to_csv('MeasurementSubgroup/Measurement_labels/Label2' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
+   # Label3.to_csv('MeasurementSubgroup/Measurement_labels/Label3' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
+   # Label4.to_csv('MeasurementSubgroup/Measurement_labels/Label4' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
 
    finished = False
 
