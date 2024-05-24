@@ -13,8 +13,8 @@ steps:
 """
 # constant definitions:
 sampling_rate = 250
-tmin, tmax = -1.5, 4.5
-baseline_time = 0.2
+tmin, tmax = -5, 5
+win_size = 50
 
 # things to be set by future code
 #epoch_list = np.array(sampling_rate*[11.12, 20, 30, 40, 47])
@@ -24,15 +24,7 @@ def extract_epoch_window(channels, sampleStamp):
     sample_min = int(sampleStamp + (sampling_rate * tmin))
     sample_max = int(sampleStamp + (sampling_rate * tmax))
     window = channels[:, sample_min:sample_max]
-
-    baseline_period = int(sampling_rate * baseline_time)
-    baselines = np.expand_dims(np.mean(channels[:, sample_min-baseline_period:sample_min], axis=1), axis=1)
-    pad_length = window[0, :].size - 1
-    if -1 == pad_length:
-        raise Exception(f"value in epoch_list out of range of collected data.\nsample stamp: {sampleStamp}")
-    padded_baselines = np.pad(baselines, ((0, 0), (0, pad_length)), mode='edge')
-    output_array = np.subtract(window, padded_baselines)
-    return output_array
+    return window
 
 def filter(time_signal, flow, fhigh):
     from scipy.signal import butter, lfilter
@@ -52,12 +44,12 @@ def filter(time_signal, flow, fhigh):
 
     return y_filtered_band
 
-def notch_filter (time_signal):
+def notch_filter (time_signals):
     from scipy.signal import lfilter
     from scipy import signal
 
     # Remove the DC component
-    time_signal = signal.detrend(time_signal, axis=0)
+    time_signals = signal.detrend(time_signals)
 
     # Define the notch filter parameters
     fs = 250  # Sampling frequency
@@ -68,9 +60,26 @@ def notch_filter (time_signal):
     b, a = signal.iirnotch(f0, Q, fs)
 
     # Apply the filter to each column of the DataFrame
-    y_filtered = lfilter(b, a, time_signal)
+    y_filtered = lfilter(b, a, time_signals)
 
     return y_filtered
+
+def window_averaging(time_signal, window_size):
+    from scipy import signal
+    win = signal.windows.boxcar(window_size)
+
+    for i in range(0, time_signal[:, 0].size):
+        time_signal[i] = signal.convolve(time_signal[i], win, mode='same') / sum(win)
+
+    return time_signal
+
+def baseline_readjustment(time_signal):
+    baselines = np.expand_dims(np.mean(time_signal[:, 125:375], axis=1), axis=1)
+    pad_length = time_signal[0, :].size - 1
+    padded_baselines = np.pad(baselines, ((0, 0), (0, pad_length)), mode='edge')
+    output = ((time_signal - padded_baselines)/padded_baselines) * 100
+    return output
+
 
 #def post_fft_filter(fsignal, f_low, f_high, scale_factor):
 #    output_array = np.zeros(fsignal.size)
@@ -78,7 +87,7 @@ def notch_filter (time_signal):
 #    return np.fft.ihfft(output_array)
 
 # start of actual code
-allOutputs = np.genfromtxt('MeasurementSubgroup/Our_measurements/EEGdata-2024-144--14-56-37.csv', delimiter=',')
+allOutputs = np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-144--14-24-41.csv', delimiter=',')
 
 
 channels = allOutputs[1:, 0:8].transpose()
@@ -93,7 +102,6 @@ lists_of_epochs = np.array([
     ]) * sampling_rate
 
 #create figures
-averaged_fig,   averaged_ax = plt.subplots()
 delta_fig,      delta_ax    = plt.subplots()
 theta_fig,      theta_ax    = plt.subplots()
 alpha_fig,      alpha_ax    = plt.subplots()
@@ -116,25 +124,43 @@ for k in range(0,4):
     for i in range(0, epoch_list.size):
         all_epochs[i] = extract_epoch_window(channels, epoch_list[i])
 
-    per_channel_evoked = np.mean(all_epochs, axis=0)
-    averaged_channels_evoked = np.mean(per_channel_evoked, axis=0)
+    notched = notch_filter(all_epochs)
 
-    #plt.figure()
-    averaged_ax.plot(averaged_channels_evoked**2)
+    delta_evoked = filter(notched,  1,  4)
+    theta_evoked = filter(notched,  4,  8)
+    alpha_evoked = filter(notched,  8, 12)
+    beta_evoked  = filter(notched, 12, 30)
+    gamma_evoked = filter(notched, 30, 50)
 
-    notched_average = notch_filter(averaged_channels_evoked)
+    delta_evoked = delta_evoked **2
+    theta_evoked = theta_evoked **2
+    alpha_evoked = alpha_evoked **2
+    beta_evoked  = beta_evoked  **2
+    gamma_evoked = gamma_evoked **2
 
-    delta_evoked = filter(notched_average,  1,  4)
-    theta_evoked = filter(notched_average,  4,  8)
-    alpha_evoked = filter(notched_average,  8, 12)
-    beta_evoked  = filter(notched_average, 12, 30)
-    gamma_evoked = filter(notched_average, 30, 50)
+    delta_evoked = np.mean(delta_evoked, axis=0)
+    theta_evoked = np.mean(theta_evoked, axis=0)
+    alpha_evoked = np.mean(alpha_evoked, axis=0)
+    beta_evoked  = np.mean(beta_evoked , axis=0)
+    gamma_evoked = np.mean(gamma_evoked, axis=0)
 
-    delta_ax.plot(delta_evoked**2)
-    theta_ax.plot(theta_evoked**2)
-    alpha_ax.plot(alpha_evoked**2)
-    beta_ax.plot(beta_evoked**2)
-    gamma_ax.plot(gamma_evoked**2)
+    delta_evoked = window_averaging(delta_evoked, win_size)
+    theta_evoked = window_averaging(theta_evoked, win_size)
+    alpha_evoked = window_averaging(alpha_evoked, win_size)
+    beta_evoked  = window_averaging(beta_evoked , win_size)
+    gamma_evoked = window_averaging(gamma_evoked, win_size)
+
+    delta_evoked = baseline_readjustment(delta_evoked)
+    theta_evoked = baseline_readjustment(theta_evoked)
+    alpha_evoked = baseline_readjustment(alpha_evoked)
+    beta_evoked  = baseline_readjustment(beta_evoked )
+    gamma_evoked = baseline_readjustment(gamma_evoked)
+
+    delta_ax.plot(delta_evoked[6, :])
+    theta_ax.plot(theta_evoked[6, :])
+    alpha_ax.plot(alpha_evoked[6, :])
+    beta_ax.plot(beta_evoked[6, :])
+    gamma_ax.plot(gamma_evoked[6, :])
 
 plt.show()
 
