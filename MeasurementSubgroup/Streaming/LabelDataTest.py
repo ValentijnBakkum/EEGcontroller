@@ -29,12 +29,12 @@ while True:
          break
 
 # Add column to the data_df called label
-data_df = pd.read_csv("MeasurementSubgroup/Our_measurements/EEGdata-2024-137--16-06-51.csv")
+data_df = pd.read_csv("MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-144--14-56-37.csv")
 data_df["Label"] = label # add new column to the Dataframe
-data_df.to_csv('MeasurementSubgroup/Our_measurements/TestLabel' + '.csv', index = False)
+data_df.to_csv('MeasurementSubgroup/Our_measurements/Measurement_Test/TestLabel' + '.csv', index = False)
 
 # Get unique values in the 'number' column
-unique_values = data_df['Label'].unique()[1:]
+unique_values = data_df['Label'].unique()[0:]
 subsets = {}
 
 # Split the DataFrame and save each subset to a separate dictionary
@@ -43,15 +43,17 @@ for value in unique_values:
     subsets[value] = subset_df
 
 # Assign labels to seperate arrays
+Label0 = subsets.get(0)
 Label1 = subsets.get(1)
 Label2 = subsets.get(2)
 Label3 = subsets.get(3)
 Label4 = subsets.get(4)
 
-Label1.to_csv('MeasurementSubgroup/Measurement_labels/Label1Test' + '.csv', index = False)
-Label2.to_csv('MeasurementSubgroup/Measurement_labels/Label2Test' + '.csv', index = False)
-Label3.to_csv('MeasurementSubgroup/Measurement_labels/Label3Test' + '.csv', index = False)
-Label4.to_csv('MeasurementSubgroup/Measurement_labels/Label4Test' + '.csv', index = False)
+Label0.to_csv('MeasurementSubgroup/Our_measurements/Measurement_Test/Label0Test' + '.csv', index = False)
+Label1.to_csv('MeasurementSubgroup/Our_measurements/Measurement_Test/Label1Test' + '.csv', index = False)
+Label2.to_csv('MeasurementSubgroup/Our_measurements/Measurement_Test/Label2Test' + '.csv', index = False)
+Label3.to_csv('MeasurementSubgroup/Our_measurements/Measurement_Test/Label3Test' + '.csv', index = False)
+Label4.to_csv('MeasurementSubgroup/Our_measurements/Measurement_Test/Label4Test' + '.csv', index = False)
 
 # Label1 = np.array(subsets.get(1))
 # Label2 = np.array(subsets.get(2))

@@ -68,7 +68,7 @@ while True:
    # Add column to the data_df called label
    data_df["Label"] = label # add new column to the Dataframe
 
-   data_df.to_csv('MeasurementSubgroup/Our_measurements/EEGdata-' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
+   data_df.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
 
    # Get unique values in the 'number' column
    unique_values = data_df['Label'].unique()[1:]
@@ -86,10 +86,10 @@ while True:
    Label4 = subsets.get(4)
 
    # save to csv
-   #Label1.to_csv('MeasurementSubgroup/Measurement_labels/Label1' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
-   # Label2.to_csv('MeasurementSubgroup/Measurement_labels/Label2' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
-   # Label3.to_csv('MeasurementSubgroup/Measurement_labels/Label3' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
-   # Label4.to_csv('MeasurementSubgroup/Measurement_labels/Label4' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
+   Label1.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_1.csv', index = False)
+   Label2.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_2.csv', index = False)
+   Label3.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_3.csv', index = False)
+   Label4.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_4.csv', index = False)
 
    finished = False
 
