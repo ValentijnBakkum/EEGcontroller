@@ -15,6 +15,7 @@ steps:
 sampling_rate = 250
 tmin, tmax = -5, 5
 win_size = 50
+channel = 6 -1 # the -1 is because the array index is from 0-7 and the channel id is from 1-8
 
 # things to be set by future code
 #epoch_list = np.array(sampling_rate*[11.12, 20, 30, 40, 47])
@@ -156,11 +157,11 @@ for k in range(0,4):
     beta_evoked  = baseline_readjustment(beta_evoked )
     gamma_evoked = baseline_readjustment(gamma_evoked)
 
-    delta_ax.plot(delta_evoked[6, :])
-    theta_ax.plot(theta_evoked[6, :])
-    alpha_ax.plot(alpha_evoked[6, :])
-    beta_ax.plot(beta_evoked[6, :])
-    gamma_ax.plot(gamma_evoked[6, :])
+    delta_ax.plot(delta_evoked[channel, :])
+    theta_ax.plot(theta_evoked[channel, :])
+    alpha_ax.plot(alpha_evoked[channel, :])
+    beta_ax.plot(beta_evoked[channel, :])
+    gamma_ax.plot(gamma_evoked[channel, :])
 
 plt.show()
 
