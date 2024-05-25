@@ -81,6 +81,13 @@ def baseline_readjustment(time_signal):
     output = ((time_signal - padded_baselines)/padded_baselines) * 100
     return output
 
+def evoked(notched, freq1, freq2):
+    evoked = filter(notched,  freq1,  freq2)
+    evoked = evoked **2
+    evoked = np.mean(evoked, axis=0)
+    evoked = window_averaging(evoked, win_size)
+    evoked = baseline_readjustment(evoked)
+    return evoked
 
 #def post_fft_filter(fsignal, f_low, f_high, scale_factor):
 #    output_array = np.zeros(fsignal.size)
@@ -90,11 +97,11 @@ def baseline_readjustment(time_signal):
 # start of actual code
 allOutputs = np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-144--14-24-41.csv', delimiter=',')
 
-
 channels = allOutputs[1:, 0:8].transpose()
 
 # this bit looks confusing, but the hard coded values are in time and the * sampling rate turns it from time to samples
-# 0 = Right hand, 1 = Left hand, 2 = Feet, 3 = tongue.
+# 0 = Right hand, 1 = Left hand, 2 = tongue, 3 = feet.
+movements = ["Right hand", "Left hand", "Feet", "Tongue"]
 lists_of_epochs = np.array([
     [  6,  90, 138, 150, 234, 258], 
     [ 18,  78, 102, 186, 210, 270,], 
@@ -103,11 +110,15 @@ lists_of_epochs = np.array([
     ]) * sampling_rate
 
 #create figures
-delta_fig,      delta_ax    = plt.subplots()
-theta_fig,      theta_ax    = plt.subplots()
-alpha_fig,      alpha_ax    = plt.subplots()
-beta_fig,       beta_ax     = plt.subplots()
-gamma_fig,      gamma_ax    = plt.subplots()
+# delta_fig,      delta_ax    = plt.subplots()
+# theta_fig,      theta_ax    = plt.subplots()
+# alpha_fig,      alpha_ax    = plt.subplots()
+# beta_fig,       beta_ax     = plt.subplots()
+# gamma_fig,      gamma_ax    = plt.subplots()
+
+fig, axes = plt.subplots(5, 1, figsize=(10, 20))  # 5 subplots vertically
+
+delta_ax, theta_ax, alpha_ax, beta_ax, gamma_ax = axes
 
 #set titles
 delta_ax.set_title("Delta")
@@ -127,43 +138,27 @@ for k in range(0,4):
 
     notched = notch_filter(all_epochs)
 
-    delta_evoked = filter(notched,  1,  4)
-    theta_evoked = filter(notched,  4,  8)
-    alpha_evoked = filter(notched,  8, 12)
-    beta_evoked  = filter(notched, 12, 30)
-    gamma_evoked = filter(notched, 30, 50)
+    delta_evoked = evoked(notched,  1,  4)
+    theta_evoked = evoked(notched,  4,  8)
+    alpha_evoked = evoked(notched,  8, 12)
+    beta_evoked  = evoked(notched, 12, 30)
+    gamma_evoked = evoked(notched, 30, 50)
 
-    delta_evoked = delta_evoked **2
-    theta_evoked = theta_evoked **2
-    alpha_evoked = alpha_evoked **2
-    beta_evoked  = beta_evoked  **2
-    gamma_evoked = gamma_evoked **2
+    delta_ax.plot(delta_evoked[channel, :], label=f'{movements[k]}')
+    theta_ax.plot(theta_evoked[channel, :], label=f'{movements[k]}')
+    alpha_ax.plot(alpha_evoked[channel, :], label=f'{movements[k]}')    
+    beta_ax.plot(beta_evoked[channel, :], label=f'{movements[k]}')    
+    gamma_ax.plot(gamma_evoked[channel, :], label=f'{movements[k]}')
 
-    delta_evoked = np.mean(delta_evoked, axis=0)
-    theta_evoked = np.mean(theta_evoked, axis=0)
-    alpha_evoked = np.mean(alpha_evoked, axis=0)
-    beta_evoked  = np.mean(beta_evoked , axis=0)
-    gamma_evoked = np.mean(gamma_evoked, axis=0)
+# Add legends
+delta_ax.legend(loc="upper right")
+theta_ax.legend(loc="upper right")
+alpha_ax.legend(loc="upper right")
+beta_ax.legend(loc="upper right")
+gamma_ax.legend(loc="upper right")
 
-    delta_evoked = window_averaging(delta_evoked, win_size)
-    theta_evoked = window_averaging(theta_evoked, win_size)
-    alpha_evoked = window_averaging(alpha_evoked, win_size)
-    beta_evoked  = window_averaging(beta_evoked , win_size)
-    gamma_evoked = window_averaging(gamma_evoked, win_size)
-
-    delta_evoked = baseline_readjustment(delta_evoked)
-    theta_evoked = baseline_readjustment(theta_evoked)
-    alpha_evoked = baseline_readjustment(alpha_evoked)
-    beta_evoked  = baseline_readjustment(beta_evoked )
-    gamma_evoked = baseline_readjustment(gamma_evoked)
-
-    delta_ax.plot(delta_evoked[channel, :])
-    theta_ax.plot(theta_evoked[channel, :])
-    alpha_ax.plot(alpha_evoked[channel, :])
-    beta_ax.plot(beta_evoked[channel, :])
-    gamma_ax.plot(gamma_evoked[channel, :])
+plt.tight_layout()  # Adjust subplots to fit in the figure area.
 
 plt.show()
 
-
-    # delta 1-4 hz, theta 4-8 hz, alpa 8 - 12 hz, beta low 12-16, beta mid 16-20, beta high 20-30, gamma 30-50 hz
+# delta 1-4 hz, theta 4-8 hz, alpa 8 - 12 hz, beta low 12-16, beta mid 16-20, beta high 20-30, gamma 30-50 hz
