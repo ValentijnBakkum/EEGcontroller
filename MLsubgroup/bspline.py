@@ -61,13 +61,14 @@ class spline_activation(nn.Module):
         self.coefb = torch.nn.Parameter(torch.rand(self.input_dim,self.size))
     def forward(self,x):
         #x = F.normalize(x)
+        x = x.T
         B = self.Bspline.Cox_deBoor(x,k=self.k,grid=self.grid,extend=self.extend)
         out = torch.einsum('ij,ijk->ik', self.coefb, B)
-        return out
+        return out.T
         
         
 #bspline = spline_activation()
 #grid = bspline.make_grid()
 #grid = bspline.extend_grid(True,3,grid)
 #print(grid)
-#print(bspline(torch.normal(0,1,(5,2))).shape)
+#print(bspline(torch.normal(0,1,(2,5))).shape)
