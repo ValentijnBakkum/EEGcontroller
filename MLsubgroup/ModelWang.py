@@ -3,11 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchinfo import summary
 from attentionmod import blockblock,multihead
+from bspline import spline_activation
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-#Page array = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0]
-#Mi_dict = {1: “right”, 2: “left”, 3: “tongue”, 4: “feet”}
-#Timestaps are 12*index+6 in seconds. Multiply by 250 for timestamps in samples
 
 #convnet decleration/architecture
 arch_1 = [
@@ -15,6 +12,15 @@ arch_1 = [
     (64,1),
     (32,1)
 ]
+
+class L2NormalizationLayer(nn.Module):
+    def __init__(self, dim=1, eps=1e-12):
+        super(L2NormalizationLayer, self).__init__()
+        self.dim = dim
+        self.eps = eps
+
+    def forward(self, x):
+        return F.normalize(x, p=2, dim=self.dim, eps=self.eps)
 
 #convblock class
 class convblock(nn.Module):
@@ -35,7 +41,7 @@ class convblock(nn.Module):
 
 #Lstm layer
 class lstmmodule(nn.Module):
-    def __init__(self, input_len = 16, hidden_size=128, num_layers=1):
+    def __init__(self, input_len = 16, hidden_size=64, num_layers=1):
         super(lstmmodule, self).__init__()
         self.hidden_size = hidden_size
         self.num_layers = num_layers
@@ -74,25 +80,19 @@ class cnnnet1(nn.Module):
         self.flatten = nn.Flatten()
         self.lstm = lstmmodule()
         self.dense = Dense()
-        self.decoder = blockblock(6,16,4,256,16).to(device)
+        self.norm = L2NormalizationLayer()
+        #self.decoder = blockblock(6,1,4,768,16).to(device)
     def forward(self,x):
         N,C,H,W = x.shape # get shape of input
         xr = torch.reshape(x,(N,1,16,16,16)) # reshape input for convolutional neural network
         #convolutional part
         intermediate = self.Cnn(xr)
         intermediate = self.flatten(intermediate)
-        #intermediate = self.dense(intermediate) # reshape for LSTM part
-        # LSTM part
-        #xlstmi = intermediate[:,:,None]
+        
         xlstmi = torch.squeeze(x)
-        #print(xlstmi.shape)
         xlstm = self.lstm(xlstmi)
-        #print(xlstm.shape)
-        #self attention part
-        yw = torch.squeeze(x)
-        yw = self.flatten(self.decoder(yw))
-        intermediate = torch.cat((yw,intermediate,xlstm),dim=1)
-        return(self.nn(intermediate))
+        intermediate = torch.cat((intermediate,xlstm),dim=1)
+        return self.nn(intermediate)
     
     def Create_conv_layers(self,arch): #creates the 3d convolution layers used before the lstm
         in_channels = self.in_channels
@@ -106,8 +106,11 @@ class cnnnet1(nn.Module):
         return nn.Sequential(*list) # * unpacks list into nn.Sequential module
     def create_nn(self): #creates the nn used in the model
         return nn.Sequential(nn.Flatten(),
-                             nn.Linear(1280,4,bias=True),
-                             nn.Dropout(p=0.3)
+                             nn.Linear(1024,512,bias=True),
+                             nn.Dropout(p=0.3),
+                             L2NormalizationLayer(),
+                             spline_activation(device = device, input_dim = 512),
+                             nn.Linear(512,4)
                              #nn.Softmax()
         )
     
@@ -117,8 +120,3 @@ class cnnnet1(nn.Module):
 #summary(model,input_size=(256,1,256,16))
 #a = torch.rand(1,1,576,16).to(device)
 #print(model(a))
-'''
-                             nn.Linear(512,512,bias=True),
-                             nn.Dropout(p=0.3),
-                             nn.LeakyReLU(),
-                             '''
