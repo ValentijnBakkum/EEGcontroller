@@ -15,7 +15,7 @@ steps:
 sampling_rate = 250
 tmin, tmax = -5, 5
 win_size = 200
-channel = 4 -1 # the -1 is because the array index is from 0-7 and the channel id is from 1-8
+channel = 7 -1 # the -1 is because the array index is from 0-7 and the channel id is from 1-8
 
 # things to be set by future code
 #epoch_list = np.array(sampling_rate*[11.12, 20, 30, 40, 47])
@@ -95,7 +95,7 @@ def evoked(notched, freq1, freq2):
 #    return np.fft.ihfft(output_array)
 
 # start of actual code
-allOutputs = np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-144--14-56-37.csv', delimiter=',')
+allOutputs = np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-144--14-47-17.csv', delimiter=',')
 
 channels = allOutputs[1:, 0:8].transpose()
 
@@ -144,18 +144,20 @@ for k in range(0,4):
     beta_evoked  = evoked(notched, 12, 30)
     gamma_evoked = evoked(notched, 30, 50)
 
-    delta_ax.plot(delta_evoked[channel, :], label=f'{movements[k]}')
-    theta_ax.plot(theta_evoked[channel, :], label=f'{movements[k]}')
-    alpha_ax.plot(alpha_evoked[channel, :], label=f'{movements[k]}')    
-    beta_ax.plot(beta_evoked[channel, :], label=f'{movements[k]}')    
-    gamma_ax.plot(gamma_evoked[channel, :], label=f'{movements[k]}')
+    x_time = np.linspace(tmin, tmax, (tmax - tmin) * sampling_rate, endpoint=True)
+
+    delta_ax.plot(x_time, delta_evoked[channel, :], label=f'{movements[k]}')
+    theta_ax.plot(x_time, theta_evoked[channel, :], label=f'{movements[k]}')
+    alpha_ax.plot(x_time, alpha_evoked[channel, :], label=f'{movements[k]}')    
+    beta_ax.plot(x_time, beta_evoked[channel, :], label=f'{movements[k]}')    
+    gamma_ax.plot(x_time, gamma_evoked[channel, :], label=f'{movements[k]}')
 
 # Add vetical lines
-delta_ax.axvline(x=abs(tmin)*sampling_rate, c='black')
-theta_ax.axvline(x=abs(tmin)*sampling_rate, c='black')
-alpha_ax.axvline(x=abs(tmin)*sampling_rate, c='black')
-beta_ax.axvline(x=abs(tmin)*sampling_rate, c='black')
-gamma_ax.axvline(x=abs(tmin)*sampling_rate, c='black')
+delta_ax.axvline(x=0, c='black')
+theta_ax.axvline(x=0, c='black')
+alpha_ax.axvline(x=0, c='black')
+beta_ax.axvline(x=0, c='black')
+gamma_ax.axvline(x=0, c='black')
 
 # Add legends
 delta_ax.legend(loc="upper right")
@@ -164,7 +166,7 @@ alpha_ax.legend(loc="upper right")
 beta_ax.legend(loc="upper right")
 gamma_ax.legend(loc="upper right")
 
-plt.tight_layout()  # Adjust subplots to fit in the figure area.
+plt.tight_layout(h_pad=4.0)  # Adjust subplots to fit in the figure area.
 
 plt.show()
 
