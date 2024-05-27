@@ -29,6 +29,7 @@ while True:
    recieved = input()
 
    i = 0
+   pageNumber = 0
 
    while not finished: 
       # get the streamed data. Columns of sample are equal to the columns variable, only the first element being timestamp
@@ -36,7 +37,6 @@ while True:
 
       sample, timestamp = inlet.pull_sample()
       all_data = sample
-      pageNumber = 0
 
       #print(all_data) # print the data coming from the EEG cap
 
@@ -86,7 +86,7 @@ while True:
    Label3 = subsets.get(3)
    Label4 = subsets.get(4)
 
-   # save to csv
+   # # save to csv
    Label1.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_1.csv', index = False)
    Label2.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_2.csv', index = False)
    Label3.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_3.csv', index = False)
