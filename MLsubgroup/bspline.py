@@ -12,7 +12,7 @@ class Bspline_segment_calc(nn.Module):
         self.input_dim = input_dim
     #-----Make Grid-----#    
     def make_grid(self,grid = 10):
-        grid_knots = torch.linspace(0,1,steps= grid + 1)
+        grid_knots = torch.linspace(-1,1,steps= grid + 1)
         grid_size  = torch.einsum('i,j->ij',torch.ones(self.input_dim,), grid_knots)
         return grid_size 
     
@@ -50,6 +50,16 @@ class Bspline_segment_calc(nn.Module):
 class spline_activation(nn.Module):
     def __init__(self,grid = 10,k = 3,extend = True,device = "cpu",input_dim = 5):
         super().__init__()
+        """
+        Grid = sections you want to split the b-spline into, int
+        k = degree of Cox-deBoor formula, int
+        extend = extend grid to include outside effects of cox-deBoor formula
+        device = device function is calculated on
+        input_dim = size vector fed into the calculation
+
+        input = matrix(n_samples,n_dimensions)
+        output = matrix(n_samples,n_dimensions)
+        """
         self.grid = grid
         self.k = k
         self.extend = extend
@@ -57,13 +67,11 @@ class spline_activation(nn.Module):
         self.input_dim = input_dim
         self.Bspline = Bspline_segment_calc(self.input_dim,device = self.device)
         self.size = grid + 1  + (k-1)
-        self.coef = torch.nn.Parameter(torch.rand(self.size,self.input_dim))
-        self.coefb = torch.nn.Parameter(torch.rand(self.input_dim,self.size))
+        self.coef = torch.nn.Parameter(torch.rand(self.input_dim,self.size)) #C in B-spline function trainable parameter
     def forward(self,x):
-        #x = F.normalize(x)
         x = x.T
-        B = self.Bspline.Cox_deBoor(x,k=self.k,grid=self.grid,extend=self.extend)
-        out = torch.einsum('ij,ijk->ik', self.coefb, B)
+        B = self.Bspline.Cox_deBoor(x,k=self.k,grid=self.grid,extend=self.extend)#calculate value of x as input to b spline function
+        out = torch.einsum('ij,ijk->ik', self.coef, B)
         return out.T
         
         
