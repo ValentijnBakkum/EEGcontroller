@@ -15,7 +15,7 @@ steps:
 sampling_rate = 250
 tmin, tmax = -5, 5
 win_size = 100
-channel = 3 -1 # the -1 is because the array index is from 0-7 and the channel id is from 1-8
+channel = 4 -1 # the -1 is because the array index is from 0-7 and the channel id is from 1-8
 
 # things to be set by future code
 #epoch_list = np.array(sampling_rate*[11.12, 20, 30, 40, 47])
@@ -101,7 +101,7 @@ channels = allOutputs[1:, 0:8].transpose()
 
 # this bit looks confusing, but the hard coded values are in time and the * sampling rate turns it from time to samples
 # 0 = Right hand, 1 = Left hand, 2 = tongue, 3 = feet.
-movements = ["Right hand", "Left hand", "Feet", "Tongue"]
+movements = ["Right hand", "Left hand", "Tongue", "Feet"]
 lists_of_epochs = np.array([
     [  6,  90, 138, 150, 234, 258], 
     [ 18,  78, 102, 186, 210, 270,], 
