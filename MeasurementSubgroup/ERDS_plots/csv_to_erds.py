@@ -14,7 +14,7 @@ steps:
 # constant definitions:
 sampling_rate = 250
 tmin, tmax = -5, 5
-win_size = 100
+win_size = 200
 channel = 4 -1 # the -1 is because the array index is from 0-7 and the channel id is from 1-8
 
 # things to be set by future code
@@ -95,7 +95,7 @@ def evoked(notched, freq1, freq2):
 #    return np.fft.ihfft(output_array)
 
 # start of actual code
-allOutputs = np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-144--14-24-41.csv', delimiter=',')
+allOutputs = np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-144--14-56-37.csv', delimiter=',')
 
 channels = allOutputs[1:, 0:8].transpose()
 
@@ -149,6 +149,13 @@ for k in range(0,4):
     alpha_ax.plot(alpha_evoked[channel, :], label=f'{movements[k]}')    
     beta_ax.plot(beta_evoked[channel, :], label=f'{movements[k]}')    
     gamma_ax.plot(gamma_evoked[channel, :], label=f'{movements[k]}')
+
+# Add vetical lines
+delta_ax.axvline(x=abs(tmin)*sampling_rate, c='black')
+theta_ax.axvline(x=abs(tmin)*sampling_rate, c='black')
+alpha_ax.axvline(x=abs(tmin)*sampling_rate, c='black')
+beta_ax.axvline(x=abs(tmin)*sampling_rate, c='black')
+gamma_ax.axvline(x=abs(tmin)*sampling_rate, c='black')
 
 # Add legends
 delta_ax.legend(loc="upper right")
