@@ -14,8 +14,8 @@ steps:
 # constant definitions:
 sampling_rate = 250
 tmin, tmax = -5, 5
-win_size = 50
-channel = 6 -1 # the -1 is because the array index is from 0-7 and the channel id is from 1-8
+win_size = 100
+channel = 3 -1 # the -1 is because the array index is from 0-7 and the channel id is from 1-8
 
 # things to be set by future code
 #epoch_list = np.array(sampling_rate*[11.12, 20, 30, 40, 47])
@@ -162,6 +162,12 @@ for k in range(0,4):
     alpha_ax.plot(alpha_evoked[channel, :])
     beta_ax.plot(beta_evoked[channel, :])
     gamma_ax.plot(gamma_evoked[channel, :])
+
+delta_ax.legend(['Right hand', 'Left hand', 'Feet', 'Tongue'])
+theta_ax.legend(['Right hand', 'Left hand', 'Feet', 'Tongue'])
+alpha_ax.legend(['Right hand', 'Left hand', 'Feet', 'Tongue'])
+beta_ax.legend(['Right hand', 'Left hand', 'Feet', 'Tongue'])
+gamma_ax.legend(['Right hand', 'Left hand', 'Feet', 'Tongue'])
 
 plt.show()
 
