@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from ModelWang import cnnnet1
 from attentionmod import blockblock
-from Dataloader import DataReader
+#from Dataloader import DataReader
 import numpy as np
 import matplotlib.pyplot as plt 
 from loss import TripletLoss

@@ -12,13 +12,17 @@ arch_1 = [
     (64,1),
     (32,1)
 ]
+arch_2 = [
+    (16,1),
+    (16*3,1),
+    (16*3*3,1)
+]
 
 class L2NormalizationLayer(nn.Module):
     def __init__(self, dim=1, eps=1e-12):
         super(L2NormalizationLayer, self).__init__()
         self.dim = dim
         self.eps = eps
-
     def forward(self, x):
         return F.normalize(x, p=2, dim=self.dim, eps=self.eps)
 
@@ -33,11 +37,18 @@ class convblock(nn.Module):
         self.max = nn.MaxPool3d(kernel_size=(2,2,2))
         self.act = nn.LeakyReLU()
     def forward(self,x):
+        d,i,ei,e2,e3 = x.shape
         x3 = self.act(self.conv3(x))
         x5 = self.act(self.conv5(x))
         x7 = self.act(self.conv7(x))
-        x = torch.cat((x3,x5,x7),dim = 1)
-        return self.max(self.act(self.batchnorm(x)))
+        xall = torch.cat((x3,x5,x7),dim = 1)
+        x = torch.cat((x,x,x),dim=1)
+        print(x.shape,x3.shape,x5.shape,x7.shape)
+        print(xall.shape)
+        if i == 1:
+            return self.max(self.batchnorm(xall))
+        else:
+            return self.max(self.batchnorm(xall+x))
 
 #Lstm layer
 class lstmmodule(nn.Module):
@@ -73,7 +84,7 @@ class Dense(nn.Module):
 class cnnnet1(nn.Module):
     def __init__(self,in_channels = 1):
         super(cnnnet1,self).__init__()
-        self.arch = arch_1
+        self.arch = arch_2
         self.in_channels = in_channels
         self.Cnn = self.Create_conv_layers(self.arch)
         self.nn = self.create_nn()
@@ -106,7 +117,7 @@ class cnnnet1(nn.Module):
         return nn.Sequential(*list) # * unpacks list into nn.Sequential module
     def create_nn(self): #creates the nn used in the model
         return nn.Sequential(nn.Flatten(),
-                             nn.Linear(1024,512,bias=True),
+                             nn.Linear(3712,512,bias=True),
                              nn.Dropout(p=0.3),
                              L2NormalizationLayer(),
                              spline_activation(device = device, input_dim = 512),
@@ -116,7 +127,7 @@ class cnnnet1(nn.Module):
     
 
 #summary of the model
-#model = cnnnet1().to(device)
-#summary(model,input_size=(256,1,256,16))
+model = cnnnet1().to(device)
+summary(model,input_size=(2,1,256,16))
 #a = torch.rand(1,1,576,16).to(device)
 #print(model(a))

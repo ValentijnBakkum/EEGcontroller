@@ -19,16 +19,17 @@ pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0]
 pageNumber = 0
 
 # 1. Right hand, 2. Left hand, 3. Tongue, 4. Feet, 0. Rest
-label = []
 
 
 while True:
    data_dict = dict((k, []) for k in columns)
+   label = []
 
    print("R") #R for ready
    recieved = input()
 
    i = 0
+   pageNumber = 0
 
    while not finished: 
       # get the streamed data. Columns of sample are equal to the columns variable, only the first element being timestamp
@@ -85,12 +86,11 @@ while True:
    Label3 = subsets.get(3)
    Label4 = subsets.get(4)
 
-   # save to csv
+   # # save to csv
    Label1.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_1.csv', index = False)
    Label2.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_2.csv', index = False)
    Label3.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_3.csv', index = False)
    Label4.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_4.csv', index = False)
-
    finished = False
 
 
