@@ -8,7 +8,7 @@ mne.set_log_level('WARNING')
 # Constants
 num_components = 8
 
-allOutputs = np.genfromtxt('MeasurementSubgroup/Our_measurements/EEGdata-2024-137--16-06-51.csv', delimiter=',')
+allOutputs = np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-144--15-54-35.csv', delimiter=',')
 
 channels = allOutputs[1:, 0:8].transpose()
 
@@ -32,9 +32,20 @@ raw.filter(0.5, 40)
 ica = mne.preprocessing.ICA(n_components=num_components, random_state=0, max_iter=1000)
 ica.fit(raw)
 
-# assuming you have a Raw and ICA instance previously fitted
-labels = label_components(raw, ica, method='iclabel')
-print(labels)
+# # assuming you have a Raw and ICA instance previously fitted
+# labels = label_components(raw, ica, method='iclabel')
+# print(labels)
 
-ica.plot_components(picks=range(num_components), ch_type='eeg')
+# ica.plot_components(picks=range(num_components), ch_type='eeg')
 
+ica.exclude = [0,1]
+
+# ica.apply() changes the Raw object in-place, so let's make a copy first:
+reconst_raw = raw.copy()
+ica.apply(reconst_raw)
+
+raw.plot(order=raw, n_channels=len(raw), show_scrollbars=False)
+reconst_raw.plot(
+    order=raw, n_channels=len(raw), show_scrollbars=False
+)
+del reconst_raw
