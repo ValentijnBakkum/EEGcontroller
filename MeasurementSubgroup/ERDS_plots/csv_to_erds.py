@@ -109,6 +109,7 @@ lists_of_epochs = np.array([
     [ 42,  54, 126, 174, 222, 246]
     ]) * sampling_rate
 
+print(lists_of_epochs)
 #create figures
 # delta_fig,      delta_ax    = plt.subplots()
 # theta_fig,      theta_ax    = plt.subplots()
