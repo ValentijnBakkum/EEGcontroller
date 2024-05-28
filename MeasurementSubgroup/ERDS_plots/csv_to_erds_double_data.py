@@ -91,8 +91,8 @@ def stft_chunk(time_signal):
     STFT = ShortTimeFFT(win, 10, sampling_rate)
     stft_signal = STFT.stft(time_signal, axis=2)
     stft_signal = np.abs(stft_signal)
+    stft_signal = STFT.istft(stft_signal, k1=num_samples)
     stft_signal = stft_signal **2
-    stft_signal = np.sum(stft_signal, axis=2)
     output = np.mean(stft_signal, axis=0)
     return output
 
@@ -110,9 +110,12 @@ def evoked(notched, freq1, freq2):
 #    return np.fft.ihfft(output_array)
 
 # start of actual code
-allOutputs1 = np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-144--14-56-37.csv', delimiter=',')
-allOutputs2 = np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-144--15-28-30.csv', delimiter=',')
-allOutputs = np.concatenate((allOutputs1, allOutputs2), axis=0)
+allOutputs = np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-144--14-56-37.csv', delimiter=',')
+
+#allOutputs1 = np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-144--14-56-37.csv', delimiter=',')
+#allOutputs2 = np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-144--15-28-30.csv', delimiter=',')
+#allOutputs = np.concatenate((allOutputs1, allOutputs2), axis=0)
+
 
 channels = allOutputs[1:, 0:8].transpose()
 
@@ -120,11 +123,17 @@ channels = allOutputs[1:, 0:8].transpose()
 # 0 = Right hand, 1 = Left hand, 2 = tongue, 3 = feet.
 movements = ["Right hand", "Left hand", "Tongue", "Feet"]
 lists_of_epochs = np.array([
-    [  6,  90, 138, 150, 234, 258,  6 + 288.02,  90 + 288.02, 138 + 288.02, 150 + 288.02, 234 + 288.02, 258 + 288.02], 
-    [ 18,  78, 102, 186, 210, 270, 18 + 288.02,  78 + 288.02, 102 + 288.02, 186 + 288.02, 210 + 288.02, 270 + 288.02], 
-    [ 30,  66, 114, 162, 198, 282, 30 + 288.02,  66 + 288.02, 114 + 288.02, 162 + 288.02, 198 + 288.02, 282 + 288.02], 
-    [ 42,  54, 126, 174, 222, 246, 42 + 288.02,  54 + 288.02, 126 + 288.02, 174 + 288.02, 222 + 288.02, 246 + 288.02]
+    [  6,  90, 138, 150, 234, 258], 
+    [ 18,  78, 102, 186, 210, 270], 
+    [ 30,  66, 114, 162, 198, 282], 
+    [ 42,  54, 126, 174, 222, 246]
     ]) * sampling_rate
+#lists_of_epochs = np.array([
+#    [  6,  90, 138, 150, 234, 258,  6 + 288.02,  90 + 288.02, 138 + 288.02, 150 + 288.02, 234 + 288.02, 258 + 288.02], 
+#    [ 18,  78, 102, 186, 210, 270, 18 + 288.02,  78 + 288.02, 102 + 288.02, 186 + 288.02, 210 + 288.02, 270 + 288.02], 
+#    [ 30,  66, 114, 162, 198, 282, 30 + 288.02,  66 + 288.02, 114 + 288.02, 162 + 288.02, 198 + 288.02, 282 + 288.02], 
+#    [ 42,  54, 126, 174, 222, 246, 42 + 288.02,  54 + 288.02, 126 + 288.02, 174 + 288.02, 222 + 288.02, 246 + 288.02]
+#    ]) * sampling_rate
 
 #create figures
 # delta_fig,      delta_ax    = plt.subplots()
