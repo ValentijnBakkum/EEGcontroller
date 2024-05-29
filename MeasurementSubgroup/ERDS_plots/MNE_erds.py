@@ -81,7 +81,6 @@ def multifile(string_array):
         temp_events[:, 0] = temp_events[:, 0] + (i * 72005)
         events = np.concatenate((events, temp_events), axis=0)
         i = i + 1
-        print(events)
 
     return (output, events)
     
@@ -90,7 +89,12 @@ def multifile(string_array):
 
 
 #np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-144--14-56-37.csv', delimiter=',')
-(allOutputs, events) = multifile(["EEGdata-2024-148--14-42-07.csv", "EEGdata-2024-148--14-48-17.csv"])
+#(allOutputs, events) = multifile(["EEGdata-2024-149--15-20-21.csv", 
+#                                  "EEGdata-2024-149--15-35-40.csv",
+#                                  "EEGdata-2024-149--15-45-38.csv",
+#                                  "EEGdata-2024-149--15-57-42.csv"
+#                                  ])
+(allOutputs, events) = multifile(["EEGdata-2024-149--16-41-44.csv"])
 
 channels = allOutputs[:, 0:8].transpose()
 
@@ -98,7 +102,7 @@ channels = allOutputs[:, 0:8].transpose()
 ch_names =        ['Fz', 
             'C3',  'Cz',  'C4', 
                    'Pz', 
-            'PO7', 'Oz',  'PO8']
+            'PO7', 'Oz',  'PO8'] 
 
 ch_type = ['eeg' for i in range(8)]
 mne_info = mne.create_info(ch_names, float(250), ch_types=ch_type)
@@ -145,7 +149,10 @@ epochs = mne.Epochs(
     event_id=[1, 2, 3, 4],
     tmin=tmin - 0.5,
     tmax=tmax + 0.5,
-    picks=('PO7', 'Oz',  'PO8'),
+    picks=(    'Fz', 
+        'C3',  'Cz',  'C4', 
+               'Pz', 
+        'PO7', 'Oz',  'PO8'),
     baseline=None,
     preload=True,
 )
@@ -252,7 +259,7 @@ df = df[df.band.isin(freq_bands_of_interest)]
 df["band"] = df["band"].cat.remove_unused_categories()
 
 # Order channels for plotting:
-df["channel"] = df["channel"].cat.reorder_categories(('PO7', 'Oz',  'PO8'), ordered=True)
+df["channel"] = df["channel"].cat.reorder_categories(('Fz', 'C3', 'Cz', 'C4', 'Pz', 'PO7', 'Oz', 'PO8'), ordered=True)
 
 g = sns.FacetGrid(df, row="band", col="channel", margin_titles=True)
 g.map(sns.lineplot, "time", "value", "condition", n_boot=10)
