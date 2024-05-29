@@ -556,11 +556,29 @@ QPushButton{
 }</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_4">
+              <item row="1" column="0">
+               <widget class="QPushButton" name="dataTrainingBtn">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>1</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>22</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Data Train</string>
+                </property>
+               </widget>
+              </item>
               <item row="0" column="0">
                <widget class="QPushButton" name="startRecordingBtn">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
+                  <horstretch>1</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
@@ -578,7 +596,7 @@ QPushButton{
                <widget class="QPushButton" name="stopRecordingBtn">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
+                  <horstretch>1</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
@@ -589,6 +607,24 @@ QPushButton{
                 </property>
                 <property name="text">
                  <string>Stop</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QPushButton" name="ERDSBtn">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>1</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>22</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>ERDS</string>
                 </property>
                </widget>
               </item>
@@ -626,10 +662,10 @@ QPushButton{
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="QLineEdit" name="promptLine">
+                  <widget class="QLabel" name="stopwatch">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
+                    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                     <horstretch>75</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
                    </property>
@@ -639,39 +675,39 @@ QPushButton{
                     </font>
                    </property>
                    <property name="text">
-                    <string>6 s</string>
+                    <string>0</string>
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignCenter</set>
                    </property>
                   </widget>
                  </item>
+                 <item>
+                  <widget class="QLabel" name="unit_sec">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>25</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>22</pointsize>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>s</string>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QPushButton" name="dataTrainingBtn">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>22</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Data Train</string>
-                </property>
                </widget>
               </item>
               <item row="1" column="1">
                <widget class="QPushButton" name="promptBtn">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
+                  <horstretch>1</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
@@ -682,24 +718,6 @@ QPushButton{
                 </property>
                 <property name="text">
                  <string>Prompt</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="2">
-               <widget class="QPushButton" name="ERDSBtn">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>22</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>ERDS</string>
                 </property>
                </widget>
               </item>
@@ -1403,7 +1421,11 @@ border:none;</string>
                  </layout>
                 </item>
                 <item>
-                 <widget class="QGraphicsView" name="channelsPlot"/>
+                 <widget class="GraphicsLayoutWidget" name="channelsPlot">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(255, 255, 255);</string>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
@@ -1878,6 +1900,11 @@ color: rgb(12, 35, 64);</string>
   </customwidget>
   <customwidget>
    <class>PlotWidget</class>
+   <extends>QGraphicsView</extends>
+   <header>pyqtgraph</header>
+  </customwidget>
+  <customwidget>
+   <class>GraphicsLayoutWidget</class>
    <extends>QGraphicsView</extends>
    <header>pyqtgraph</header>
   </customwidget>

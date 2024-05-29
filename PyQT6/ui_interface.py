@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'interfacePqJCEN.ui'
+## Form generated from reading UI file 'interfacelgokvB.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -15,14 +15,14 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractItemView, QApplication, QFrame, QGraphicsView,
-    QGridLayout, QHBoxLayout, QLabel, QLineEdit,
-    QListWidget, QListWidgetItem, QMainWindow, QPushButton,
-    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QFrame, QGridLayout,
+    QHBoxLayout, QLabel, QLineEdit, QListWidget,
+    QListWidgetItem, QMainWindow, QPushButton, QSizePolicy,
+    QSpacerItem, QVBoxLayout, QWidget)
 
 from Custom_Widgets.QCustomQStackedWidget import QCustomQStackedWidget
 from Custom_Widgets.QCustomSlideMenu import QCustomSlideMenu
-from pyqtgraph import PlotWidget
+from pyqtgraph import (GraphicsLayoutWidget, PlotWidget)
 import image_rc
 import resources_rc
 
@@ -286,21 +286,40 @@ class Ui_MainWindow(object):
 "}")
         self.gridLayout_4 = QGridLayout(self.buttonsBox)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
+        self.dataTrainingBtn = QPushButton(self.buttonsBox)
+        self.dataTrainingBtn.setObjectName(u"dataTrainingBtn")
+        sizePolicy3 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        sizePolicy3.setHorizontalStretch(1)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.dataTrainingBtn.sizePolicy().hasHeightForWidth())
+        self.dataTrainingBtn.setSizePolicy(sizePolicy3)
+        self.dataTrainingBtn.setFont(font1)
+
+        self.gridLayout_4.addWidget(self.dataTrainingBtn, 1, 0, 1, 1)
+
         self.startRecordingBtn = QPushButton(self.buttonsBox)
         self.startRecordingBtn.setObjectName(u"startRecordingBtn")
-        sizePolicy2.setHeightForWidth(self.startRecordingBtn.sizePolicy().hasHeightForWidth())
-        self.startRecordingBtn.setSizePolicy(sizePolicy2)
+        sizePolicy3.setHeightForWidth(self.startRecordingBtn.sizePolicy().hasHeightForWidth())
+        self.startRecordingBtn.setSizePolicy(sizePolicy3)
         self.startRecordingBtn.setFont(font1)
 
         self.gridLayout_4.addWidget(self.startRecordingBtn, 0, 0, 1, 1)
 
         self.stopRecordingBtn = QPushButton(self.buttonsBox)
         self.stopRecordingBtn.setObjectName(u"stopRecordingBtn")
-        sizePolicy2.setHeightForWidth(self.stopRecordingBtn.sizePolicy().hasHeightForWidth())
-        self.stopRecordingBtn.setSizePolicy(sizePolicy2)
+        sizePolicy3.setHeightForWidth(self.stopRecordingBtn.sizePolicy().hasHeightForWidth())
+        self.stopRecordingBtn.setSizePolicy(sizePolicy3)
         self.stopRecordingBtn.setFont(font1)
 
         self.gridLayout_4.addWidget(self.stopRecordingBtn, 0, 1, 1, 1)
+
+        self.ERDSBtn = QPushButton(self.buttonsBox)
+        self.ERDSBtn.setObjectName(u"ERDSBtn")
+        sizePolicy3.setHeightForWidth(self.ERDSBtn.sizePolicy().hasHeightForWidth())
+        self.ERDSBtn.setSizePolicy(sizePolicy3)
+        self.ERDSBtn.setFont(font1)
+
+        self.gridLayout_4.addWidget(self.ERDSBtn, 1, 2, 1, 1)
 
         self.promptTimeFrame = QFrame(self.buttonsBox)
         self.promptTimeFrame.setObjectName(u"promptTimeFrame")
@@ -313,52 +332,50 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.setSpacing(0)
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.promptLine = QLineEdit(self.promptTimeFrame)
-        self.promptLine.setObjectName(u"promptLine")
-        sizePolicy2.setHeightForWidth(self.promptLine.sizePolicy().hasHeightForWidth())
-        self.promptLine.setSizePolicy(sizePolicy2)
-        self.promptLine.setFont(font1)
-        self.promptLine.setAlignment(Qt.AlignCenter)
+        self.stopwatch = QLabel(self.promptTimeFrame)
+        self.stopwatch.setObjectName(u"stopwatch")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        sizePolicy4.setHorizontalStretch(75)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.stopwatch.sizePolicy().hasHeightForWidth())
+        self.stopwatch.setSizePolicy(sizePolicy4)
+        self.stopwatch.setFont(font1)
+        self.stopwatch.setAlignment(Qt.AlignCenter)
 
-        self.horizontalLayout_4.addWidget(self.promptLine)
+        self.horizontalLayout_4.addWidget(self.stopwatch)
+
+        self.unit_sec = QLabel(self.promptTimeFrame)
+        self.unit_sec.setObjectName(u"unit_sec")
+        sizePolicy5 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy5.setHorizontalStretch(25)
+        sizePolicy5.setVerticalStretch(0)
+        sizePolicy5.setHeightForWidth(self.unit_sec.sizePolicy().hasHeightForWidth())
+        self.unit_sec.setSizePolicy(sizePolicy5)
+        self.unit_sec.setFont(font1)
+
+        self.horizontalLayout_4.addWidget(self.unit_sec)
 
 
         self.gridLayout_4.addWidget(self.promptTimeFrame, 0, 2, 1, 1)
 
-        self.dataTrainingBtn = QPushButton(self.buttonsBox)
-        self.dataTrainingBtn.setObjectName(u"dataTrainingBtn")
-        sizePolicy2.setHeightForWidth(self.dataTrainingBtn.sizePolicy().hasHeightForWidth())
-        self.dataTrainingBtn.setSizePolicy(sizePolicy2)
-        self.dataTrainingBtn.setFont(font1)
-
-        self.gridLayout_4.addWidget(self.dataTrainingBtn, 1, 0, 1, 1)
-
         self.promptBtn = QPushButton(self.buttonsBox)
         self.promptBtn.setObjectName(u"promptBtn")
-        sizePolicy2.setHeightForWidth(self.promptBtn.sizePolicy().hasHeightForWidth())
-        self.promptBtn.setSizePolicy(sizePolicy2)
+        sizePolicy3.setHeightForWidth(self.promptBtn.sizePolicy().hasHeightForWidth())
+        self.promptBtn.setSizePolicy(sizePolicy3)
         self.promptBtn.setFont(font1)
 
         self.gridLayout_4.addWidget(self.promptBtn, 1, 1, 1, 1)
-
-        self.ERDSBtn = QPushButton(self.buttonsBox)
-        self.ERDSBtn.setObjectName(u"ERDSBtn")
-        sizePolicy2.setHeightForWidth(self.ERDSBtn.sizePolicy().hasHeightForWidth())
-        self.ERDSBtn.setSizePolicy(sizePolicy2)
-        self.ERDSBtn.setFont(font1)
-
-        self.gridLayout_4.addWidget(self.ERDSBtn, 1, 2, 1, 1)
 
 
         self.verticalLayout_6.addWidget(self.buttonsBox)
 
         self.FFTFrame = QFrame(self.rightBodyFrameTest)
         self.FFTFrame.setObjectName(u"FFTFrame")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(40)
-        sizePolicy3.setHeightForWidth(self.FFTFrame.sizePolicy().hasHeightForWidth())
-        self.FFTFrame.setSizePolicy(sizePolicy3)
+        sizePolicy6 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy6.setHorizontalStretch(0)
+        sizePolicy6.setVerticalStretch(40)
+        sizePolicy6.setHeightForWidth(self.FFTFrame.sizePolicy().hasHeightForWidth())
+        self.FFTFrame.setSizePolicy(sizePolicy6)
         self.FFTFrame.setStyleSheet(u"")
         self.FFTFrame.setFrameShape(QFrame.StyledPanel)
         self.FFTFrame.setFrameShadow(QFrame.Raised)
@@ -379,8 +396,8 @@ class Ui_MainWindow(object):
 
         self.powerBandFrame = QFrame(self.rightBodyFrameTest)
         self.powerBandFrame.setObjectName(u"powerBandFrame")
-        sizePolicy3.setHeightForWidth(self.powerBandFrame.sizePolicy().hasHeightForWidth())
-        self.powerBandFrame.setSizePolicy(sizePolicy3)
+        sizePolicy6.setHeightForWidth(self.powerBandFrame.sizePolicy().hasHeightForWidth())
+        self.powerBandFrame.setSizePolicy(sizePolicy6)
         self.powerBandFrame.setFrameShape(QFrame.StyledPanel)
         self.powerBandFrame.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_10 = QHBoxLayout(self.powerBandFrame)
@@ -414,11 +431,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_15.setContentsMargins(0, 0, 100, 0)
         self.logoFrame = QFrame(self.UserIDBox)
         self.logoFrame.setObjectName(u"logoFrame")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy4.setHorizontalStretch(10)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.logoFrame.sizePolicy().hasHeightForWidth())
-        self.logoFrame.setSizePolicy(sizePolicy4)
+        sizePolicy7 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy7.setHorizontalStretch(10)
+        sizePolicy7.setVerticalStretch(0)
+        sizePolicy7.setHeightForWidth(self.logoFrame.sizePolicy().hasHeightForWidth())
+        self.logoFrame.setSizePolicy(sizePolicy7)
         self.logoFrame.setStyleSheet(u"image: url(:/newPrefix/pictures/TUDelft-logo_white.png);")
         self.logoFrame.setFrameShape(QFrame.StyledPanel)
         self.logoFrame.setFrameShadow(QFrame.Raised)
@@ -427,11 +444,11 @@ class Ui_MainWindow(object):
 
         self.userID_test = QLineEdit(self.UserIDBox)
         self.userID_test.setObjectName(u"userID_test")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
-        sizePolicy5.setHorizontalStretch(90)
-        sizePolicy5.setVerticalStretch(0)
-        sizePolicy5.setHeightForWidth(self.userID_test.sizePolicy().hasHeightForWidth())
-        self.userID_test.setSizePolicy(sizePolicy5)
+        sizePolicy8 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        sizePolicy8.setHorizontalStretch(90)
+        sizePolicy8.setVerticalStretch(0)
+        sizePolicy8.setHeightForWidth(self.userID_test.sizePolicy().hasHeightForWidth())
+        self.userID_test.setSizePolicy(sizePolicy8)
         font2 = QFont()
         font2.setPointSize(28)
         font2.setBold(True)
@@ -453,11 +470,11 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.directionFrame = QFrame(self.leftBodyFrameTest)
         self.directionFrame.setObjectName(u"directionFrame")
-        sizePolicy6 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
-        sizePolicy6.setHorizontalStretch(0)
-        sizePolicy6.setVerticalStretch(10)
-        sizePolicy6.setHeightForWidth(self.directionFrame.sizePolicy().hasHeightForWidth())
-        self.directionFrame.setSizePolicy(sizePolicy6)
+        sizePolicy9 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+        sizePolicy9.setHorizontalStretch(0)
+        sizePolicy9.setVerticalStretch(10)
+        sizePolicy9.setHeightForWidth(self.directionFrame.sizePolicy().hasHeightForWidth())
+        self.directionFrame.setSizePolicy(sizePolicy9)
         self.directionFrame.setStyleSheet(u"background-color: rgb(0, 0, 0);\n"
 "border:none;")
         self.directionFrame.setFrameShape(QFrame.StyledPanel)
@@ -468,11 +485,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.setContentsMargins(3, 3, 3, 3)
         self.directionLine = QLineEdit(self.directionFrame)
         self.directionLine.setObjectName(u"directionLine")
-        sizePolicy7 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        sizePolicy7.setHorizontalStretch(50)
-        sizePolicy7.setVerticalStretch(0)
-        sizePolicy7.setHeightForWidth(self.directionLine.sizePolicy().hasHeightForWidth())
-        self.directionLine.setSizePolicy(sizePolicy7)
+        sizePolicy10 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy10.setHorizontalStretch(50)
+        sizePolicy10.setVerticalStretch(0)
+        sizePolicy10.setHeightForWidth(self.directionLine.sizePolicy().hasHeightForWidth())
+        self.directionLine.setSizePolicy(sizePolicy10)
         font3 = QFont()
         font3.setPointSize(24)
         self.directionLine.setFont(font3)
@@ -488,11 +505,11 @@ class Ui_MainWindow(object):
 
         self.valuesFrame = QFrame(self.leftBodyFrameTest)
         self.valuesFrame.setObjectName(u"valuesFrame")
-        sizePolicy8 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy8.setHorizontalStretch(0)
-        sizePolicy8.setVerticalStretch(15)
-        sizePolicy8.setHeightForWidth(self.valuesFrame.sizePolicy().hasHeightForWidth())
-        self.valuesFrame.setSizePolicy(sizePolicy8)
+        sizePolicy11 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy11.setHorizontalStretch(0)
+        sizePolicy11.setVerticalStretch(15)
+        sizePolicy11.setHeightForWidth(self.valuesFrame.sizePolicy().hasHeightForWidth())
+        self.valuesFrame.setSizePolicy(sizePolicy11)
         self.valuesFrame.setMaximumSize(QSize(16777215, 107))
         self.valuesFrame.setFrameShape(QFrame.StyledPanel)
         self.valuesFrame.setFrameShadow(QFrame.Raised)
@@ -504,11 +521,11 @@ class Ui_MainWindow(object):
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
         self.label = QLabel(self.valuesFrame)
         self.label.setObjectName(u"label")
-        sizePolicy9 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
-        sizePolicy9.setHorizontalStretch(0)
-        sizePolicy9.setVerticalStretch(0)
-        sizePolicy9.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
-        self.label.setSizePolicy(sizePolicy9)
+        sizePolicy12 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        sizePolicy12.setHorizontalStretch(0)
+        sizePolicy12.setVerticalStretch(0)
+        sizePolicy12.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
+        self.label.setSizePolicy(sizePolicy12)
         font4 = QFont()
         font4.setPointSize(16)
         self.label.setFont(font4)
@@ -519,8 +536,8 @@ class Ui_MainWindow(object):
 
         self.label_2 = QLabel(self.valuesFrame)
         self.label_2.setObjectName(u"label_2")
-        sizePolicy9.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
-        self.label_2.setSizePolicy(sizePolicy9)
+        sizePolicy12.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
+        self.label_2.setSizePolicy(sizePolicy12)
         self.label_2.setFont(font4)
         self.label_2.setStyleSheet(u"border:none;")
         self.label_2.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
@@ -557,8 +574,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_10.setObjectName(u"verticalLayout_10")
         self.label_3 = QLabel(self.valuesFrame)
         self.label_3.setObjectName(u"label_3")
-        sizePolicy9.setHeightForWidth(self.label_3.sizePolicy().hasHeightForWidth())
-        self.label_3.setSizePolicy(sizePolicy9)
+        sizePolicy12.setHeightForWidth(self.label_3.sizePolicy().hasHeightForWidth())
+        self.label_3.setSizePolicy(sizePolicy12)
         self.label_3.setFont(font4)
         self.label_3.setStyleSheet(u"border:none;")
         self.label_3.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
@@ -567,8 +584,8 @@ class Ui_MainWindow(object):
 
         self.label_4 = QLabel(self.valuesFrame)
         self.label_4.setObjectName(u"label_4")
-        sizePolicy9.setHeightForWidth(self.label_4.sizePolicy().hasHeightForWidth())
-        self.label_4.setSizePolicy(sizePolicy9)
+        sizePolicy12.setHeightForWidth(self.label_4.sizePolicy().hasHeightForWidth())
+        self.label_4.setSizePolicy(sizePolicy12)
         self.label_4.setFont(font4)
         self.label_4.setStyleSheet(u"border:none;")
         self.label_4.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
@@ -609,11 +626,11 @@ class Ui_MainWindow(object):
 
         self.channelsFrame = QFrame(self.leftBodyFrameTest)
         self.channelsFrame.setObjectName(u"channelsFrame")
-        sizePolicy10 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy10.setHorizontalStretch(0)
-        sizePolicy10.setVerticalStretch(60)
-        sizePolicy10.setHeightForWidth(self.channelsFrame.sizePolicy().hasHeightForWidth())
-        self.channelsFrame.setSizePolicy(sizePolicy10)
+        sizePolicy13 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy13.setHorizontalStretch(0)
+        sizePolicy13.setVerticalStretch(60)
+        sizePolicy13.setHeightForWidth(self.channelsFrame.sizePolicy().hasHeightForWidth())
+        self.channelsFrame.setSizePolicy(sizePolicy13)
         self.channelsFrame.setSizeIncrement(QSize(0, 0))
         self.channelsFrame.setBaseSize(QSize(0, 0))
         self.channelsFrame.setStyleSheet(u"")
@@ -627,8 +644,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_14.setObjectName(u"verticalLayout_14")
         self.ch1Label = QLabel(self.channelsFrame)
         self.ch1Label.setObjectName(u"ch1Label")
-        sizePolicy4.setHeightForWidth(self.ch1Label.sizePolicy().hasHeightForWidth())
-        self.ch1Label.setSizePolicy(sizePolicy4)
+        sizePolicy7.setHeightForWidth(self.ch1Label.sizePolicy().hasHeightForWidth())
+        self.ch1Label.setSizePolicy(sizePolicy7)
         self.ch1Label.setFont(font4)
         self.ch1Label.setAlignment(Qt.AlignCenter)
 
@@ -636,8 +653,8 @@ class Ui_MainWindow(object):
 
         self.ch2Label = QLabel(self.channelsFrame)
         self.ch2Label.setObjectName(u"ch2Label")
-        sizePolicy4.setHeightForWidth(self.ch2Label.sizePolicy().hasHeightForWidth())
-        self.ch2Label.setSizePolicy(sizePolicy4)
+        sizePolicy7.setHeightForWidth(self.ch2Label.sizePolicy().hasHeightForWidth())
+        self.ch2Label.setSizePolicy(sizePolicy7)
         self.ch2Label.setFont(font4)
         self.ch2Label.setAlignment(Qt.AlignCenter)
 
@@ -645,8 +662,8 @@ class Ui_MainWindow(object):
 
         self.ch3Label = QLabel(self.channelsFrame)
         self.ch3Label.setObjectName(u"ch3Label")
-        sizePolicy4.setHeightForWidth(self.ch3Label.sizePolicy().hasHeightForWidth())
-        self.ch3Label.setSizePolicy(sizePolicy4)
+        sizePolicy7.setHeightForWidth(self.ch3Label.sizePolicy().hasHeightForWidth())
+        self.ch3Label.setSizePolicy(sizePolicy7)
         self.ch3Label.setFont(font4)
         self.ch3Label.setAlignment(Qt.AlignCenter)
 
@@ -654,8 +671,8 @@ class Ui_MainWindow(object):
 
         self.ch4Label = QLabel(self.channelsFrame)
         self.ch4Label.setObjectName(u"ch4Label")
-        sizePolicy4.setHeightForWidth(self.ch4Label.sizePolicy().hasHeightForWidth())
-        self.ch4Label.setSizePolicy(sizePolicy4)
+        sizePolicy7.setHeightForWidth(self.ch4Label.sizePolicy().hasHeightForWidth())
+        self.ch4Label.setSizePolicy(sizePolicy7)
         self.ch4Label.setFont(font4)
         self.ch4Label.setAlignment(Qt.AlignCenter)
 
@@ -663,8 +680,8 @@ class Ui_MainWindow(object):
 
         self.ch5Label = QLabel(self.channelsFrame)
         self.ch5Label.setObjectName(u"ch5Label")
-        sizePolicy4.setHeightForWidth(self.ch5Label.sizePolicy().hasHeightForWidth())
-        self.ch5Label.setSizePolicy(sizePolicy4)
+        sizePolicy7.setHeightForWidth(self.ch5Label.sizePolicy().hasHeightForWidth())
+        self.ch5Label.setSizePolicy(sizePolicy7)
         self.ch5Label.setFont(font4)
         self.ch5Label.setAlignment(Qt.AlignCenter)
 
@@ -672,8 +689,8 @@ class Ui_MainWindow(object):
 
         self.ch6Label = QLabel(self.channelsFrame)
         self.ch6Label.setObjectName(u"ch6Label")
-        sizePolicy4.setHeightForWidth(self.ch6Label.sizePolicy().hasHeightForWidth())
-        self.ch6Label.setSizePolicy(sizePolicy4)
+        sizePolicy7.setHeightForWidth(self.ch6Label.sizePolicy().hasHeightForWidth())
+        self.ch6Label.setSizePolicy(sizePolicy7)
         self.ch6Label.setFont(font4)
         self.ch6Label.setAlignment(Qt.AlignCenter)
 
@@ -681,8 +698,8 @@ class Ui_MainWindow(object):
 
         self.ch7Label = QLabel(self.channelsFrame)
         self.ch7Label.setObjectName(u"ch7Label")
-        sizePolicy4.setHeightForWidth(self.ch7Label.sizePolicy().hasHeightForWidth())
-        self.ch7Label.setSizePolicy(sizePolicy4)
+        sizePolicy7.setHeightForWidth(self.ch7Label.sizePolicy().hasHeightForWidth())
+        self.ch7Label.setSizePolicy(sizePolicy7)
         self.ch7Label.setFont(font4)
         self.ch7Label.setAlignment(Qt.AlignCenter)
 
@@ -690,8 +707,8 @@ class Ui_MainWindow(object):
 
         self.ch8Label = QLabel(self.channelsFrame)
         self.ch8Label.setObjectName(u"ch8Label")
-        sizePolicy4.setHeightForWidth(self.ch8Label.sizePolicy().hasHeightForWidth())
-        self.ch8Label.setSizePolicy(sizePolicy4)
+        sizePolicy7.setHeightForWidth(self.ch8Label.sizePolicy().hasHeightForWidth())
+        self.ch8Label.setSizePolicy(sizePolicy7)
         self.ch8Label.setFont(font4)
         self.ch8Label.setStyleSheet(u"")
         self.ch8Label.setAlignment(Qt.AlignCenter)
@@ -701,8 +718,9 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_8.addLayout(self.verticalLayout_14)
 
-        self.channelsPlot = QGraphicsView(self.channelsFrame)
+        self.channelsPlot = GraphicsLayoutWidget(self.channelsFrame)
         self.channelsPlot.setObjectName(u"channelsPlot")
+        self.channelsPlot.setStyleSheet(u"background-color: rgb(255, 255, 255);")
 
         self.horizontalLayout_8.addWidget(self.channelsPlot)
 
@@ -721,11 +739,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
         self.infoWidgetTrain = QCustomSlideMenu(self.infoWidgetContainer)
         self.infoWidgetTrain.setObjectName(u"infoWidgetTrain")
-        sizePolicy11 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy11.setHorizontalStretch(0)
-        sizePolicy11.setVerticalStretch(0)
-        sizePolicy11.setHeightForWidth(self.infoWidgetTrain.sizePolicy().hasHeightForWidth())
-        self.infoWidgetTrain.setSizePolicy(sizePolicy11)
+        sizePolicy14 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy14.setHorizontalStretch(0)
+        sizePolicy14.setVerticalStretch(0)
+        sizePolicy14.setHeightForWidth(self.infoWidgetTrain.sizePolicy().hasHeightForWidth())
+        self.infoWidgetTrain.setSizePolicy(sizePolicy14)
         self.infoWidgetTrain.setMaximumSize(QSize(16777215, 0))
         self.infoWidgetTrain.setStyleSheet(u"background-color: rgb(0, 184, 200);\n"
 "color: rgb(255, 255, 255);")
@@ -744,8 +762,8 @@ class Ui_MainWindow(object):
 
         self.frame_10 = QFrame(self.infoWidgetTrain)
         self.frame_10.setObjectName(u"frame_10")
-        sizePolicy9.setHeightForWidth(self.frame_10.sizePolicy().hasHeightForWidth())
-        self.frame_10.setSizePolicy(sizePolicy9)
+        sizePolicy12.setHeightForWidth(self.frame_10.sizePolicy().hasHeightForWidth())
+        self.frame_10.setSizePolicy(sizePolicy12)
         self.frame_10.setStyleSheet(u"")
         self.frame_10.setFrameShape(QFrame.StyledPanel)
         self.frame_10.setFrameShadow(QFrame.Raised)
@@ -755,11 +773,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.label_14 = QLabel(self.frame_10)
         self.label_14.setObjectName(u"label_14")
-        sizePolicy12 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy12.setHorizontalStretch(80)
-        sizePolicy12.setVerticalStretch(0)
-        sizePolicy12.setHeightForWidth(self.label_14.sizePolicy().hasHeightForWidth())
-        self.label_14.setSizePolicy(sizePolicy12)
+        sizePolicy15 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy15.setHorizontalStretch(80)
+        sizePolicy15.setVerticalStretch(0)
+        sizePolicy15.setHeightForWidth(self.label_14.sizePolicy().hasHeightForWidth())
+        self.label_14.setSizePolicy(sizePolicy15)
         font6 = QFont()
         font6.setPointSize(12)
         self.label_14.setFont(font6)
@@ -768,8 +786,8 @@ class Ui_MainWindow(object):
 
         self.frame_11 = QFrame(self.frame_10)
         self.frame_11.setObjectName(u"frame_11")
-        sizePolicy11.setHeightForWidth(self.frame_11.sizePolicy().hasHeightForWidth())
-        self.frame_11.setSizePolicy(sizePolicy11)
+        sizePolicy14.setHeightForWidth(self.frame_11.sizePolicy().hasHeightForWidth())
+        self.frame_11.setSizePolicy(sizePolicy14)
         self.frame_11.setMinimumSize(QSize(169, 108))
         self.frame_11.setStyleSheet(u"")
         self.frame_11.setFrameShape(QFrame.StyledPanel)
@@ -780,8 +798,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_13.setContentsMargins(0, 0, 0, 0)
         self.widget_11 = QWidget(self.frame_11)
         self.widget_11.setObjectName(u"widget_11")
-        sizePolicy9.setHeightForWidth(self.widget_11.sizePolicy().hasHeightForWidth())
-        self.widget_11.setSizePolicy(sizePolicy9)
+        sizePolicy12.setHeightForWidth(self.widget_11.sizePolicy().hasHeightForWidth())
+        self.widget_11.setSizePolicy(sizePolicy12)
         self.widget_11.setStyleSheet(u"image: url(:/newPrefix/pictures/EEG cap.png);")
 
         self.verticalLayout_13.addWidget(self.widget_11)
@@ -874,11 +892,11 @@ class Ui_MainWindow(object):
 
         self.usersList = QListWidget(self.mainBodyContainerUsers)
         self.usersList.setObjectName(u"usersList")
-        sizePolicy13 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        sizePolicy13.setHorizontalStretch(0)
-        sizePolicy13.setVerticalStretch(90)
-        sizePolicy13.setHeightForWidth(self.usersList.sizePolicy().hasHeightForWidth())
-        self.usersList.setSizePolicy(sizePolicy13)
+        sizePolicy16 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy16.setHorizontalStretch(0)
+        sizePolicy16.setVerticalStretch(90)
+        sizePolicy16.setHeightForWidth(self.usersList.sizePolicy().hasHeightForWidth())
+        self.usersList.setSizePolicy(sizePolicy16)
         font9 = QFont()
         font9.setPointSize(18)
         self.usersList.setFont(font9)
@@ -903,8 +921,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout_16.setContentsMargins(0, 0, 0, 0)
         self.logo2Frame = QFrame(self.usersBox)
         self.logo2Frame.setObjectName(u"logo2Frame")
-        sizePolicy4.setHeightForWidth(self.logo2Frame.sizePolicy().hasHeightForWidth())
-        self.logo2Frame.setSizePolicy(sizePolicy4)
+        sizePolicy7.setHeightForWidth(self.logo2Frame.sizePolicy().hasHeightForWidth())
+        self.logo2Frame.setSizePolicy(sizePolicy7)
         self.logo2Frame.setStyleSheet(u"image: url(:/newPrefix/pictures/flame logo.png);")
         self.logo2Frame.setFrameShape(QFrame.StyledPanel)
         self.logo2Frame.setFrameShadow(QFrame.Raised)
@@ -913,8 +931,8 @@ class Ui_MainWindow(object):
 
         self.usersTitle = QLineEdit(self.usersBox)
         self.usersTitle.setObjectName(u"usersTitle")
-        sizePolicy5.setHeightForWidth(self.usersTitle.sizePolicy().hasHeightForWidth())
-        self.usersTitle.setSizePolicy(sizePolicy5)
+        sizePolicy8.setHeightForWidth(self.usersTitle.sizePolicy().hasHeightForWidth())
+        self.usersTitle.setSizePolicy(sizePolicy8)
         font10 = QFont()
         font10.setPointSize(50)
         self.usersTitle.setFont(font10)
@@ -976,12 +994,13 @@ class Ui_MainWindow(object):
         self.trainBtn.setText(QCoreApplication.translate("MainWindow", u"Train", None))
         self.game1Btn.setText(QCoreApplication.translate("MainWindow", u"Game 1", None))
         self.game2Btn.setText(QCoreApplication.translate("MainWindow", u"Game 2", None))
+        self.dataTrainingBtn.setText(QCoreApplication.translate("MainWindow", u"Data Train", None))
         self.startRecordingBtn.setText(QCoreApplication.translate("MainWindow", u"Start", None))
         self.stopRecordingBtn.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
-        self.promptLine.setText(QCoreApplication.translate("MainWindow", u"6 s", None))
-        self.dataTrainingBtn.setText(QCoreApplication.translate("MainWindow", u"Data Train", None))
-        self.promptBtn.setText(QCoreApplication.translate("MainWindow", u"Prompt", None))
         self.ERDSBtn.setText(QCoreApplication.translate("MainWindow", u"ERDS", None))
+        self.stopwatch.setText(QCoreApplication.translate("MainWindow", u"0", None))
+        self.unit_sec.setText(QCoreApplication.translate("MainWindow", u"s", None))
+        self.promptBtn.setText(QCoreApplication.translate("MainWindow", u"Prompt", None))
         self.userID_test.setText(QCoreApplication.translate("MainWindow", u"User ID", None))
         self.directionLine.setText(QCoreApplication.translate("MainWindow", u"Direction", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Learning rate:", None))
