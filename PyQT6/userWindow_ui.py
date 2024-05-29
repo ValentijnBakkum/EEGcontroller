@@ -17,7 +17,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QHBoxLayout,
     QLabel, QMainWindow, QSizePolicy, QSpacerItem,
-    QStackedWidget, QVBoxLayout, QWidget)
+    QStackedWidget, QWidget)
 import image_rc
 import resources_rc
 
@@ -33,8 +33,8 @@ class Ui_UserWindow(object):
 "background-color: rgb(255, 255, 255);")
         self.centralwidget = QWidget(UserWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.verticalLayout = QVBoxLayout(self.centralwidget)
-        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.horizontalLayout_12 = QHBoxLayout(self.centralwidget)
+        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
         self.demosPages = QStackedWidget(self.centralwidget)
         self.demosPages.setObjectName(u"demosPages")
         self.trainingPage = QWidget()
@@ -469,20 +469,20 @@ class Ui_UserWindow(object):
         self.horizontalLayout_6.setSpacing(0)
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
         self.horizontalLayout_6.setContentsMargins(0, 0, 0, 0)
-        self.frame_10 = QFrame(self.cursorPage)
-        self.frame_10.setObjectName(u"frame_10")
+        self.cursorFrame = QFrame(self.cursorPage)
+        self.cursorFrame.setObjectName(u"cursorFrame")
         sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(20)
-        sizePolicy1.setHeightForWidth(self.frame_10.sizePolicy().hasHeightForWidth())
-        self.frame_10.setSizePolicy(sizePolicy1)
-        self.frame_10.setStyleSheet(u"")
-        self.frame_10.setFrameShape(QFrame.StyledPanel)
-        self.frame_10.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_13 = QHBoxLayout(self.frame_10)
+        sizePolicy1.setHeightForWidth(self.cursorFrame.sizePolicy().hasHeightForWidth())
+        self.cursorFrame.setSizePolicy(sizePolicy1)
+        self.cursorFrame.setStyleSheet(u"")
+        self.cursorFrame.setFrameShape(QFrame.StyledPanel)
+        self.cursorFrame.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_13 = QHBoxLayout(self.cursorFrame)
         self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
         self.horizontalLayout_13.setContentsMargins(3, 3, 3, 3)
-        self.mouseCursor = QWidget(self.frame_10)
+        self.mouseCursor = QWidget(self.cursorFrame)
         self.mouseCursor.setObjectName(u"mouseCursor")
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy2.setHorizontalStretch(0)
@@ -497,7 +497,7 @@ class Ui_UserWindow(object):
         self.horizontalLayout_13.addWidget(self.mouseCursor)
 
 
-        self.horizontalLayout_6.addWidget(self.frame_10)
+        self.horizontalLayout_6.addWidget(self.cursorFrame)
 
         self.demosPages.addWidget(self.cursorPage)
         self.game1Page = QWidget()
@@ -506,10 +506,16 @@ class Ui_UserWindow(object):
         self.horizontalLayout_9.setSpacing(0)
         self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
         self.horizontalLayout_9.setContentsMargins(0, 0, 0, 0)
-        self.widget = QWidget(self.game1Page)
-        self.widget.setObjectName(u"widget")
+        self.game1Widget = QWidget(self.game1Page)
+        self.game1Widget.setObjectName(u"game1Widget")
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        sizePolicy3.setHorizontalStretch(10)
+        sizePolicy3.setVerticalStretch(10)
+        sizePolicy3.setHeightForWidth(self.game1Widget.sizePolicy().hasHeightForWidth())
+        self.game1Widget.setSizePolicy(sizePolicy3)
+        self.game1Widget.setMinimumSize(QSize(400, 400))
 
-        self.horizontalLayout_9.addWidget(self.widget)
+        self.horizontalLayout_9.addWidget(self.game1Widget)
 
         self.demosPages.addWidget(self.game1Page)
         self.game2Page = QWidget()
@@ -518,14 +524,29 @@ class Ui_UserWindow(object):
         self.horizontalLayout_10.setSpacing(0)
         self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
         self.horizontalLayout_10.setContentsMargins(0, 0, 0, 0)
-        self.widget_2 = QWidget(self.game2Page)
-        self.widget_2.setObjectName(u"widget_2")
+        self.game2Widget = QWidget(self.game2Page)
+        self.game2Widget.setObjectName(u"game2Widget")
+        self.gridLayout_11 = QGridLayout(self.game2Widget)
+        self.gridLayout_11.setObjectName(u"gridLayout_11")
+        self.game2Label = QLabel(self.game2Widget)
+        self.game2Label.setObjectName(u"game2Label")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.game2Label.sizePolicy().hasHeightForWidth())
+        self.game2Label.setSizePolicy(sizePolicy4)
+        font2 = QFont()
+        font2.setPointSize(22)
+        self.game2Label.setFont(font2)
 
-        self.horizontalLayout_10.addWidget(self.widget_2)
+        self.gridLayout_11.addWidget(self.game2Label, 0, 0, 1, 1)
+
+
+        self.horizontalLayout_10.addWidget(self.game2Widget)
 
         self.demosPages.addWidget(self.game2Page)
 
-        self.verticalLayout.addWidget(self.demosPages)
+        self.horizontalLayout_12.addWidget(self.demosPages)
 
         UserWindow.setCentralWidget(self.centralwidget)
 
@@ -546,5 +567,6 @@ class Ui_UserWindow(object):
         self.tongueLabel.setText(QCoreApplication.translate("UserWindow", u"Tongue", None))
         self.feetLabel.setText(QCoreApplication.translate("UserWindow", u"Feet", None))
         self.rightLabel_2.setText(QCoreApplication.translate("UserWindow", u"Right Hand", None))
+        self.game2Label.setText(QCoreApplication.translate("UserWindow", u"Game 2 Page", None))
     # retranslateUi
 

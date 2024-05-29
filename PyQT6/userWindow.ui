@@ -22,7 +22,7 @@
 background-color: rgb(255, 255, 255);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout_12">
     <item>
      <widget class="QStackedWidget" name="demosPages">
       <property name="currentIndex">
@@ -1078,7 +1078,7 @@ background-color: rgb(255, 255, 255);</string>
          <number>0</number>
         </property>
         <item>
-         <widget class="QFrame" name="frame_10">
+         <widget class="QFrame" name="cursorFrame">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
@@ -1153,7 +1153,20 @@ image: url(:/newPrefix/pictures/cursor.png);</string>
          <number>0</number>
         </property>
         <item>
-         <widget class="QWidget" name="widget" native="true"/>
+         <widget class="QWidget" name="game1Widget" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>10</horstretch>
+            <verstretch>10</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>400</width>
+            <height>400</height>
+           </size>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -1175,7 +1188,28 @@ image: url(:/newPrefix/pictures/cursor.png);</string>
          <number>0</number>
         </property>
         <item>
-         <widget class="QWidget" name="widget_2" native="true"/>
+         <widget class="QWidget" name="game2Widget" native="true">
+          <layout class="QGridLayout" name="gridLayout_11">
+           <item row="0" column="0">
+            <widget class="QLabel" name="game2Label">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>22</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Game 2 Page</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </item>
        </layout>
       </widget>

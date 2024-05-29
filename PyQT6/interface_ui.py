@@ -109,7 +109,7 @@ class Ui_MainWindow(object):
         self.overviewBtn.setFont(font1)
         self.overviewBtn.setStyleSheet(u"background-color: rgb(0, 118, 194);")
         icon2 = QIcon()
-        icon2.addFile(u":/icons/Qss/icons/sliders.svg", QSize(), QIcon.Normal, QIcon.Off)
+        icon2.addFile(u":/icons/Qss/icons/activity-svgrepo-com.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.overviewBtn.setIcon(icon2)
         self.overviewBtn.setIconSize(QSize(30, 30))
 
@@ -224,6 +224,9 @@ class Ui_MainWindow(object):
         self.game1Btn = QPushButton(self.leftSubMenu)
         self.game1Btn.setObjectName(u"game1Btn")
         self.game1Btn.setFont(font1)
+        icon10 = QIcon()
+        icon10.addFile(u":/icons/Qss/icons/tic-tac-toe-svgrepo-com.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.game1Btn.setIcon(icon10)
         self.game1Btn.setIconSize(QSize(30, 30))
 
         self.verticalLayout_7.addWidget(self.game1Btn)
@@ -257,19 +260,19 @@ class Ui_MainWindow(object):
         self.gridLayout.setSpacing(6)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(-1, -1, -1, 9)
-        self.rightBodyFrameTest = QWidget(self.mainBodyContainerGUI)
-        self.rightBodyFrameTest.setObjectName(u"rightBodyFrameTest")
+        self.rightBodyFrameOverview = QWidget(self.mainBodyContainerGUI)
+        self.rightBodyFrameOverview.setObjectName(u"rightBodyFrameOverview")
         sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
         sizePolicy1.setHorizontalStretch(50)
         sizePolicy1.setVerticalStretch(95)
-        sizePolicy1.setHeightForWidth(self.rightBodyFrameTest.sizePolicy().hasHeightForWidth())
-        self.rightBodyFrameTest.setSizePolicy(sizePolicy1)
-        self.rightBodyFrameTest.setStyleSheet(u"border:none;")
-        self.verticalLayout_6 = QVBoxLayout(self.rightBodyFrameTest)
+        sizePolicy1.setHeightForWidth(self.rightBodyFrameOverview.sizePolicy().hasHeightForWidth())
+        self.rightBodyFrameOverview.setSizePolicy(sizePolicy1)
+        self.rightBodyFrameOverview.setStyleSheet(u"border:none;")
+        self.verticalLayout_6 = QVBoxLayout(self.rightBodyFrameOverview)
         self.verticalLayout_6.setSpacing(9)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
-        self.buttonsBox = QWidget(self.rightBodyFrameTest)
+        self.buttonsBox = QWidget(self.rightBodyFrameOverview)
         self.buttonsBox.setObjectName(u"buttonsBox")
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         sizePolicy2.setHorizontalStretch(0)
@@ -369,7 +372,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_6.addWidget(self.buttonsBox)
 
-        self.FFTFrame = QFrame(self.rightBodyFrameTest)
+        self.FFTFrame = QFrame(self.rightBodyFrameOverview)
         self.FFTFrame.setObjectName(u"FFTFrame")
         sizePolicy6 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy6.setHorizontalStretch(0)
@@ -394,7 +397,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_6.addWidget(self.FFTFrame)
 
-        self.powerBandFrame = QFrame(self.rightBodyFrameTest)
+        self.powerBandFrame = QFrame(self.rightBodyFrameOverview)
         self.powerBandFrame.setObjectName(u"powerBandFrame")
         sizePolicy6.setHeightForWidth(self.powerBandFrame.sizePolicy().hasHeightForWidth())
         self.powerBandFrame.setSizePolicy(sizePolicy6)
@@ -415,7 +418,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_6.addWidget(self.powerBandFrame)
 
 
-        self.gridLayout.addWidget(self.rightBodyFrameTest, 1, 1, 1, 1)
+        self.gridLayout.addWidget(self.rightBodyFrameOverview, 1, 1, 1, 1)
 
         self.UserIDBox = QWidget(self.mainBodyContainerGUI)
         self.UserIDBox.setObjectName(u"UserIDBox")
@@ -460,15 +463,16 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.UserIDBox, 0, 0, 1, 2)
 
-        self.leftBodyFrameTest = QWidget(self.mainBodyContainerGUI)
-        self.leftBodyFrameTest.setObjectName(u"leftBodyFrameTest")
-        sizePolicy1.setHeightForWidth(self.leftBodyFrameTest.sizePolicy().hasHeightForWidth())
-        self.leftBodyFrameTest.setSizePolicy(sizePolicy1)
-        self.verticalLayout_3 = QVBoxLayout(self.leftBodyFrameTest)
+        self.leftBodyFrameOverview = QWidget(self.mainBodyContainerGUI)
+        self.leftBodyFrameOverview.setObjectName(u"leftBodyFrameOverview")
+        sizePolicy1.setHeightForWidth(self.leftBodyFrameOverview.sizePolicy().hasHeightForWidth())
+        self.leftBodyFrameOverview.setSizePolicy(sizePolicy1)
+        self.leftBodyFrameOverview.setStyleSheet(u"background-color: rgb(255, 255, 255);")
+        self.verticalLayout_3 = QVBoxLayout(self.leftBodyFrameOverview)
         self.verticalLayout_3.setSpacing(0)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.directionFrame = QFrame(self.leftBodyFrameTest)
+        self.directionFrame = QFrame(self.leftBodyFrameOverview)
         self.directionFrame.setObjectName(u"directionFrame")
         sizePolicy9 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
         sizePolicy9.setHorizontalStretch(0)
@@ -503,7 +507,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_3.addWidget(self.directionFrame)
 
-        self.valuesFrame = QFrame(self.leftBodyFrameTest)
+        self.valuesFrame = QFrame(self.leftBodyFrameOverview)
         self.valuesFrame.setObjectName(u"valuesFrame")
         sizePolicy11 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy11.setHorizontalStretch(0)
@@ -624,7 +628,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_3.addWidget(self.valuesFrame)
 
-        self.channelsFrame = QFrame(self.leftBodyFrameTest)
+        self.channelsFrame = QFrame(self.leftBodyFrameOverview)
         self.channelsFrame.setObjectName(u"channelsFrame")
         sizePolicy13 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy13.setHorizontalStretch(0)
@@ -731,7 +735,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.addWidget(self.channelsFrame)
 
 
-        self.gridLayout.addWidget(self.leftBodyFrameTest, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.leftBodyFrameOverview, 1, 0, 1, 1)
 
         self.infoWidgetContainer = QWidget(self.mainBodyContainerGUI)
         self.infoWidgetContainer.setObjectName(u"infoWidgetContainer")

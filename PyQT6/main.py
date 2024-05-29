@@ -30,17 +30,16 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
-        self.stepsize = 5
         self.startFFT = False
         self.done_recording = False
 
         # for EEG cap data
-        #self.simulate_data = False
-        #self.streams = resolve_stream()
-        #try:
-        #    self.inlet = StreamInlet(self.streams[0])
-        #except:
-        #    self.show_eeg_error("The EEG cap is not connected. Please connect the cap.")
+        self.simulate_data = False
+        self.streams = resolve_stream()
+        try:
+            self.inlet = StreamInlet(self.streams[0])
+        except:
+            self.show_eeg_error("The EEG cap is not connected. Please connect the cap.")
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -79,6 +78,11 @@ class MainWindow(QMainWindow):
         #Training window
         #self.ui.trainBtn.clicked.connect(self.openUserWindow)
         self.ui.ERDSBtn.clicked.connect(self.openERDSWindow)
+        self.ui.learningRateLine.textChanged.connect(self.update_learningRate)
+        self.ui.batchSizeLine.textChanged.connect(self.update_batchSize)
+        self.ui.maxIterationLine.textChanged.connect(self.update_maxIteration)
+        self.ui.marginLine.textChanged.connect(self.update_margin)
+
         
 
         # add users to user list from file
@@ -88,12 +92,12 @@ class MainWindow(QMainWindow):
                 currentIndex = self.ui.usersList.currentRow()
                 self.ui.usersList.insertItem(currentIndex, row["Name"])
 
-        '''
+        
         #Data live plotting
         self.i = 0
         self.j = 0
         self.max_graph_width = 70
-        self.plot_delay = 5
+        self.plot_update_size = 10
         self.columns = 7
         self.av_height = int(self.max_graph_width/self.columns)
         self.channel = 1
@@ -109,180 +113,82 @@ class MainWindow(QMainWindow):
         self.loss_data = np.array([100])
         self.loss_data_iter = np.zeros(1)
 
-        pen = pg.mkPen(color=(255, 0, 0))
-        # Get a line reference
-        self.line = self.ui.graphicsView.plot(
-            self.xdata,
-            self.ydata[0],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_2 = self.ui.graphicsView_2.plot(
-            self.xdata,
-            self.ydata[1],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_3 = self.ui.graphicsView_3.plot(
-            self.xdata,
-            self.ydata[2],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_4 = self.ui.graphicsView_4.plot(
-            self.xdata,
-            self.ydata[3],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_5 = self.ui.graphicsView_5.plot(
-            self.xdata,
-            self.ydata[4],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_6 = self.ui.graphicsView_6.plot(
-            self.xdata,
-            self.ydata[5],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_7 = self.ui.graphicsView_7.plot(
-            self.xdata,
-            self.ydata[6],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_8 = self.ui.graphicsView_8.plot(
-            self.xdata,
-            self.ydata[7],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_9 = self.ui.graphicsView_9.plot(
-            self.xdata,
-            self.ydata[0],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_10 = self.ui.graphicsView_10.plot(
-            self.xdata,
-            self.ydata[1],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_11 = self.ui.graphicsView_11.plot(
-            self.xdata,
-            self.ydata[2],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_12 = self.ui.graphicsView_12.plot(
-            self.xdata,
-            self.ydata[3],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_13 = self.ui.graphicsView_13.plot(
-            self.xdata,
-            self.ydata[4],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_14 = self.ui.graphicsView_14.plot(
-            self.xdata,
-            self.ydata[5],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_15 = self.ui.graphicsView_15.plot(
-            self.xdata,
-            self.ydata[6],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_16 = self.ui.graphicsView_16.plot(
-            self.xdata,
-            self.ydata[7],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
+        # Create subplots and lines
+        self.subplots = []
+        self.lines = []
+
+        self.j = 0
+
+        self.ui.channelsPlot.setBackground('w')
+
+        for i in range(8):
+            p = self.ui.channelsPlot.addPlot(row=i, col=0)
+            p.setMouseEnabled(x=False, y=False)
+            p.setMenuEnabled(False)
+            export = self.ui.channelsPlot.sceneObj.contextMenu
+            del export[:]
+            p.hideButtons()
+            self.subplots.append(p)
+            self.lines.append(p.plot(pen=pg.mkPen('r')))
+
         # Bar graph power band
         self.xBarGraph = np.array([2,6,10,14,18,25,40]) #Center points of the columns with according width /<--
-        self.line_18_1 = pg.BarGraphItem(x=self.xBarGraph[[0,1,2,3,4]], height = self.yBarGraph[[0,1,2,3,4]], width = 4, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.line_18_2 = pg.BarGraphItem(x=self.xBarGraph[[5]], height = self.yBarGraph[[5]], width = 10, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.line_18_3 = pg.BarGraphItem(x=self.xBarGraph[[6]], height = self.yBarGraph[[6]], width = 20, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.ui.graphicsView_18.addItem(self.line_18_1)
-        self.ui.graphicsView_18.addItem(self.line_18_2)
-        self.ui.graphicsView_18.addItem(self.line_18_3)
-        self.ui.graphicsView_18.setYRange(10,100)
-        self.ui.graphicsView_18.setXRange(0,50)
+        self.power_band_1= pg.BarGraphItem(x=self.xBarGraph[[0,1,2,3,4]], height = self.yBarGraph[[0,1,2,3,4]], width = 4, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.power_band_2 = pg.BarGraphItem(x=self.xBarGraph[[5]], height = self.yBarGraph[[5]], width = 10, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.power_band_3 = pg.BarGraphItem(x=self.xBarGraph[[6]], height = self.yBarGraph[[6]], width = 20, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.ui.powerBandPlot.addItem(self.power_band_1)
+        self.ui.powerBandPlot.addItem(self.power_band_2)
+        self.ui.powerBandPlot.addItem(self.power_band_3)
+        self.ui.powerBandPlot.setYRange(10, 100)
+        self.ui.powerBandPlot.setXRange(0, 50)
+        self.ui.powerBandPlot.setMouseEnabled(x=False, y=False)
+        self.ui.powerBandPlot.setMenuEnabled(False)
+        self.ui.powerBandPlot.hideButtons()
 
-        self.line_20_1 = pg.BarGraphItem(x=self.xBarGraph[[0,1,2,3,4]], height = self.yBarGraph[[0,1,2,3,4]], width = 4, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.line_20_2 = pg.BarGraphItem(x=self.xBarGraph[[5]], height = self.yBarGraph[[5]], width = 10, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.line_20_3 = pg.BarGraphItem(x=self.xBarGraph[[6]], height = self.yBarGraph[[6]], width = 20, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.ui.graphicsView_20.addItem(self.line_20_1)
-        self.ui.graphicsView_20.addItem(self.line_20_2)
-        self.ui.graphicsView_20.addItem(self.line_20_3)
-        self.ui.graphicsView_20.setYRange(10,100)
-        self.ui.graphicsView_20.setXRange(0,50)
+        self.start_time = time.time()
 
         # Add a timer to simulate new temperature measurements
         self.timer = QTimer()
-        self.timer.setInterval(100)
         self.timer.timeout.connect(self.update_plot)
-        self.timer.start()
+        self.timer.start(3)
 
-        '''
-        self.show()
+        #Stopwatch variables
+        self.count = 0
+        self.flag = False
+        self.ui.stopwatch.setText(str(self.count))
+        self.stopwatch = QTimer()
+        self.stopwatch.timeout.connect(self.showTime)
+        self.stopwatch.start(100)
+
+    def update_learningRate(self):
+        learningRate = self.ui.learningRateLine.text()
+        return learningRate
+    
+    def update_batchSize(self):
+        batchSize = self.ui.batchSizeLine.text()
+        return batchSize
+    
+    def update_maxIteration(self):
+        maxIteration = self.ui.maxIterationLine.text()
+        return maxIteration
+    
+    def update_margin(self):
+        margin = self.ui.marginLine.text()
+        return margin
+
+    def showTime(self):
+ 
+        # checking if flag is true
+        if self.flag:
+ 
+            # incrementing the counter
+            self.count+= 1
+ 
+        # getting text from count
+        text = str(self.count / 10)
+ 
+        # showing text
+        self.ui.stopwatch.setText(text)
 
     def setCursorPage(self):
             self.userWindow_to_cursorPage.emit()
@@ -301,11 +207,13 @@ class MainWindow(QMainWindow):
     
     def startRecording(self):
             self.userWindow_startRecording.emit()
+            self.flag = True
 
     def stopRecording(self):
             self.userWindow_stopRecording.emit()
+            self.flag = False
 
-    '''
+    
     def reconnect_cap(self):
         try:
             self.inlet = StreamInlet(self.streams[0])
@@ -344,142 +252,70 @@ class MainWindow(QMainWindow):
         
     # Update graphs
     def update_plot(self):
-        self.j = self.i // self.plot_delay
-
-        if self.i % self.plot_delay:
-            # gathering the data from the EEG cap
-            if not self.simulate_data:
-                sample, timestamp = self.inlet.pull_sample()
-            else:
-                sample, timestamp = self.generate_random_sample()  # for testing purposes when not connected to cap
+        # gathering the data from the EEG cap
+        if not self.simulate_data:
+            sample, timestamp = self.inlet.pull_sample()
+            sample_timestamp = (sample[15] - self.counter_init)
+        else:
+            sample, timestamp = self.generate_random_sample()  # for testing purposes when not connected to cap
             sample_timestamp = sample[15]
 
-            if self.j < self.ydata[0].size:
-                self.xdata[self.j:] = sample_timestamp
-            else:
-                self.xdata = np.append(self.xdata[1:], sample_timestamp)
-                # start creating the FFT plot
-                if self.startFFT == False:
-                    pen = pg.mkPen(color=(255, 0, 0))
-                    symbol_sign = None
-                    self.line_17 = self.ui.graphicsView_17.plot(
-                        self.xdata,
-                        self.ydata[0],
-                        name="Power Sensor",
-                        pen=pen,
-                        symbol=symbol_sign,
-                        symbolSize=5,
-                        symbolBrush="b",
-                    )
-                    self.ui.graphicsView_17.setXRange(0,60)
-                    self.line_17.setFftMode(True)
-                    self.line_19 = self.ui.graphicsView_19.plot(
-                        self.xdata,
-                        self.ydata[0],
-                        name="Power Sensor",
-                        pen=pen,
-                        symbol=symbol_sign,
-                        symbolSize=5,
-                        symbolBrush="b",
-                    )
-                    self.ui.graphicsView_19.setXRange(0,60)
-                    self.line_19.setFftMode(True)
-                    self.startFFT = True
+        if self.i <= self.max_graph_width:
+            self.xdata[self.j:] = sample_timestamp
+            for k in range(8):
+                self.ydata[k][self.j] = sample[k]
+        else:
+            if not self.startFFT:
+                self.startFFT = True
+                pen = pg.mkPen(color=(255, 0, 0))
+                symbol_sign = None
+                self.FFT_plot = self.ui.FFTPlot.plot(
+                    self.xdata,
+                    self.ydata[self.channel - 1],
+                    name="Power Sensor",
+                    pen=pen,
+                    symbol=symbol_sign,
+                    symbolSize=5,
+                    symbolBrush="b",
+                )
+                self.ui.FFTPlot.setXRange(0, 60)
+                self.ui.FFTPlot.setYRange(0, 100)
+                self.ui.FFTPlot.setMouseEnabled(x=False, y=False)
+                self.ui.FFTPlot.setMenuEnabled(False)
+                self.ui.FFTPlot.hideButtons()
+                self.FFT_plot.setFftMode(True)
 
-            # update the data arrays
-            k = 0
-            while k < 8:
-                if self.j < self.ydata[0].size:
-                    self.ydata[k][self.j:] = sample[k]
-                else:
-                    self.ydata[k] = np.append(self.ydata[k][1:], sample[k])
-                k += 1
+            self.xdata = np.roll(self.xdata, -1)
+            self.xdata[-1] = sample_timestamp
+            for k in range(8):
+                self.ydata[k] = np.roll(self.ydata[k], -1)
+                self.ydata[k][-1] = sample[k]
 
-            if self.channel == 1:
-                self.yBarGraph = np.array([sum(self.ydata[0][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[0]),self.av_height)])
-            elif self.channel == 2:
-                self.yBarGraph = np.array([sum(self.ydata[1][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[1]),self.av_height)])
-            elif self.channel == 3:
-                self.yBarGraph = np.array([sum(self.ydata[2][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[2]),self.av_height)])
-            elif self.channel == 4:
-                self.yBarGraph = np.array([sum(self.ydata[3][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[3]),self.av_height)])
-            elif self.channel == 5:
-                self.yBarGraph = np.array([sum(self.ydata[4][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[4]),self.av_height)])
-            elif self.channel == 6:
-                self.yBarGraph = np.array([sum(self.ydata[5][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[5]),self.av_height)])
-            elif self.channel == 7:
-                self.yBarGraph = np.array([sum(self.ydata[6][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[6]),self.av_height)])
-            elif self.channel == 8:
-                self.yBarGraph = np.array([sum(self.ydata[7][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[7]),self.av_height)])
+        # only update the plot everytime it has collected plot update data sized data
+        if self.i % self.plot_update_size == 0:
+            for i in range(8):
+                self.lines[i].setData(self.xdata, self.ydata[i])
+            self.power_band_1.setOpts(height=self.yBarGraph[[0, 1, 2, 3, 4]])
+            self.power_band_2.setOpts(height=self.yBarGraph[[5]])
+            self.power_band_3.setOpts(height=self.yBarGraph[[6]])
 
-        # update the plots with the new data
-        # depending on which screen is active
-        if self.ui.mainPages.currentIndex() == 3:  # training mode
-            self.line.setData(self.xdata, self.ydata[0])
-            self.line_2.setData(self.xdata, self.ydata[1])
-            self.line_3.setData(self.xdata, self.ydata[2])
-            self.line_4.setData(self.xdata, self.ydata[3])
-            self.line_5.setData(self.xdata, self.ydata[4])
-            self.line_6.setData(self.xdata, self.ydata[5])
-            self.line_7.setData(self.xdata, self.ydata[6])
-            self.line_8.setData(self.xdata, self.ydata[7])
-            if self.startFFT and not self.done_recording:
-                if self.channel == 1:
-                    self.line_17.setData(self.xdata, self.ydata[0])
-                elif self.channel == 2:
-                    self.line_17.setData(self.xdata, self.ydata[1])
-                elif self.channel == 3:
-                    self.line_17.setData(self.xdata, self.ydata[2])
-                elif self.channel == 4:
-                    self.line_17.setData(self.xdata, self.ydata[3])
-                elif self.channel == 5:
-                    self.line_17.setData(self.xdata, self.ydata[4])
-                elif self.channel == 6:
-                    self.line_17.setData(self.xdata, self.ydata[5])
-                elif self.channel == 7:
-                    self.line_17.setData(self.xdata, self.ydata[6])
-                elif self.channel == 8:
-                    self.line_17.setData(self.xdata, self.ydata[7])
-                self.line_18_1.setOpts(height = self.yBarGraph[[0,1,2,3,4]])
-                self.line_18_2.setOpts(height = self.yBarGraph[[5]])
-                self.line_18_3.setOpts(height = self.yBarGraph[[6]])
-        if self.ui.mainPages.currentIndex() == 0:  # testing mode
-            self.line_9.setData(self.xdata, self.ydata[0])
-            self.line_10.setData(self.xdata, self.ydata[1])
-            self.line_11.setData(self.xdata, self.ydata[2])
-            self.line_12.setData(self.xdata, self.ydata[3])
-            self.line_13.setData(self.xdata, self.ydata[4])
-            self.line_14.setData(self.xdata, self.ydata[5])
-            self.line_15.setData(self.xdata, self.ydata[6])
-            self.line_16.setData(self.xdata, self.ydata[7])
-            if self.startFFT and not self.done_recording:
-                if self.channel == 1:
-                    self.line_19.setData(self.xdata, self.ydata[0])
-                elif self.channel == 2:
-                    self.line_19.setData(self.xdata, self.ydata[1])
-                elif self.channel == 3:
-                    self.line_19.setData(self.xdata, self.ydata[2])
-                elif self.channel == 4:
-                    self.line_19.setData(self.xdata, self.ydata[3])
-                elif self.channel == 5:
-                    self.line_19.setData(self.xdata, self.ydata[4])
-                elif self.channel == 6:
-                    self.line_19.setData(self.xdata, self.ydata[5])
-                elif self.channel == 7:
-                    self.line_19.setData(self.xdata, self.ydata[6])
-                elif self.channel == 8:
-                    self.line_19.setData(self.xdata, self.ydata[7])
-                self.line_20_1.setOpts(height = self.yBarGraph[[0,1,2,3,4]])
-                self.line_20_2.setOpts(height = self.yBarGraph[[5]])
-                self.line_20_3.setOpts(height = self.yBarGraph[[6]])
+            if self.startFFT:
+                self.FFT_plot.setData(self.xdata, self.ydata[self.channel - 1])
+
+            # change the power band plots from channel
+            self.yBarGraph = np.array(
+                [sum(self.ydata[self.channel - 1][i:i + self.av_height]) // self.av_height for i in
+                 range(0, len(self.ydata[self.channel - 1]), self.av_height)])
 
         self.i += 1
+        if self.i == 1000:
+            print(time.time() - self.start_time)
 
     # for testing purposes
     def generate_random_sample(self):
         # Simulate random data generation
         return random.sample(range(0, 100), 15) + [time.time()], 0
-    '''
+
     def setUserWindow(self, userWindow):
         self.userWindow = userWindow
 
@@ -789,10 +625,69 @@ class UserWindow(QMainWindow):
         #Timer
         self.timer = QTimer()
 
+        self.stepsize = 10
         #Check clicked buttons and call their respective functions
         self.timer.timeout.connect(lambda: self.changePages())
 
         #self.ui.dataTrainingBtn.clicked.connect(self.trainingData)
+
+        self.grid_layout = QGridLayout(self.ui.game1Widget)
+
+        #Tic Tac Toe
+        self.buttons = [[None for _ in range(3)] for _ in range(3)]
+        self.current_player = 'X'
+        self.game_over = False
+
+        for row in range(3):
+            for col in range(3):
+                button = QPushButton("")
+                button.setFixedSize(QSize(100, 100))
+                font = button.font()
+                font.setPointSize(24)
+                button.setFont(font)
+                button.clicked.connect(lambda _, r=row, c=col: self.on_button_clicked(r, c))
+                self.grid_layout.addWidget(button, row, col)
+                self.buttons[row][col] = button
+
+    def on_button_clicked(self, row, col):
+        if self.game_over or self.buttons[row][col].text():
+            return
+
+        self.buttons[row][col].setText(self.current_player)
+        if self.check_winner():
+            self.show_winner(self.current_player)
+            self.game_over = True
+        elif self.is_draw():
+            self.show_winner("No one")
+            self.game_over = True
+        else:
+            self.current_player = 'O' if self.current_player == 'X' else 'X'
+
+    def check_winner(self):
+        for row in range(3):
+            if self.buttons[row][0].text() == self.buttons[row][1].text() == self.buttons[row][2].text() != '':
+                return True
+        for col in range(3):
+            if self.buttons[0][col].text() == self.buttons[1][col].text() == self.buttons[2][col].text() != '':
+                return True
+        if self.buttons[0][0].text() == self.buttons[1][1].text() == self.buttons[2][2].text() != '':
+            return True
+        if self.buttons[0][2].text() == self.buttons[1][1].text() == self.buttons[2][0].text() != '':
+            return True
+        return False
+
+    def is_draw(self):
+        for row in range(3):
+            for col in range(3):
+                if not self.buttons[row][col].text():
+                    return False
+        return True
+
+    def show_winner(self, winner):
+        msg = QMessageBox()
+        msg.setWindowTitle("Game Over")
+        msg.setText(f"{winner} wins!")
+        msg.exec()
 
     def trainingData(self):
         self.signal_to_trainData.emit()
@@ -862,6 +757,21 @@ class UserWindow(QMainWindow):
     @Slot()
     def handle_signal_game2Page(self):
         self.ui.demosPages.setCurrentWidget(self.ui.game2Page)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_W:
+            if self.ui.mouseCursor.y() - self.stepsize > 0:
+                self.ui.mouseCursor.move(self.ui.mouseCursor.x(), self.ui.mouseCursor.y() - self.stepsize)
+        elif event.key() == Qt.Key_A:
+            if self.ui.mouseCursor.x() - self.stepsize > 0:
+                self.ui.mouseCursor.move(self.ui.mouseCursor.x() - self.stepsize, self.ui.mouseCursor.y())
+        elif event.key() == Qt.Key_S:
+            if self.ui.mouseCursor.y() + self.stepsize < (self.ui.cursorFrame.height() - self.ui.mouseCursor.height()):
+                self.ui.mouseCursor.move(self.ui.mouseCursor.x(), self.ui.mouseCursor.y() + self.stepsize)
+        elif event.key() == Qt.Key_D:
+            if self.ui.mouseCursor.x() + self.stepsize < (self.ui.cursorFrame.width() - self.ui.mouseCursor.width()):
+                self.ui.mouseCursor.move(self.ui.mouseCursor.x() + self.stepsize, self.ui.mouseCursor.y())
+
 
 #ERDS window class
 class ERDSWindow(QMainWindow):
