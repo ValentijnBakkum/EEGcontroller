@@ -78,10 +78,6 @@ class MainWindow(QMainWindow):
         #Training window
         #self.ui.trainBtn.clicked.connect(self.openUserWindow)
         self.ui.ERDSBtn.clicked.connect(self.openERDSWindow)
-        self.ui.learningRateLine.textChanged.connect(self.update_learningRate)
-        self.ui.batchSizeLine.textChanged.connect(self.update_batchSize)
-        self.ui.maxIterationLine.textChanged.connect(self.update_maxIteration)
-        self.ui.marginLine.textChanged.connect(self.update_margin)
 
         
 
@@ -159,22 +155,6 @@ class MainWindow(QMainWindow):
         self.stopwatch = QTimer()
         self.stopwatch.timeout.connect(self.showTime)
         self.stopwatch.start(100)
-
-    def update_learningRate(self):
-        learningRate = self.ui.learningRateLine.text()
-        return learningRate
-    
-    def update_batchSize(self):
-        batchSize = self.ui.batchSizeLine.text()
-        return batchSize
-    
-    def update_maxIteration(self):
-        maxIteration = self.ui.maxIterationLine.text()
-        return maxIteration
-    
-    def update_margin(self):
-        margin = self.ui.marginLine.text()
-        return margin
 
     def showTime(self):
  
@@ -496,27 +476,11 @@ class MainWindow(QMainWindow):
 
     def sortUser(self):
         self.ui.usersList.sortItems()
-    '''
+    
     # for test controlling the "mouse"
     # TODO make the ML output prediction do this
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key_W:
-            if self.ui.mouseCursor.y() - self.stepsize > 0:
-                self.ui.mouseCursor.move(self.ui.mouseCursor.x(), self.ui.mouseCursor.y() - self.stepsize)
-                self.ui.lineEdit_3.setText("Up")
-        elif event.key() == Qt.Key_A:
-            if self.ui.mouseCursor.x() - self.stepsize > 0:
-                self.ui.mouseCursor.move(self.ui.mouseCursor.x() - self.stepsize, self.ui.mouseCursor.y())
-                self.ui.lineEdit_3.setText("Left")
-        elif event.key() == Qt.Key_S:
-            if self.ui.mouseCursor.y() + self.stepsize < (self.ui.frame_9.height() - self.ui.mouseCursor.height()):
-                self.ui.mouseCursor.move(self.ui.mouseCursor.x(), self.ui.mouseCursor.y() + self.stepsize)
-                self.ui.lineEdit_3.setText("Down")
-        elif event.key() == Qt.Key_D:
-            if self.ui.mouseCursor.x() + self.stepsize < (self.ui.frame_9.width() - self.ui.mouseCursor.width()):
-                self.ui.mouseCursor.move(self.ui.mouseCursor.x() + self.stepsize, self.ui.mouseCursor.y())
-                self.ui.lineEdit_3.setText("Right")
-        elif event.key() == Qt.Key_1:
+        if event.key() == Qt.Key_1:
             self.yBarGraph = np.array([sum(self.ydata[0][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[0]),self.av_height)])
             self.channel = 1
         elif event.key() == Qt.Key_2:
@@ -540,9 +504,7 @@ class MainWindow(QMainWindow):
         elif event.key() == Qt.Key_8:
             self.yBarGraph = np.array([sum(self.ydata[7][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[7]),self.av_height)])
             self.channel = 8
-
-        self.ui.lineEdit_5.setText(str(self.ui.mouseCursor.x()))
-        self.ui.lineEdit_6.setText(str(self.ui.mouseCursor.y()))
+        '''
 
         # to simulate the accuracy plot
         if event.key() == Qt.Key_P:
