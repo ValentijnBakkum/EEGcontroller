@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'trainWindownNPMkv.ui'
+## Form generated from reading UI file 'trainWindowtRBYkE.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -354,9 +354,21 @@ class Ui_TrainWindow(object):
 
     def retranslateUi(self, TrainWindow):
         TrainWindow.setWindowTitle(QCoreApplication.translate("TrainWindow", u"MainWindow", None))
+#if QT_CONFIG(tooltip)
+        self.startRecordingBtn.setToolTip(QCoreApplication.translate("TrainWindow", u"Start recording", None))
+#endif // QT_CONFIG(tooltip)
         self.startRecordingBtn.setText("")
+#if QT_CONFIG(tooltip)
+        self.stopRecordingBtn.setToolTip(QCoreApplication.translate("TrainWindow", u"Stop recording", None))
+#endif // QT_CONFIG(tooltip)
         self.stopRecordingBtn.setText("")
+#if QT_CONFIG(tooltip)
+        self.helpBtn.setToolTip(QCoreApplication.translate("TrainWindow", u"Help", None))
+#endif // QT_CONFIG(tooltip)
         self.helpBtn.setText("")
+#if QT_CONFIG(tooltip)
+        self.dataTrainingBtn.setToolTip(QCoreApplication.translate("TrainWindow", u"Start training", None))
+#endif // QT_CONFIG(tooltip)
         self.dataTrainingBtn.setText(QCoreApplication.translate("TrainWindow", u"Start training data!", None))
         self.label.setText(QCoreApplication.translate("TrainWindow", u"Right Hand", None))
         self.label_2.setText(QCoreApplication.translate("TrainWindow", u"Left Hand", None))

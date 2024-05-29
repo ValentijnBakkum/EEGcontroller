@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>945</width>
-    <height>671</height>
+    <width>939</width>
+    <height>655</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,6 +28,9 @@ background-color: rgb(255, 255, 255);</string>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QPushButton" name="startRecordingBtn">
+         <property name="toolTip">
+          <string>Start recording</string>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -45,6 +48,9 @@ background-color: rgb(255, 255, 255);</string>
        </item>
        <item>
         <widget class="QPushButton" name="stopRecordingBtn">
+         <property name="toolTip">
+          <string>Stop recording</string>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -66,6 +72,9 @@ background-color: rgb(255, 255, 255);</string>
           <font>
            <pointsize>14</pointsize>
           </font>
+         </property>
+         <property name="toolTip">
+          <string>Help</string>
          </property>
          <property name="text">
           <string/>
@@ -97,6 +106,9 @@ background-color: rgb(255, 255, 255);</string>
        </item>
        <item>
         <widget class="QPushButton" name="dataTrainingBtn">
+         <property name="toolTip">
+          <string>Start training</string>
+         </property>
          <property name="text">
           <string>Start training data!</string>
          </property>

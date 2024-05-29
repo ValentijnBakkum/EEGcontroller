@@ -5,7 +5,8 @@ import csv
 from random import randint
 import subprocess
 from ui_interface import *
-from ui_trainWindow import Ui_TrainWindow
+from ui_ERDSWindow import Ui_ERDSWindow
+from ui_userWindow import Ui_UserWindow
 from Custom_Widgets import *
 from PyQt6.QtWidgets import QInputDialog, QMessageBox
 from PySide6.QtCore import QTimer, Slot, Signal
@@ -15,8 +16,17 @@ import time
 import pyqtgraph as pg
 from pylsl import StreamInlet, resolve_stream
 
+
 #Mainwindow from which everything can be called
 class MainWindow(QMainWindow):
+    userWindow_to_cursorPage = Signal()
+    userWindow_to_game1Page = Signal()
+    userWindow_to_game2Page = Signal()
+    userWindow_to_trainingPage = Signal()
+    userWindow_to_promptPage = Signal()
+    userWindow_startRecording = Signal()
+    userWindow_stopRecording = Signal()
+
     def __init__(self):
         super(MainWindow, self).__init__()
 
@@ -25,18 +35,12 @@ class MainWindow(QMainWindow):
         self.done_recording = False
 
         # for EEG cap data
-        self.simulate_data = False
-        try:
-            self.streams = resolve_stream()
-            self.inlet = StreamInlet(self.streams[0])
-
-            # Counter init
-            sample, timestamp = self.inlet.pull_sample()
-            self.counter_init = sample[15] 
-
-        except:
-            self.show_eeg_error("The EEG cap is not connected. Please connect the cap.")
-            self.counter_init = 0
+        #self.simulate_data = False
+        #self.streams = resolve_stream()
+        #try:
+        #    self.inlet = StreamInlet(self.streams[0])
+        #except:
+        #    self.show_eeg_error("The EEG cap is not connected. Please connect the cap.")
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -58,13 +62,24 @@ class MainWindow(QMainWindow):
         self.ui.sortBtn.clicked.connect(self.sortUser)
         self.ui.usersList.itemClicked.connect(self.ChooseUser)
         #menu
-        self.ui.reconnectBtn.clicked.connect(self.reconnect_cap)
-        self.ui.trainBtn.clicked.connect(self.changeTrainBtn)
-        self.ui.testBtn.clicked.connect(self.changeTestBtn)
+        #self.ui.reconnectBtn.clicked.connect(self.reconnect_cap)
+        self.ui.overviewBtn.clicked.connect(self.changeOverviewBtn)
         self.ui.usersBtn.clicked.connect(self.changeUsersBtn)
+        self.ui.demosBtn.clicked.connect(self.changeDemosBtn)
         self.ui.exitBtn.clicked.connect(self.exitApp)
+
+        self.ui.cursorBtn.clicked.connect(self.setCursorPage)
+        self.ui.trainBtn.clicked.connect(self.setTrainPage)
+        self.ui.promptBtn.clicked.connect(self.setPromptPage)
+        self.ui.game1Btn.clicked.connect(self.setGame1Page)
+        self.ui.game2Btn.clicked.connect(self.setGame2Page)
+
+        self.ui.startRecordingBtn.clicked.connect(self.startRecording)
+        self.ui.stopRecordingBtn.clicked.connect(self.stopRecording)
         #Training window
-        self.ui.startTrainBtn.clicked.connect(self.openTrainWindow)
+        #self.ui.trainBtn.clicked.connect(self.openUserWindow)
+        self.ui.ERDSBtn.clicked.connect(self.openERDSWindow)
+        
 
         # add users to user list from file
         with open('users.csv', newline='') as user_file:
@@ -73,7 +88,7 @@ class MainWindow(QMainWindow):
                 currentIndex = self.ui.usersList.currentRow()
                 self.ui.usersList.insertItem(currentIndex, row["Name"])
 
-        
+        '''
         #Data live plotting
         self.i = 0
         self.j = 0
@@ -266,12 +281,33 @@ class MainWindow(QMainWindow):
         self.timer.timeout.connect(self.update_plot)
         self.timer.start()
 
-        
+        '''
         self.show()
 
+    def setCursorPage(self):
+            self.userWindow_to_cursorPage.emit()
+
+    def setGame1Page(self):
+            self.userWindow_to_game1Page.emit()
+    
+    def setGame2Page(self):
+            self.userWindow_to_game2Page.emit()
+    
+    def setTrainPage(self):
+            self.userWindow_to_trainingPage.emit()
+
+    def setPromptPage(self):
+            self.userWindow_to_promptPage.emit()
+    
+    def startRecording(self):
+            self.userWindow_startRecording.emit()
+
+    def stopRecording(self):
+            self.userWindow_stopRecording.emit()
+
+    '''
     def reconnect_cap(self):
         try:
-            self.streams = resolve_stream()
             self.inlet = StreamInlet(self.streams[0])
             dlg = QMessageBox()
             dlg.setWindowTitle("EEG cap connected")
@@ -294,7 +330,6 @@ class MainWindow(QMainWindow):
         if button == QMessageBox.StandardButton.Retry:
             print("retrying....")
             try:
-                self.streams = resolve_stream()
                 self.inlet = StreamInlet(self.streams[0])
                 self.simulate_data = False
             except:
@@ -317,7 +352,7 @@ class MainWindow(QMainWindow):
                 sample, timestamp = self.inlet.pull_sample()
             else:
                 sample, timestamp = self.generate_random_sample()  # for testing purposes when not connected to cap
-            sample_timestamp = (sample[15] - self.counter_init)
+            sample_timestamp = sample[15]
 
             if self.j < self.ydata[0].size:
                 self.xdata[self.j:] = sample_timestamp
@@ -379,7 +414,7 @@ class MainWindow(QMainWindow):
 
         # update the plots with the new data
         # depending on which screen is active
-        if self.ui.mainPages.currentIndex() == 2:  # training mode
+        if self.ui.mainPages.currentIndex() == 3:  # training mode
             self.line.setData(self.xdata, self.ydata[0])
             self.line_2.setData(self.xdata, self.ydata[1])
             self.line_3.setData(self.xdata, self.ydata[2])
@@ -444,20 +479,30 @@ class MainWindow(QMainWindow):
     def generate_random_sample(self):
         # Simulate random data generation
         return random.sample(range(0, 100), 15) + [time.time()], 0
-
-    def setTrainWindow(self, trainWindow):
-        self.trainWindow = trainWindow
+    '''
+    def setUserWindow(self, userWindow):
+        self.userWindow = userWindow
 
     #Call the training window
-    def openTrainWindow(self):
-        global recProcess
-        recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
+    #def openUserWindow(self):
+    #    #global recProcess
+    #    #recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
+    #    
+    #    self.userWindow.show()
+
+    def setERDSWindow(self, ERDSWindow):
+        self.ERDSWindow = ERDSWindow
+
+    #Call the training window
+    def openERDSWindow(self):
+        #global recProcess
+        #recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
         
-        self.trainWindow.show()
+        self.ERDSWindow.show()
 
     def exitApp(self):
         QApplication.quit()
-
+    '''
     @Slot()
     def handle_signal_trainData(self):  # will start training the ML model on the new data
         # TODO sent signal and data to ML part to actually start the training
@@ -466,12 +511,11 @@ class MainWindow(QMainWindow):
         self.loss_data = np.append(self.loss_data, random.sample(range(0, self.loss_data[-1] + 1), 1))
         self.loss_data_iter = np.append(self.loss_data_iter, self.loss_data_iter[-1] + 1)
         self.update_ML_plots()
-
+    '''
     #Function that handles the user based interface
     def ChooseUser(self, item):
         if type(item) is str:
             self.ui.userID_test.setText(item)
-            self.ui.userID_train.setText(item)
             self.current_id = None
             with open('users.csv', newline='') as file:
                 reader = csv.DictReader(file)
@@ -483,7 +527,6 @@ class MainWindow(QMainWindow):
 
         else:
             self.ui.userID_test.setText(item.text())
-            self.ui.userID_train.setText(item.text())
             self.current_id = None
             with open('users.csv', newline='') as file:
                 reader = csv.DictReader(file)
@@ -495,23 +538,20 @@ class MainWindow(QMainWindow):
         print(self.current_id)
 
     #Functions for the buttons on the user page
-    def changeTrainBtn(self):
-        if self.ui.mainPages.currentIndex() == 2:
-            self.ui.trainBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
-            self.ui.testBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
-            self.ui.usersBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
-
-    def changeTestBtn(self):
+    def changeOverviewBtn(self):
         if self.ui.mainPages.currentIndex() == 0:
-            self.ui.testBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
-            self.ui.trainBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+            self.ui.overviewBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
             self.ui.usersBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+            self.ui.demosBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
 
     def changeUsersBtn(self):
         if self.ui.mainPages.currentIndex() == 1:
             self.ui.usersBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
-            self.ui.trainBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
-            self.ui.testBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+            self.ui.overviewBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+            self.ui.demosBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+
+    def changeDemosBtn(self):
+        self.ui.demosBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
 
     def addUser(self):
         currentIndex = self.ui.usersList.currentRow()
@@ -620,7 +660,7 @@ class MainWindow(QMainWindow):
 
     def sortUser(self):
         self.ui.usersList.sortItems()
-    
+    '''
     # for test controlling the "mouse"
     # TODO make the ML output prediction do this
     def keyPressEvent(self, event):
@@ -733,74 +773,106 @@ class MainWindow(QMainWindow):
         self.line_18.setData(self.loss_data_iter, self.loss_data)
         self.line_19.setData(self.accuracy_data_iter, self.accuracy_data)
         self.line_20.setData(self.loss_data_iter, self.loss_data)
+    '''
 
-
-#Training window class
-class TrainWindow(QMainWindow):
+#User window class
+class UserWindow(QMainWindow):
     signal_to_trainData = Signal()
 
     def __init__(self):
-        super(TrainWindow, self).__init__()
-        self.ui = Ui_TrainWindow()
+        super(UserWindow, self).__init__()
+        self.ui = Ui_UserWindow()
         self.ui.setupUi(self)
 
-        self.setWindowTitle("Training Window")
-
+        self.setWindowTitle("User Window")
+        
         #Timer
         self.timer = QTimer()
 
         #Check clicked buttons and call their respective functions
-        self.ui.startRecordingBtn.clicked.connect(self.startRecording)
-        self.ui.stopRecordingBtn.clicked.connect(self.stopRecording)
-        self.ui.helpBtn.clicked.connect(self.help)
         self.timer.timeout.connect(lambda: self.changePages())
 
-        self.ui.dataTrainingBtn.clicked.connect(self.trainingData)
+        #self.ui.dataTrainingBtn.clicked.connect(self.trainingData)
 
     def trainingData(self):
         self.signal_to_trainData.emit()
         self.close()
 
-
+    @Slot()
     def startRecording(self):
-        recProcess.stdout.read1(1)
-        recProcess.stdin.write(b"G\n") # G for go
-        recProcess.stdin.flush()
-        self.timer.start(6000)
-        global count
-        global pageArray
-        global i
-        i = 0
-        count = 0
-        pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0]
+        if self.ui.demosPages.currentWidget() == self.ui.trainingPage:
+            #recProcess.stdout.read1(1)
+            #recProcess.stdin.write(b"G\n") # G for go
+            #recProcess.stdin.flush()
+            self.timer.start(500)
+            global count
+            global pageArray
+            global i
+            i = 0
+            count = 0
+            pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0]
 
-        # 1. Right hand, 2. Left hand, 3. Tongue, 4. Feet, 0. Rest
+        if self.ui.demosPages.currentWidget() == self.ui.promptPage:
+            self.timer.start(500)
 
     def changePages(self):
-        global count
-        global pageArray
-        global i
+        if self.ui.demosPages.currentWidget() == self.ui.trainingPage:
+            global count
+            global pageArray
+            global i
 
-        pageNumber = pageArray[i]
+            pageNumber = pageArray[i]
 
-        if count % 2 != 0:
-            self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
-        else:
-            self.ui.promptsWidgets.setCurrentIndex(pageNumber)
-            i = i + 1
-        if count == 47:
-            self.timer.stop()
-        count = count + 1
+            if count % 2 != 0:
+                self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
+            else:
+                self.ui.promptsWidgets.setCurrentIndex(pageNumber)
+                i = i + 1
+            if count == 47:
+                self.timer.stop()
+            count = count + 1
 
+        if self.ui.demosPages.currentWidget() == self.ui.promptPage:
+            self.ui.promptTestWidget.setCurrentWidget(self.ui.promptPromptPage)
+
+    @Slot()
     def stopRecording(self):
-        recProcess.kill()
+        #recProcess.kill()
         self.timer.stop()
         self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
+        self.ui.promptTestWidget.setCurrentWidget(self.ui.calibrationPromptPage)
     
     def help(self):
         QMessageBox.information(None,"Help",
         "Instructions and their respective outputs:\nleft hand -> left\nright hand -> right\nfeet -> down\ntongue -> up",
         QMessageBox.StandardButton.Ok)
+
+    @Slot()
+    def handle_signal_cursorPage(self):
+        self.ui.demosPages.setCurrentWidget(self.ui.cursorPage)
+    @Slot()
+    def handle_signal_trainingPage(self):
+        self.ui.demosPages.setCurrentWidget(self.ui.trainingPage)
+    @Slot()
+    def handle_signal_promptPage(self):
+        self.ui.demosPages.setCurrentWidget(self.ui.promptPage)
+    @Slot()
+    def handle_signal_game1Page(self):
+        self.ui.demosPages.setCurrentWidget(self.ui.game1Page)
+    @Slot()
+    def handle_signal_game2Page(self):
+        self.ui.demosPages.setCurrentWidget(self.ui.game2Page)
+
+#ERDS window class
+class ERDSWindow(QMainWindow):
+
+    def __init__(self):
+        super(ERDSWindow, self).__init__()
+        self.ui = Ui_ERDSWindow()
+        self.ui.setupUi(self)
+
+        self.setWindowTitle("ERDS Window")
+        
 
 #Creates the app and runs the Mainwindow
 if __name__ == "__main__":
@@ -814,11 +886,22 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     window1 = MainWindow()
-    window2 = TrainWindow()
+    window2 = UserWindow()
+    window3 = ERDSWindow()
 
-    window1.setTrainWindow(window2)
+    window1.setUserWindow(window2)
+    window1.setERDSWindow(window3)
     
-    window2.signal_to_trainData.connect(window1.handle_signal_trainData)
+    #window2.signal_to_trainData.connect(window1.handle_signal_trainData)
+    window1.userWindow_to_cursorPage.connect(window2.handle_signal_cursorPage)
+    window1.userWindow_to_promptPage.connect(window2.handle_signal_promptPage)
+    window1.userWindow_to_trainingPage.connect(window2.handle_signal_trainingPage)
+    window1.userWindow_to_game1Page.connect(window2.handle_signal_game1Page)
+    window1.userWindow_to_game2Page.connect(window2.handle_signal_game2Page)
+    window1.userWindow_startRecording.connect(window2.startRecording)
+    window1.userWindow_stopRecording.connect(window2.stopRecording)
+
     window1.showMaximized()
     window1.show()
+    window2.show()
     sys.exit(app.exec_())

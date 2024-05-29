@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ERDSWindow</class>
+ <widget class="QMainWindow" name="ERDSWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1053</width>
+    <height>1032</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">*{
+	background-color: rgb(12, 35, 64);
+}
+QGraphicsView{
+	background-color: rgb(255, 255, 255);
+}</string>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QGraphicsView" name="ERDS1"/>
+        </item>
+        <item>
+         <widget class="QGraphicsView" name="ERDS3"/>
+        </item>
+        <item>
+         <widget class="QGraphicsView" name="ERDS5"/>
+        </item>
+        <item>
+         <widget class="QGraphicsView" name="ERDS7"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QGraphicsView" name="ERDS2"/>
+        </item>
+        <item>
+         <widget class="QGraphicsView" name="ERDS4"/>
+        </item>
+        <item>
+         <widget class="QGraphicsView" name="ERDS6">
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGraphicsView" name="ERDS8"/>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
