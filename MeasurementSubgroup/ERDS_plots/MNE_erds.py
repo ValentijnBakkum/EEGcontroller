@@ -87,14 +87,26 @@ def multifile(string_array):
 
 
 
-
+#———————————————————————————————————————————————————————————————————————
 #np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-144--14-56-37.csv', delimiter=',')
 #(allOutputs, events) = multifile(["EEGdata-2024-149--15-20-21.csv", 
 #                                  "EEGdata-2024-149--15-35-40.csv",
 #                                  "EEGdata-2024-149--15-45-38.csv",
 #                                  "EEGdata-2024-149--15-57-42.csv"
 #                                  ])
-(allOutputs, events) = multifile(["EEGdata-2024-149--16-41-44.csv"])
+#———————————————————————————————————————————————————————————————————————
+#(allOutputs, events) = multifile(["EEGdata-2024-149--16-41-44.csv"])
+#———————————————————————————————————————————————————————————————————————
+(allOutputs, events) = multifile(["EEGdata-2024-150--14-48-32.csv",
+                                  "EEGdata-2024-150--14-55-28.csv",
+                                  "EEGdata-2024-150--15-01-30.csv",
+                                  "EEGdata-2024-150--15-07-57.csv",
+                                  "EEGdata-2024-150--15-14-53.csv",
+                                  "EEGdata-2024-150--15-30-23.csv",
+                                  "EEGdata-2024-150--15-36-40.csv",
+                                  "EEGdata-2024-150--15-42-38.csv"
+                                  ])
+#———————————————————————————————————————————————————————————————————————
 
 channels = allOutputs[:, 0:8].transpose()
 
@@ -110,35 +122,6 @@ mne_info = mne.create_info(ch_names, float(250), ch_types=ch_type)
 #create mne.raw object
 raw = mne.io.RawArray(channels, mne_info)
 raw.set_montage(mne.channels.make_standard_montage("standard_1005"))
-
-#events = mne.make_fixed_length_events(raw, id=1, start=6, stop=None, duration=12, first_samp=True, overlap=0.0)
-
-#print(events)
-#events[:, 2] = np.array([1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3])
-#events = np.array([ [ 1500, 0, 1],
-#                    [ 4500, 0, 2],
-#                    [ 7500, 0, 3],
-#                    [10500, 0, 4],
-#                    [13500, 0, 4],
-#                    [16500, 0, 3],
-#                    [19500, 0, 2],
-#                    [22500, 0, 1],
-#                    [25500, 0, 2],
-#                    [28500, 0, 3],
-#                    [31500, 0, 4],
-#                    [34500, 0, 1],
-#                    [37500, 0, 1],
-#                    [40500, 0, 3],
-#                    [43500, 0, 4],
-#                    [46500, 0, 2],
-#                    [49500, 0, 3],
-#                    [52500, 0, 2],
-#                    [55500, 0, 4],
-#                    [58500, 0, 1],
-#                    [61500, 0, 4],
-#                    [64500, 0, 1],
-#                    [67500, 0, 2],
-#                    [70500, 0, 3]])
 
 tmin, tmax = -1, 4
 event_ids = {'right': 1, "left": 2, 'tongue': 3, 'feet': 4}  # map event IDs to tasks
@@ -260,6 +243,11 @@ df["band"] = df["band"].cat.remove_unused_categories()
 
 # Order channels for plotting:
 df["channel"] = df["channel"].cat.reorder_categories(('Fz', 'C3', 'Cz', 'C4', 'Pz', 'PO7', 'Oz', 'PO8'), ordered=True)
+
+print(df)
+df = df.drop(df.index[df['time'].isin([-1.004])], axis=0)
+print('\n\n\n\n\n')
+print(df)
 
 g = sns.FacetGrid(df, row="band", col="channel", margin_titles=True)
 g.map(sns.lineplot, "time", "value", "condition", n_boot=10)
