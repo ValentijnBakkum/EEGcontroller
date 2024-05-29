@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icons">
+    <file>Qss/icons/console-controller-gamepad-play-svgrepo-com.svg</file>
     <file>Qss/icons/cursor-square-svgrepo-com.svg</file>
     <file>Qss/icons/cursor-svgrepo-com.svg</file>
     <file>Qss/icons/eight-ball.svg</file>

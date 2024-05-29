@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'interfacepSCYtX.ui'
+## Form generated from reading UI file 'interfacePqJCEN.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -15,10 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractItemView, QApplication, QFrame, QGridLayout,
-    QHBoxLayout, QLabel, QLineEdit, QListWidget,
-    QListWidgetItem, QMainWindow, QPushButton, QSizePolicy,
-    QSpacerItem, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QFrame, QGraphicsView,
+    QGridLayout, QHBoxLayout, QLabel, QLineEdit,
+    QListWidget, QListWidgetItem, QMainWindow, QPushButton,
+    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
 
 from Custom_Widgets.QCustomQStackedWidget import QCustomQStackedWidget
 from Custom_Widgets.QCustomSlideMenu import QCustomSlideMenu
@@ -119,7 +119,7 @@ class Ui_MainWindow(object):
         self.demosBtn.setObjectName(u"demosBtn")
         self.demosBtn.setFont(font1)
         icon3 = QIcon()
-        icon3.addFile(u":/icons/Qss/icons/eight-ball.svg", QSize(), QIcon.Normal, QIcon.Off)
+        icon3.addFile(u":/icons/Qss/icons/console-controller-gamepad-play-svgrepo-com.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.demosBtn.setIcon(icon3)
         self.demosBtn.setIconSize(QSize(30, 30))
 
@@ -619,27 +619,12 @@ class Ui_MainWindow(object):
         self.channelsFrame.setStyleSheet(u"")
         self.channelsFrame.setFrameShape(QFrame.StyledPanel)
         self.channelsFrame.setFrameShadow(QFrame.Raised)
-        self.gridLayout_3 = QGridLayout(self.channelsFrame)
-        self.gridLayout_3.setSpacing(0)
-        self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.ch2Label = QLabel(self.channelsFrame)
-        self.ch2Label.setObjectName(u"ch2Label")
-        sizePolicy4.setHeightForWidth(self.ch2Label.sizePolicy().hasHeightForWidth())
-        self.ch2Label.setSizePolicy(sizePolicy4)
-        self.ch2Label.setFont(font4)
-        self.ch2Label.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_3.addWidget(self.ch2Label, 1, 0, 1, 1)
-
-        self.ch6Label = QLabel(self.channelsFrame)
-        self.ch6Label.setObjectName(u"ch6Label")
-        sizePolicy4.setHeightForWidth(self.ch6Label.sizePolicy().hasHeightForWidth())
-        self.ch6Label.setSizePolicy(sizePolicy4)
-        self.ch6Label.setFont(font4)
-        self.ch6Label.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_3.addWidget(self.ch6Label, 5, 0, 1, 1)
-
+        self.horizontalLayout_9 = QHBoxLayout(self.channelsFrame)
+        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
+        self.horizontalLayout_8 = QHBoxLayout()
+        self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
+        self.verticalLayout_14 = QVBoxLayout()
+        self.verticalLayout_14.setObjectName(u"verticalLayout_14")
         self.ch1Label = QLabel(self.channelsFrame)
         self.ch1Label.setObjectName(u"ch1Label")
         sizePolicy4.setHeightForWidth(self.ch1Label.sizePolicy().hasHeightForWidth())
@@ -647,16 +632,25 @@ class Ui_MainWindow(object):
         self.ch1Label.setFont(font4)
         self.ch1Label.setAlignment(Qt.AlignCenter)
 
-        self.gridLayout_3.addWidget(self.ch1Label, 0, 0, 1, 1)
+        self.verticalLayout_14.addWidget(self.ch1Label)
 
-        self.ch7Label = QLabel(self.channelsFrame)
-        self.ch7Label.setObjectName(u"ch7Label")
-        sizePolicy4.setHeightForWidth(self.ch7Label.sizePolicy().hasHeightForWidth())
-        self.ch7Label.setSizePolicy(sizePolicy4)
-        self.ch7Label.setFont(font4)
-        self.ch7Label.setAlignment(Qt.AlignCenter)
+        self.ch2Label = QLabel(self.channelsFrame)
+        self.ch2Label.setObjectName(u"ch2Label")
+        sizePolicy4.setHeightForWidth(self.ch2Label.sizePolicy().hasHeightForWidth())
+        self.ch2Label.setSizePolicy(sizePolicy4)
+        self.ch2Label.setFont(font4)
+        self.ch2Label.setAlignment(Qt.AlignCenter)
 
-        self.gridLayout_3.addWidget(self.ch7Label, 6, 0, 1, 1)
+        self.verticalLayout_14.addWidget(self.ch2Label)
+
+        self.ch3Label = QLabel(self.channelsFrame)
+        self.ch3Label.setObjectName(u"ch3Label")
+        sizePolicy4.setHeightForWidth(self.ch3Label.sizePolicy().hasHeightForWidth())
+        self.ch3Label.setSizePolicy(sizePolicy4)
+        self.ch3Label.setFont(font4)
+        self.ch3Label.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_14.addWidget(self.ch3Label)
 
         self.ch4Label = QLabel(self.channelsFrame)
         self.ch4Label.setObjectName(u"ch4Label")
@@ -665,7 +659,34 @@ class Ui_MainWindow(object):
         self.ch4Label.setFont(font4)
         self.ch4Label.setAlignment(Qt.AlignCenter)
 
-        self.gridLayout_3.addWidget(self.ch4Label, 3, 0, 1, 1)
+        self.verticalLayout_14.addWidget(self.ch4Label)
+
+        self.ch5Label = QLabel(self.channelsFrame)
+        self.ch5Label.setObjectName(u"ch5Label")
+        sizePolicy4.setHeightForWidth(self.ch5Label.sizePolicy().hasHeightForWidth())
+        self.ch5Label.setSizePolicy(sizePolicy4)
+        self.ch5Label.setFont(font4)
+        self.ch5Label.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_14.addWidget(self.ch5Label)
+
+        self.ch6Label = QLabel(self.channelsFrame)
+        self.ch6Label.setObjectName(u"ch6Label")
+        sizePolicy4.setHeightForWidth(self.ch6Label.sizePolicy().hasHeightForWidth())
+        self.ch6Label.setSizePolicy(sizePolicy4)
+        self.ch6Label.setFont(font4)
+        self.ch6Label.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_14.addWidget(self.ch6Label)
+
+        self.ch7Label = QLabel(self.channelsFrame)
+        self.ch7Label.setObjectName(u"ch7Label")
+        sizePolicy4.setHeightForWidth(self.ch7Label.sizePolicy().hasHeightForWidth())
+        self.ch7Label.setSizePolicy(sizePolicy4)
+        self.ch7Label.setFont(font4)
+        self.ch7Label.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_14.addWidget(self.ch7Label)
 
         self.ch8Label = QLabel(self.channelsFrame)
         self.ch8Label.setObjectName(u"ch8Label")
@@ -675,108 +696,18 @@ class Ui_MainWindow(object):
         self.ch8Label.setStyleSheet(u"")
         self.ch8Label.setAlignment(Qt.AlignCenter)
 
-        self.gridLayout_3.addWidget(self.ch8Label, 7, 0, 1, 1)
+        self.verticalLayout_14.addWidget(self.ch8Label)
 
-        self.ch5Label = QLabel(self.channelsFrame)
-        self.ch5Label.setObjectName(u"ch5Label")
-        sizePolicy4.setHeightForWidth(self.ch5Label.sizePolicy().hasHeightForWidth())
-        self.ch5Label.setSizePolicy(sizePolicy4)
-        self.ch5Label.setFont(font4)
-        self.ch5Label.setAlignment(Qt.AlignCenter)
 
-        self.gridLayout_3.addWidget(self.ch5Label, 4, 0, 1, 1)
+        self.horizontalLayout_8.addLayout(self.verticalLayout_14)
 
-        self.ch3Label = QLabel(self.channelsFrame)
-        self.ch3Label.setObjectName(u"ch3Label")
-        sizePolicy4.setHeightForWidth(self.ch3Label.sizePolicy().hasHeightForWidth())
-        self.ch3Label.setSizePolicy(sizePolicy4)
-        self.ch3Label.setFont(font4)
-        self.ch3Label.setAlignment(Qt.AlignCenter)
+        self.channelsPlot = QGraphicsView(self.channelsFrame)
+        self.channelsPlot.setObjectName(u"channelsPlot")
 
-        self.gridLayout_3.addWidget(self.ch3Label, 2, 0, 1, 1)
+        self.horizontalLayout_8.addWidget(self.channelsPlot)
 
-        self.ch1Plot = PlotWidget(self.channelsFrame)
-        self.ch1Plot.setObjectName(u"ch1Plot")
-        sizePolicy11 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        sizePolicy11.setHorizontalStretch(90)
-        sizePolicy11.setVerticalStretch(0)
-        sizePolicy11.setHeightForWidth(self.ch1Plot.sizePolicy().hasHeightForWidth())
-        self.ch1Plot.setSizePolicy(sizePolicy11)
-        brush2 = QBrush(QColor(255, 255, 255, 255))
-        brush2.setStyle(Qt.NoBrush)
-        self.ch1Plot.setBackgroundBrush(brush2)
 
-        self.gridLayout_3.addWidget(self.ch1Plot, 0, 1, 1, 1)
-
-        self.ch2Plot = PlotWidget(self.channelsFrame)
-        self.ch2Plot.setObjectName(u"ch2Plot")
-        sizePolicy11.setHeightForWidth(self.ch2Plot.sizePolicy().hasHeightForWidth())
-        self.ch2Plot.setSizePolicy(sizePolicy11)
-        brush3 = QBrush(QColor(255, 255, 255, 255))
-        brush3.setStyle(Qt.NoBrush)
-        self.ch2Plot.setBackgroundBrush(brush3)
-
-        self.gridLayout_3.addWidget(self.ch2Plot, 1, 1, 1, 1)
-
-        self.ch3Plot = PlotWidget(self.channelsFrame)
-        self.ch3Plot.setObjectName(u"ch3Plot")
-        sizePolicy11.setHeightForWidth(self.ch3Plot.sizePolicy().hasHeightForWidth())
-        self.ch3Plot.setSizePolicy(sizePolicy11)
-        brush4 = QBrush(QColor(255, 255, 255, 255))
-        brush4.setStyle(Qt.NoBrush)
-        self.ch3Plot.setBackgroundBrush(brush4)
-
-        self.gridLayout_3.addWidget(self.ch3Plot, 2, 1, 1, 1)
-
-        self.ch4Plot = PlotWidget(self.channelsFrame)
-        self.ch4Plot.setObjectName(u"ch4Plot")
-        sizePolicy11.setHeightForWidth(self.ch4Plot.sizePolicy().hasHeightForWidth())
-        self.ch4Plot.setSizePolicy(sizePolicy11)
-        brush5 = QBrush(QColor(255, 255, 255, 255))
-        brush5.setStyle(Qt.NoBrush)
-        self.ch4Plot.setBackgroundBrush(brush5)
-
-        self.gridLayout_3.addWidget(self.ch4Plot, 3, 1, 1, 1)
-
-        self.ch5Plot = PlotWidget(self.channelsFrame)
-        self.ch5Plot.setObjectName(u"ch5Plot")
-        sizePolicy11.setHeightForWidth(self.ch5Plot.sizePolicy().hasHeightForWidth())
-        self.ch5Plot.setSizePolicy(sizePolicy11)
-        brush6 = QBrush(QColor(255, 255, 255, 255))
-        brush6.setStyle(Qt.NoBrush)
-        self.ch5Plot.setBackgroundBrush(brush6)
-
-        self.gridLayout_3.addWidget(self.ch5Plot, 4, 1, 1, 1)
-
-        self.ch6Plot = PlotWidget(self.channelsFrame)
-        self.ch6Plot.setObjectName(u"ch6Plot")
-        sizePolicy11.setHeightForWidth(self.ch6Plot.sizePolicy().hasHeightForWidth())
-        self.ch6Plot.setSizePolicy(sizePolicy11)
-        brush7 = QBrush(QColor(255, 255, 255, 255))
-        brush7.setStyle(Qt.NoBrush)
-        self.ch6Plot.setBackgroundBrush(brush7)
-
-        self.gridLayout_3.addWidget(self.ch6Plot, 5, 1, 1, 1)
-
-        self.ch7Plot = PlotWidget(self.channelsFrame)
-        self.ch7Plot.setObjectName(u"ch7Plot")
-        sizePolicy11.setHeightForWidth(self.ch7Plot.sizePolicy().hasHeightForWidth())
-        self.ch7Plot.setSizePolicy(sizePolicy11)
-        brush8 = QBrush(QColor(255, 255, 255, 255))
-        brush8.setStyle(Qt.NoBrush)
-        self.ch7Plot.setBackgroundBrush(brush8)
-
-        self.gridLayout_3.addWidget(self.ch7Plot, 6, 1, 1, 1)
-
-        self.ch8Plot = PlotWidget(self.channelsFrame)
-        self.ch8Plot.setObjectName(u"ch8Plot")
-        sizePolicy11.setHeightForWidth(self.ch8Plot.sizePolicy().hasHeightForWidth())
-        self.ch8Plot.setSizePolicy(sizePolicy11)
-        brush9 = QBrush(QColor(255, 255, 255, 255))
-        brush9.setStyle(Qt.NoBrush)
-        self.ch8Plot.setBackgroundBrush(brush9)
-
-        self.gridLayout_3.addWidget(self.ch8Plot, 7, 1, 1, 1)
+        self.horizontalLayout_9.addLayout(self.horizontalLayout_8)
 
 
         self.verticalLayout_3.addWidget(self.channelsFrame)
@@ -790,11 +721,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
         self.infoWidgetTrain = QCustomSlideMenu(self.infoWidgetContainer)
         self.infoWidgetTrain.setObjectName(u"infoWidgetTrain")
-        sizePolicy12 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy12.setHorizontalStretch(0)
-        sizePolicy12.setVerticalStretch(0)
-        sizePolicy12.setHeightForWidth(self.infoWidgetTrain.sizePolicy().hasHeightForWidth())
-        self.infoWidgetTrain.setSizePolicy(sizePolicy12)
+        sizePolicy11 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy11.setHorizontalStretch(0)
+        sizePolicy11.setVerticalStretch(0)
+        sizePolicy11.setHeightForWidth(self.infoWidgetTrain.sizePolicy().hasHeightForWidth())
+        self.infoWidgetTrain.setSizePolicy(sizePolicy11)
         self.infoWidgetTrain.setMaximumSize(QSize(16777215, 0))
         self.infoWidgetTrain.setStyleSheet(u"background-color: rgb(0, 184, 200);\n"
 "color: rgb(255, 255, 255);")
@@ -824,11 +755,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.label_14 = QLabel(self.frame_10)
         self.label_14.setObjectName(u"label_14")
-        sizePolicy13 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy13.setHorizontalStretch(80)
-        sizePolicy13.setVerticalStretch(0)
-        sizePolicy13.setHeightForWidth(self.label_14.sizePolicy().hasHeightForWidth())
-        self.label_14.setSizePolicy(sizePolicy13)
+        sizePolicy12 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy12.setHorizontalStretch(80)
+        sizePolicy12.setVerticalStretch(0)
+        sizePolicy12.setHeightForWidth(self.label_14.sizePolicy().hasHeightForWidth())
+        self.label_14.setSizePolicy(sizePolicy12)
         font6 = QFont()
         font6.setPointSize(12)
         self.label_14.setFont(font6)
@@ -837,8 +768,8 @@ class Ui_MainWindow(object):
 
         self.frame_11 = QFrame(self.frame_10)
         self.frame_11.setObjectName(u"frame_11")
-        sizePolicy12.setHeightForWidth(self.frame_11.sizePolicy().hasHeightForWidth())
-        self.frame_11.setSizePolicy(sizePolicy12)
+        sizePolicy11.setHeightForWidth(self.frame_11.sizePolicy().hasHeightForWidth())
+        self.frame_11.setSizePolicy(sizePolicy11)
         self.frame_11.setMinimumSize(QSize(169, 108))
         self.frame_11.setStyleSheet(u"")
         self.frame_11.setFrameShape(QFrame.StyledPanel)
@@ -943,11 +874,11 @@ class Ui_MainWindow(object):
 
         self.usersList = QListWidget(self.mainBodyContainerUsers)
         self.usersList.setObjectName(u"usersList")
-        sizePolicy14 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        sizePolicy14.setHorizontalStretch(0)
-        sizePolicy14.setVerticalStretch(90)
-        sizePolicy14.setHeightForWidth(self.usersList.sizePolicy().hasHeightForWidth())
-        self.usersList.setSizePolicy(sizePolicy14)
+        sizePolicy13 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy13.setHorizontalStretch(0)
+        sizePolicy13.setVerticalStretch(90)
+        sizePolicy13.setHeightForWidth(self.usersList.sizePolicy().hasHeightForWidth())
+        self.usersList.setSizePolicy(sizePolicy13)
         font9 = QFont()
         font9.setPointSize(18)
         self.usersList.setFont(font9)
@@ -1024,7 +955,7 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(tooltip)
         self.demosBtn.setToolTip(QCoreApplication.translate("MainWindow", u"Demos", None))
 #endif // QT_CONFIG(tooltip)
-        self.demosBtn.setText(QCoreApplication.translate("MainWindow", u"Games", None))
+        self.demosBtn.setText(QCoreApplication.translate("MainWindow", u"Demos", None))
 #if QT_CONFIG(tooltip)
         self.usersBtn.setToolTip(QCoreApplication.translate("MainWindow", u"Users", None))
 #endif // QT_CONFIG(tooltip)
@@ -1061,14 +992,14 @@ class Ui_MainWindow(object):
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"Margin:", None))
         self.maxIterationLine.setText(QCoreApplication.translate("MainWindow", u"50", None))
         self.marginLine.setText(QCoreApplication.translate("MainWindow", u"7", None))
-        self.ch2Label.setText(QCoreApplication.translate("MainWindow", u"Ch2", None))
-        self.ch6Label.setText(QCoreApplication.translate("MainWindow", u"Ch6", None))
         self.ch1Label.setText(QCoreApplication.translate("MainWindow", u"Ch1", None))
-        self.ch7Label.setText(QCoreApplication.translate("MainWindow", u"Ch7", None))
-        self.ch4Label.setText(QCoreApplication.translate("MainWindow", u"Ch4", None))
-        self.ch8Label.setText(QCoreApplication.translate("MainWindow", u"Ch8", None))
-        self.ch5Label.setText(QCoreApplication.translate("MainWindow", u"Ch5", None))
+        self.ch2Label.setText(QCoreApplication.translate("MainWindow", u"Ch2", None))
         self.ch3Label.setText(QCoreApplication.translate("MainWindow", u"Ch3", None))
+        self.ch4Label.setText(QCoreApplication.translate("MainWindow", u"Ch4", None))
+        self.ch5Label.setText(QCoreApplication.translate("MainWindow", u"Ch5", None))
+        self.ch6Label.setText(QCoreApplication.translate("MainWindow", u"Ch6", None))
+        self.ch7Label.setText(QCoreApplication.translate("MainWindow", u"Ch7", None))
+        self.ch8Label.setText(QCoreApplication.translate("MainWindow", u"Ch8", None))
         self.label_13.setText(QCoreApplication.translate("MainWindow", u"Information", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"Training page: Train the user's brain activity using the 'Start training!' button. A new window will appear\n"
 " in which the user can record the brain activity according to the instruction given.\n"

@@ -213,11 +213,11 @@ QPushButton{
                 <string>Demos</string>
                </property>
                <property name="text">
-                <string>Games</string>
+                <string>Demos</string>
                </property>
                <property name="icon">
                 <iconset resource="resources.qrc">
-                 <normaloff>:/icons/Qss/icons/eight-ball.svg</normaloff>:/icons/Qss/icons/eight-ball.svg</iconset>
+                 <normaloff>:/icons/Qss/icons/console-controller-gamepad-play-svgrepo-com.svg</normaloff>:/icons/Qss/icons/console-controller-gamepad-play-svgrepo-com.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -1224,332 +1224,188 @@ border:none;</string>
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
              </property>
-             <layout class="QGridLayout" name="gridLayout_3">
-              <property name="spacing">
-               <number>0</number>
-              </property>
-              <item row="1" column="0">
-               <widget class="QLabel" name="ch2Label">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>10</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>16</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Ch2</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="ch6Label">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>10</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>16</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Ch6</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="ch1Label">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>10</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>16</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Ch1</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="0">
-               <widget class="QLabel" name="ch7Label">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>10</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>16</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Ch7</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="ch4Label">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>10</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>16</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Ch4</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="0">
-               <widget class="QLabel" name="ch8Label">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>10</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>16</pointsize>
-                 </font>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true"/>
-                </property>
-                <property name="text">
-                 <string>Ch8</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="ch5Label">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>10</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>16</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Ch5</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="ch3Label">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>10</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>16</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Ch3</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="PlotWidget" name="ch1Plot">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>90</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="backgroundBrush">
-                 <brush brushstyle="NoBrush">
-                  <color alpha="255">
-                   <red>255</red>
-                   <green>255</green>
-                   <blue>255</blue>
-                  </color>
-                 </brush>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="PlotWidget" name="ch2Plot">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>90</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="backgroundBrush">
-                 <brush brushstyle="NoBrush">
-                  <color alpha="255">
-                   <red>255</red>
-                   <green>255</green>
-                   <blue>255</blue>
-                  </color>
-                 </brush>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="PlotWidget" name="ch3Plot">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>90</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="backgroundBrush">
-                 <brush brushstyle="NoBrush">
-                  <color alpha="255">
-                   <red>255</red>
-                   <green>255</green>
-                   <blue>255</blue>
-                  </color>
-                 </brush>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="PlotWidget" name="ch4Plot">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>90</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="backgroundBrush">
-                 <brush brushstyle="NoBrush">
-                  <color alpha="255">
-                   <red>255</red>
-                   <green>255</green>
-                   <blue>255</blue>
-                  </color>
-                 </brush>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <widget class="PlotWidget" name="ch5Plot">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>90</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="backgroundBrush">
-                 <brush brushstyle="NoBrush">
-                  <color alpha="255">
-                   <red>255</red>
-                   <green>255</green>
-                   <blue>255</blue>
-                  </color>
-                 </brush>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="1">
-               <widget class="PlotWidget" name="ch6Plot">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>90</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="backgroundBrush">
-                 <brush brushstyle="NoBrush">
-                  <color alpha="255">
-                   <red>255</red>
-                   <green>255</green>
-                   <blue>255</blue>
-                  </color>
-                 </brush>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="1">
-               <widget class="PlotWidget" name="ch7Plot">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>90</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="backgroundBrush">
-                 <brush brushstyle="NoBrush">
-                  <color alpha="255">
-                   <red>255</red>
-                   <green>255</green>
-                   <blue>255</blue>
-                  </color>
-                 </brush>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="1">
-               <widget class="PlotWidget" name="ch8Plot">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>90</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="backgroundBrush">
-                 <brush brushstyle="NoBrush">
-                  <color alpha="255">
-                   <red>255</red>
-                   <green>255</green>
-                   <blue>255</blue>
-                  </color>
-                 </brush>
-                </property>
-               </widget>
+             <layout class="QHBoxLayout" name="horizontalLayout_9">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_8">
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_14">
+                  <item>
+                   <widget class="QLabel" name="ch1Label">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>10</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>16</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Ch1</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="ch2Label">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>10</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>16</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Ch2</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="ch3Label">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>10</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>16</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Ch3</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="ch4Label">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>10</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>16</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Ch4</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="ch5Label">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>10</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>16</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Ch5</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="ch6Label">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>10</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>16</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Ch6</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="ch7Label">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>10</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>16</pointsize>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Ch7</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="ch8Label">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>10</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>16</pointsize>
+                     </font>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true"/>
+                    </property>
+                    <property name="text">
+                     <string>Ch8</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <widget class="QGraphicsView" name="channelsPlot"/>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>
