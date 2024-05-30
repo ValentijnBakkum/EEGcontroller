@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'interfaceBPXBOM.ui'
+## Form generated from reading UI file 'interfaceKzCdeH.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -96,6 +96,7 @@ class Ui_MainWindow(object):
 
         self.frame_2 = QFrame(self.leftSubMenuContainer)
         self.frame_2.setObjectName(u"frame_2")
+        self.frame_2.setStyleSheet(u"border-radius: 10px;")
         self.frame_2.setFrameShape(QFrame.StyledPanel)
         self.frame_2.setFrameShadow(QFrame.Raised)
         self.verticalLayout_4 = QVBoxLayout(self.frame_2)
@@ -282,53 +283,42 @@ class Ui_MainWindow(object):
         self.buttonsBox.setStyleSheet(u"*{\n"
 "border:none;\n"
 "color: rgb(255, 255, 255);\n"
+"border-radius: 10px;\n"
+"background-color: rgb(0, 118, 194);\n"
 "}\n"
 "QPushButton{\n"
 "	text-align:center;\n"
-"	background-color: rgb(0, 118, 194);\n"
+"	background-color: rgb(0, 166, 214);\n"
 "}")
         self.gridLayout_4 = QGridLayout(self.buttonsBox)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
-        self.dataTrainingBtn = QPushButton(self.buttonsBox)
-        self.dataTrainingBtn.setObjectName(u"dataTrainingBtn")
+        self.gridLayout_4.setContentsMargins(-1, 9, -1, -1)
+        self.ERDSBtn = QPushButton(self.buttonsBox)
+        self.ERDSBtn.setObjectName(u"ERDSBtn")
         sizePolicy3 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         sizePolicy3.setHorizontalStretch(1)
         sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.dataTrainingBtn.sizePolicy().hasHeightForWidth())
-        self.dataTrainingBtn.setSizePolicy(sizePolicy3)
-        self.dataTrainingBtn.setFont(font1)
+        sizePolicy3.setHeightForWidth(self.ERDSBtn.sizePolicy().hasHeightForWidth())
+        self.ERDSBtn.setSizePolicy(sizePolicy3)
+        font2 = QFont()
+        font2.setPointSize(16)
+        self.ERDSBtn.setFont(font2)
 
-        self.gridLayout_4.addWidget(self.dataTrainingBtn, 1, 0, 1, 1)
+        self.gridLayout_4.addWidget(self.ERDSBtn, 2, 2, 1, 1)
 
         self.startRecordingBtn = QPushButton(self.buttonsBox)
         self.startRecordingBtn.setObjectName(u"startRecordingBtn")
         sizePolicy3.setHeightForWidth(self.startRecordingBtn.sizePolicy().hasHeightForWidth())
         self.startRecordingBtn.setSizePolicy(sizePolicy3)
-        self.startRecordingBtn.setFont(font1)
+        self.startRecordingBtn.setFont(font2)
 
-        self.gridLayout_4.addWidget(self.startRecordingBtn, 0, 0, 1, 1)
-
-        self.stopRecordingBtn = QPushButton(self.buttonsBox)
-        self.stopRecordingBtn.setObjectName(u"stopRecordingBtn")
-        sizePolicy3.setHeightForWidth(self.stopRecordingBtn.sizePolicy().hasHeightForWidth())
-        self.stopRecordingBtn.setSizePolicy(sizePolicy3)
-        self.stopRecordingBtn.setFont(font1)
-
-        self.gridLayout_4.addWidget(self.stopRecordingBtn, 0, 1, 1, 1)
-
-        self.ERDSBtn = QPushButton(self.buttonsBox)
-        self.ERDSBtn.setObjectName(u"ERDSBtn")
-        sizePolicy3.setHeightForWidth(self.ERDSBtn.sizePolicy().hasHeightForWidth())
-        self.ERDSBtn.setSizePolicy(sizePolicy3)
-        self.ERDSBtn.setFont(font1)
-
-        self.gridLayout_4.addWidget(self.ERDSBtn, 1, 2, 1, 1)
+        self.gridLayout_4.addWidget(self.startRecordingBtn, 1, 0, 1, 1)
 
         self.promptTimeFrame = QFrame(self.buttonsBox)
         self.promptTimeFrame.setObjectName(u"promptTimeFrame")
         sizePolicy2.setHeightForWidth(self.promptTimeFrame.sizePolicy().hasHeightForWidth())
         self.promptTimeFrame.setSizePolicy(sizePolicy2)
-        self.promptTimeFrame.setStyleSheet(u"background-color: rgb(0, 118, 194);")
+        self.promptTimeFrame.setStyleSheet(u"background-color: rgb(0, 166, 214);")
         self.promptTimeFrame.setFrameShape(QFrame.StyledPanel)
         self.promptTimeFrame.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_4 = QHBoxLayout(self.promptTimeFrame)
@@ -342,7 +332,7 @@ class Ui_MainWindow(object):
         sizePolicy4.setVerticalStretch(0)
         sizePolicy4.setHeightForWidth(self.stopwatch.sizePolicy().hasHeightForWidth())
         self.stopwatch.setSizePolicy(sizePolicy4)
-        self.stopwatch.setFont(font1)
+        self.stopwatch.setFont(font2)
         self.stopwatch.setAlignment(Qt.AlignCenter)
 
         self.horizontalLayout_4.addWidget(self.stopwatch)
@@ -354,20 +344,45 @@ class Ui_MainWindow(object):
         sizePolicy5.setVerticalStretch(0)
         sizePolicy5.setHeightForWidth(self.unit_sec.sizePolicy().hasHeightForWidth())
         self.unit_sec.setSizePolicy(sizePolicy5)
-        self.unit_sec.setFont(font1)
+        self.unit_sec.setFont(font2)
 
         self.horizontalLayout_4.addWidget(self.unit_sec)
 
 
-        self.gridLayout_4.addWidget(self.promptTimeFrame, 0, 2, 1, 1)
+        self.gridLayout_4.addWidget(self.promptTimeFrame, 1, 2, 1, 1)
+
+        self.stopRecordingBtn = QPushButton(self.buttonsBox)
+        self.stopRecordingBtn.setObjectName(u"stopRecordingBtn")
+        sizePolicy3.setHeightForWidth(self.stopRecordingBtn.sizePolicy().hasHeightForWidth())
+        self.stopRecordingBtn.setSizePolicy(sizePolicy3)
+        self.stopRecordingBtn.setFont(font2)
+
+        self.gridLayout_4.addWidget(self.stopRecordingBtn, 1, 1, 1, 1)
 
         self.promptBtn = QPushButton(self.buttonsBox)
         self.promptBtn.setObjectName(u"promptBtn")
         sizePolicy3.setHeightForWidth(self.promptBtn.sizePolicy().hasHeightForWidth())
         self.promptBtn.setSizePolicy(sizePolicy3)
-        self.promptBtn.setFont(font1)
+        self.promptBtn.setFont(font2)
 
-        self.gridLayout_4.addWidget(self.promptBtn, 1, 1, 1, 1)
+        self.gridLayout_4.addWidget(self.promptBtn, 2, 1, 1, 1)
+
+        self.dataTrainingBtn = QPushButton(self.buttonsBox)
+        self.dataTrainingBtn.setObjectName(u"dataTrainingBtn")
+        sizePolicy3.setHeightForWidth(self.dataTrainingBtn.sizePolicy().hasHeightForWidth())
+        self.dataTrainingBtn.setSizePolicy(sizePolicy3)
+        self.dataTrainingBtn.setFont(font2)
+
+        self.gridLayout_4.addWidget(self.dataTrainingBtn, 2, 0, 1, 1)
+
+        self.label_6 = QLabel(self.buttonsBox)
+        self.label_6.setObjectName(u"label_6")
+        font3 = QFont()
+        font3.setPointSize(16)
+        font3.setBold(True)
+        self.label_6.setFont(font3)
+
+        self.gridLayout_4.addWidget(self.label_6, 0, 0, 1, 1)
 
 
         self.verticalLayout_6.addWidget(self.buttonsBox)
@@ -427,7 +442,7 @@ class Ui_MainWindow(object):
         self.UserIDBox.setMaximumSize(QSize(16777215, 70))
         self.UserIDBox.setStyleSheet(u"color: rgb(255, 255, 255);\n"
 "background-color: rgb(0, 166, 214);\n"
-"border:none;")
+"border-radius: 10px;")
         self.horizontalLayout_15 = QHBoxLayout(self.UserIDBox)
         self.horizontalLayout_15.setSpacing(0)
         self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
@@ -452,10 +467,10 @@ class Ui_MainWindow(object):
         sizePolicy8.setVerticalStretch(0)
         sizePolicy8.setHeightForWidth(self.userID_test.sizePolicy().hasHeightForWidth())
         self.userID_test.setSizePolicy(sizePolicy8)
-        font2 = QFont()
-        font2.setPointSize(28)
-        font2.setBold(True)
-        self.userID_test.setFont(font2)
+        font4 = QFont()
+        font4.setPointSize(28)
+        font4.setBold(True)
+        self.userID_test.setFont(font4)
         self.userID_test.setAlignment(Qt.AlignCenter)
 
         self.horizontalLayout_15.addWidget(self.userID_test)
@@ -469,7 +484,7 @@ class Ui_MainWindow(object):
         self.leftBodyFrameOverview.setSizePolicy(sizePolicy1)
         self.leftBodyFrameOverview.setStyleSheet(u"background-color: rgb(255, 255, 255);")
         self.verticalLayout_3 = QVBoxLayout(self.leftBodyFrameOverview)
-        self.verticalLayout_3.setSpacing(0)
+        self.verticalLayout_3.setSpacing(6)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.directionFrame = QFrame(self.leftBodyFrameOverview)
@@ -480,7 +495,7 @@ class Ui_MainWindow(object):
         sizePolicy9.setHeightForWidth(self.directionFrame.sizePolicy().hasHeightForWidth())
         self.directionFrame.setSizePolicy(sizePolicy9)
         self.directionFrame.setStyleSheet(u"background-color: rgb(0, 0, 0);\n"
-"border:none;")
+"border-radius: 10px")
         self.directionFrame.setFrameShape(QFrame.StyledPanel)
         self.directionFrame.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_3 = QHBoxLayout(self.directionFrame)
@@ -494,9 +509,9 @@ class Ui_MainWindow(object):
         sizePolicy10.setVerticalStretch(0)
         sizePolicy10.setHeightForWidth(self.directionLine.sizePolicy().hasHeightForWidth())
         self.directionLine.setSizePolicy(sizePolicy10)
-        font3 = QFont()
-        font3.setPointSize(24)
-        self.directionLine.setFont(font3)
+        font5 = QFont()
+        font5.setPointSize(24)
+        self.directionLine.setFont(font5)
         self.directionLine.setCursor(QCursor(Qt.ArrowCursor))
         self.directionLine.setStyleSheet(u"background-color: rgb(255, 255, 255);")
         self.directionLine.setAlignment(Qt.AlignCenter)
@@ -515,10 +530,15 @@ class Ui_MainWindow(object):
         sizePolicy11.setHeightForWidth(self.valuesFrame.sizePolicy().hasHeightForWidth())
         self.valuesFrame.setSizePolicy(sizePolicy11)
         self.valuesFrame.setMaximumSize(QSize(16777215, 107))
+        self.valuesFrame.setStyleSheet(u"background-color: rgb(0, 118, 194);\n"
+"color: rgb(255, 255, 255);\n"
+"border-radius: 10px;")
         self.valuesFrame.setFrameShape(QFrame.StyledPanel)
         self.valuesFrame.setFrameShadow(QFrame.Raised)
         self.gridLayout_2 = QGridLayout(self.valuesFrame)
+        self.gridLayout_2.setSpacing(0)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.gridLayout_2.setContentsMargins(9, 9, 9, 9)
         self.valuesBox = QHBoxLayout()
         self.valuesBox.setObjectName(u"valuesBox")
         self.verticalLayout_8 = QVBoxLayout()
@@ -530,9 +550,7 @@ class Ui_MainWindow(object):
         sizePolicy12.setVerticalStretch(0)
         sizePolicy12.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
         self.label.setSizePolicy(sizePolicy12)
-        font4 = QFont()
-        font4.setPointSize(16)
-        self.label.setFont(font4)
+        self.label.setFont(font2)
         self.label.setStyleSheet(u"border:none;")
         self.label.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
@@ -542,7 +560,7 @@ class Ui_MainWindow(object):
         self.label_2.setObjectName(u"label_2")
         sizePolicy12.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
         self.label_2.setSizePolicy(sizePolicy12)
-        self.label_2.setFont(font4)
+        self.label_2.setFont(font2)
         self.label_2.setStyleSheet(u"border:none;")
         self.label_2.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
@@ -557,8 +575,9 @@ class Ui_MainWindow(object):
         self.learningRateLine.setObjectName(u"learningRateLine")
         sizePolicy.setHeightForWidth(self.learningRateLine.sizePolicy().hasHeightForWidth())
         self.learningRateLine.setSizePolicy(sizePolicy)
-        self.learningRateLine.setFont(font4)
+        self.learningRateLine.setFont(font2)
         self.learningRateLine.setCursor(QCursor(Qt.ArrowCursor))
+        self.learningRateLine.setStyleSheet(u"")
 
         self.verticalLayout_9.addWidget(self.learningRateLine)
 
@@ -566,7 +585,7 @@ class Ui_MainWindow(object):
         self.batchSizeLine.setObjectName(u"batchSizeLine")
         sizePolicy.setHeightForWidth(self.batchSizeLine.sizePolicy().hasHeightForWidth())
         self.batchSizeLine.setSizePolicy(sizePolicy)
-        self.batchSizeLine.setFont(font4)
+        self.batchSizeLine.setFont(font2)
         self.batchSizeLine.setCursor(QCursor(Qt.ArrowCursor))
 
         self.verticalLayout_9.addWidget(self.batchSizeLine)
@@ -580,7 +599,7 @@ class Ui_MainWindow(object):
         self.label_3.setObjectName(u"label_3")
         sizePolicy12.setHeightForWidth(self.label_3.sizePolicy().hasHeightForWidth())
         self.label_3.setSizePolicy(sizePolicy12)
-        self.label_3.setFont(font4)
+        self.label_3.setFont(font2)
         self.label_3.setStyleSheet(u"border:none;")
         self.label_3.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
@@ -590,7 +609,7 @@ class Ui_MainWindow(object):
         self.label_4.setObjectName(u"label_4")
         sizePolicy12.setHeightForWidth(self.label_4.sizePolicy().hasHeightForWidth())
         self.label_4.setSizePolicy(sizePolicy12)
-        self.label_4.setFont(font4)
+        self.label_4.setFont(font2)
         self.label_4.setStyleSheet(u"border:none;")
         self.label_4.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
@@ -605,7 +624,7 @@ class Ui_MainWindow(object):
         self.maxIterationLine.setObjectName(u"maxIterationLine")
         sizePolicy.setHeightForWidth(self.maxIterationLine.sizePolicy().hasHeightForWidth())
         self.maxIterationLine.setSizePolicy(sizePolicy)
-        self.maxIterationLine.setFont(font4)
+        self.maxIterationLine.setFont(font2)
         self.maxIterationLine.setCursor(QCursor(Qt.ArrowCursor))
 
         self.verticalLayout_11.addWidget(self.maxIterationLine)
@@ -614,7 +633,7 @@ class Ui_MainWindow(object):
         self.marginLine.setObjectName(u"marginLine")
         sizePolicy.setHeightForWidth(self.marginLine.sizePolicy().hasHeightForWidth())
         self.marginLine.setSizePolicy(sizePolicy)
-        self.marginLine.setFont(font4)
+        self.marginLine.setFont(font2)
         self.marginLine.setCursor(QCursor(Qt.ArrowCursor))
 
         self.verticalLayout_11.addWidget(self.marginLine)
@@ -623,7 +642,13 @@ class Ui_MainWindow(object):
         self.valuesBox.addLayout(self.verticalLayout_11)
 
 
-        self.gridLayout_2.addLayout(self.valuesBox, 0, 0, 1, 1)
+        self.gridLayout_2.addLayout(self.valuesBox, 1, 0, 1, 1)
+
+        self.label_5 = QLabel(self.valuesFrame)
+        self.label_5.setObjectName(u"label_5")
+        self.label_5.setFont(font3)
+
+        self.gridLayout_2.addWidget(self.label_5, 0, 0, 1, 1)
 
 
         self.verticalLayout_3.addWidget(self.valuesFrame)
@@ -650,7 +675,7 @@ class Ui_MainWindow(object):
         self.ch1Label.setObjectName(u"ch1Label")
         sizePolicy7.setHeightForWidth(self.ch1Label.sizePolicy().hasHeightForWidth())
         self.ch1Label.setSizePolicy(sizePolicy7)
-        self.ch1Label.setFont(font4)
+        self.ch1Label.setFont(font2)
         self.ch1Label.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_14.addWidget(self.ch1Label)
@@ -659,7 +684,7 @@ class Ui_MainWindow(object):
         self.ch2Label.setObjectName(u"ch2Label")
         sizePolicy7.setHeightForWidth(self.ch2Label.sizePolicy().hasHeightForWidth())
         self.ch2Label.setSizePolicy(sizePolicy7)
-        self.ch2Label.setFont(font4)
+        self.ch2Label.setFont(font2)
         self.ch2Label.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_14.addWidget(self.ch2Label)
@@ -668,7 +693,7 @@ class Ui_MainWindow(object):
         self.ch3Label.setObjectName(u"ch3Label")
         sizePolicy7.setHeightForWidth(self.ch3Label.sizePolicy().hasHeightForWidth())
         self.ch3Label.setSizePolicy(sizePolicy7)
-        self.ch3Label.setFont(font4)
+        self.ch3Label.setFont(font2)
         self.ch3Label.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_14.addWidget(self.ch3Label)
@@ -677,7 +702,7 @@ class Ui_MainWindow(object):
         self.ch4Label.setObjectName(u"ch4Label")
         sizePolicy7.setHeightForWidth(self.ch4Label.sizePolicy().hasHeightForWidth())
         self.ch4Label.setSizePolicy(sizePolicy7)
-        self.ch4Label.setFont(font4)
+        self.ch4Label.setFont(font2)
         self.ch4Label.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_14.addWidget(self.ch4Label)
@@ -686,7 +711,7 @@ class Ui_MainWindow(object):
         self.ch5Label.setObjectName(u"ch5Label")
         sizePolicy7.setHeightForWidth(self.ch5Label.sizePolicy().hasHeightForWidth())
         self.ch5Label.setSizePolicy(sizePolicy7)
-        self.ch5Label.setFont(font4)
+        self.ch5Label.setFont(font2)
         self.ch5Label.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_14.addWidget(self.ch5Label)
@@ -695,7 +720,7 @@ class Ui_MainWindow(object):
         self.ch6Label.setObjectName(u"ch6Label")
         sizePolicy7.setHeightForWidth(self.ch6Label.sizePolicy().hasHeightForWidth())
         self.ch6Label.setSizePolicy(sizePolicy7)
-        self.ch6Label.setFont(font4)
+        self.ch6Label.setFont(font2)
         self.ch6Label.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_14.addWidget(self.ch6Label)
@@ -704,7 +729,7 @@ class Ui_MainWindow(object):
         self.ch7Label.setObjectName(u"ch7Label")
         sizePolicy7.setHeightForWidth(self.ch7Label.sizePolicy().hasHeightForWidth())
         self.ch7Label.setSizePolicy(sizePolicy7)
-        self.ch7Label.setFont(font4)
+        self.ch7Label.setFont(font2)
         self.ch7Label.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_14.addWidget(self.ch7Label)
@@ -713,7 +738,7 @@ class Ui_MainWindow(object):
         self.ch8Label.setObjectName(u"ch8Label")
         sizePolicy7.setHeightForWidth(self.ch8Label.sizePolicy().hasHeightForWidth())
         self.ch8Label.setSizePolicy(sizePolicy7)
-        self.ch8Label.setFont(font4)
+        self.ch8Label.setFont(font2)
         self.ch8Label.setStyleSheet(u"")
         self.ch8Label.setAlignment(Qt.AlignCenter)
 
@@ -739,36 +764,41 @@ class Ui_MainWindow(object):
 
         self.infoWidgetContainer = QWidget(self.mainBodyContainerGUI)
         self.infoWidgetContainer.setObjectName(u"infoWidgetContainer")
+        sizePolicy14 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy14.setHorizontalStretch(0)
+        sizePolicy14.setVerticalStretch(0)
+        sizePolicy14.setHeightForWidth(self.infoWidgetContainer.sizePolicy().hasHeightForWidth())
+        self.infoWidgetContainer.setSizePolicy(sizePolicy14)
+        self.infoWidgetContainer.setStyleSheet(u"border-radius: 10px;")
         self.horizontalLayout_7 = QHBoxLayout(self.infoWidgetContainer)
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
         self.infoWidgetTrain = QCustomSlideMenu(self.infoWidgetContainer)
         self.infoWidgetTrain.setObjectName(u"infoWidgetTrain")
-        sizePolicy14 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy14.setHorizontalStretch(0)
-        sizePolicy14.setVerticalStretch(0)
         sizePolicy14.setHeightForWidth(self.infoWidgetTrain.sizePolicy().hasHeightForWidth())
         self.infoWidgetTrain.setSizePolicy(sizePolicy14)
-        self.infoWidgetTrain.setMaximumSize(QSize(16777215, 0))
+        self.infoWidgetTrain.setMinimumSize(QSize(0, 0))
+        self.infoWidgetTrain.setMaximumSize(QSize(0, 0))
         self.infoWidgetTrain.setStyleSheet(u"background-color: rgb(0, 184, 200);\n"
-"color: rgb(255, 255, 255);")
+"color: rgb(255, 255, 255);\n"
+"border-radius: 10px;")
         self.verticalLayout_12 = QVBoxLayout(self.infoWidgetTrain)
         self.verticalLayout_12.setSpacing(0)
         self.verticalLayout_12.setObjectName(u"verticalLayout_12")
         self.verticalLayout_12.setContentsMargins(9, 9, 9, 9)
         self.label_13 = QLabel(self.infoWidgetTrain)
         self.label_13.setObjectName(u"label_13")
-        font5 = QFont()
-        font5.setPointSize(12)
-        font5.setBold(True)
-        self.label_13.setFont(font5)
+        font6 = QFont()
+        font6.setPointSize(12)
+        font6.setBold(True)
+        self.label_13.setFont(font6)
 
         self.verticalLayout_12.addWidget(self.label_13)
 
         self.frame_10 = QFrame(self.infoWidgetTrain)
         self.frame_10.setObjectName(u"frame_10")
-        sizePolicy12.setHeightForWidth(self.frame_10.sizePolicy().hasHeightForWidth())
-        self.frame_10.setSizePolicy(sizePolicy12)
-        self.frame_10.setStyleSheet(u"")
+        sizePolicy14.setHeightForWidth(self.frame_10.sizePolicy().hasHeightForWidth())
+        self.frame_10.setSizePolicy(sizePolicy14)
+        self.frame_10.setStyleSheet(u"border-radius: 10px;")
         self.frame_10.setFrameShape(QFrame.StyledPanel)
         self.frame_10.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_5 = QHBoxLayout(self.frame_10)
@@ -782,9 +812,9 @@ class Ui_MainWindow(object):
         sizePolicy15.setVerticalStretch(0)
         sizePolicy15.setHeightForWidth(self.label_14.sizePolicy().hasHeightForWidth())
         self.label_14.setSizePolicy(sizePolicy15)
-        font6 = QFont()
-        font6.setPointSize(12)
-        self.label_14.setFont(font6)
+        font7 = QFont()
+        font7.setPointSize(12)
+        self.label_14.setFont(font7)
 
         self.horizontalLayout_5.addWidget(self.label_14)
 
@@ -792,8 +822,8 @@ class Ui_MainWindow(object):
         self.frame_11.setObjectName(u"frame_11")
         sizePolicy14.setHeightForWidth(self.frame_11.sizePolicy().hasHeightForWidth())
         self.frame_11.setSizePolicy(sizePolicy14)
-        self.frame_11.setMinimumSize(QSize(169, 108))
-        self.frame_11.setStyleSheet(u"")
+        self.frame_11.setMinimumSize(QSize(0, 0))
+        self.frame_11.setStyleSheet(u"border-radius: 10px;")
         self.frame_11.setFrameShape(QFrame.StyledPanel)
         self.frame_11.setFrameShadow(QFrame.Raised)
         self.verticalLayout_13 = QVBoxLayout(self.frame_11)
@@ -810,9 +840,9 @@ class Ui_MainWindow(object):
 
         self.label_15 = QLabel(self.frame_11)
         self.label_15.setObjectName(u"label_15")
-        font7 = QFont()
-        font7.setPointSize(10)
-        self.label_15.setFont(font7)
+        font8 = QFont()
+        font8.setPointSize(10)
+        self.label_15.setFont(font8)
 
         self.verticalLayout_13.addWidget(self.label_15)
 
@@ -831,7 +861,7 @@ class Ui_MainWindow(object):
         self.mainPages.addWidget(self.mainBodyContainerGUI)
         self.mainBodyContainerUsers = QWidget()
         self.mainBodyContainerUsers.setObjectName(u"mainBodyContainerUsers")
-        self.mainBodyContainerUsers.setStyleSheet(u"QPushButton{text-align:left; padding:5px 15px;}")
+        self.mainBodyContainerUsers.setStyleSheet(u"QPushButton{text-align:left; padding:5px 15px;border-radius: 10px;}")
         self.gridLayout_6 = QGridLayout(self.mainBodyContainerUsers)
         self.gridLayout_6.setObjectName(u"gridLayout_6")
         self.gridLayout_6.setContentsMargins(-1, -1, -1, 9)
@@ -843,9 +873,9 @@ class Ui_MainWindow(object):
 
         self.addBtn = QPushButton(self.mainBodyContainerUsers)
         self.addBtn.setObjectName(u"addBtn")
-        font8 = QFont()
-        font8.setPointSize(14)
-        self.addBtn.setFont(font8)
+        font9 = QFont()
+        font9.setPointSize(14)
+        self.addBtn.setFont(font9)
         self.addBtn.setStyleSheet(u"background-color: rgb(0, 166, 214);\n"
 "color: rgb(255, 255, 255);")
 
@@ -853,7 +883,7 @@ class Ui_MainWindow(object):
 
         self.editBtn = QPushButton(self.mainBodyContainerUsers)
         self.editBtn.setObjectName(u"editBtn")
-        self.editBtn.setFont(font8)
+        self.editBtn.setFont(font9)
         self.editBtn.setStyleSheet(u"background-color: rgb(0, 166, 214);\n"
 "color: rgb(255, 255, 255);")
 
@@ -861,7 +891,7 @@ class Ui_MainWindow(object):
 
         self.removeBtn = QPushButton(self.mainBodyContainerUsers)
         self.removeBtn.setObjectName(u"removeBtn")
-        self.removeBtn.setFont(font8)
+        self.removeBtn.setFont(font9)
         self.removeBtn.setStyleSheet(u"background-color: rgb(0, 166, 214);\n"
 "color: rgb(255, 255, 255);")
 
@@ -869,7 +899,7 @@ class Ui_MainWindow(object):
 
         self.upBtn = QPushButton(self.mainBodyContainerUsers)
         self.upBtn.setObjectName(u"upBtn")
-        self.upBtn.setFont(font8)
+        self.upBtn.setFont(font9)
         self.upBtn.setStyleSheet(u"background-color: rgb(0, 166, 214);\n"
 "color: rgb(255, 255, 255);")
 
@@ -877,7 +907,7 @@ class Ui_MainWindow(object):
 
         self.downBtn = QPushButton(self.mainBodyContainerUsers)
         self.downBtn.setObjectName(u"downBtn")
-        self.downBtn.setFont(font8)
+        self.downBtn.setFont(font9)
         self.downBtn.setStyleSheet(u"background-color: rgb(0, 166, 214);\n"
 "color: rgb(255, 255, 255);")
 
@@ -885,7 +915,7 @@ class Ui_MainWindow(object):
 
         self.sortBtn = QPushButton(self.mainBodyContainerUsers)
         self.sortBtn.setObjectName(u"sortBtn")
-        self.sortBtn.setFont(font8)
+        self.sortBtn.setFont(font9)
         self.sortBtn.setStyleSheet(u"background-color: rgb(0, 166, 214);\n"
 "color: rgb(255, 255, 255);")
 
@@ -901,9 +931,9 @@ class Ui_MainWindow(object):
         sizePolicy16.setVerticalStretch(90)
         sizePolicy16.setHeightForWidth(self.usersList.sizePolicy().hasHeightForWidth())
         self.usersList.setSizePolicy(sizePolicy16)
-        font9 = QFont()
-        font9.setPointSize(18)
-        self.usersList.setFont(font9)
+        font10 = QFont()
+        font10.setPointSize(18)
+        self.usersList.setFont(font10)
         self.usersList.setAutoFillBackground(False)
         self.usersList.setStyleSheet(u"background-color: rgb(232, 232, 232);")
         self.usersList.setAlternatingRowColors(True)
@@ -937,9 +967,9 @@ class Ui_MainWindow(object):
         self.usersTitle.setObjectName(u"usersTitle")
         sizePolicy8.setHeightForWidth(self.usersTitle.sizePolicy().hasHeightForWidth())
         self.usersTitle.setSizePolicy(sizePolicy8)
-        font10 = QFont()
-        font10.setPointSize(50)
-        self.usersTitle.setFont(font10)
+        font11 = QFont()
+        font11.setPointSize(50)
+        self.usersTitle.setFont(font11)
         self.usersTitle.setStyleSheet(u"border:none;\n"
 "color: rgb(12, 35, 64);")
         self.usersTitle.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
@@ -973,7 +1003,7 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(tooltip)
         self.overviewBtn.setToolTip(QCoreApplication.translate("MainWindow", u"Train", None))
 #endif // QT_CONFIG(tooltip)
-        self.overviewBtn.setText(QCoreApplication.translate("MainWindow", u"Train", None))
+        self.overviewBtn.setText(QCoreApplication.translate("MainWindow", u"Dashboard", None))
 #if QT_CONFIG(tooltip)
         self.demosBtn.setToolTip(QCoreApplication.translate("MainWindow", u"Demos", None))
 #endif // QT_CONFIG(tooltip)
@@ -998,23 +1028,25 @@ class Ui_MainWindow(object):
         self.trainBtn.setText(QCoreApplication.translate("MainWindow", u"Train", None))
         self.game1Btn.setText(QCoreApplication.translate("MainWindow", u"Game 1", None))
         self.game2Btn.setText(QCoreApplication.translate("MainWindow", u"Game 2", None))
-        self.dataTrainingBtn.setText(QCoreApplication.translate("MainWindow", u"Data Train", None))
-        self.startRecordingBtn.setText(QCoreApplication.translate("MainWindow", u"Start", None))
-        self.stopRecordingBtn.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
         self.ERDSBtn.setText(QCoreApplication.translate("MainWindow", u"ERDS", None))
+        self.startRecordingBtn.setText(QCoreApplication.translate("MainWindow", u"Start", None))
         self.stopwatch.setText(QCoreApplication.translate("MainWindow", u"0", None))
         self.unit_sec.setText(QCoreApplication.translate("MainWindow", u"s", None))
+        self.stopRecordingBtn.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
         self.promptBtn.setText(QCoreApplication.translate("MainWindow", u"Prompt", None))
+        self.dataTrainingBtn.setText(QCoreApplication.translate("MainWindow", u"Train Data", None))
+        self.label_6.setText(QCoreApplication.translate("MainWindow", u"Control Panel", None))
         self.userID_test.setText(QCoreApplication.translate("MainWindow", u"User ID", None))
         self.directionLine.setText(QCoreApplication.translate("MainWindow", u"Direction", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"Learning rate:", None))
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Batch size:", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"Learning rate:   ", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Batch size:   ", None))
         self.learningRateLine.setText(QCoreApplication.translate("MainWindow", u"100", None))
         self.batchSizeLine.setText(QCoreApplication.translate("MainWindow", u"300", None))
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Max iteration", None))
-        self.label_4.setText(QCoreApplication.translate("MainWindow", u"Margin:", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Max iteration:   ", None))
+        self.label_4.setText(QCoreApplication.translate("MainWindow", u"Margin:   ", None))
         self.maxIterationLine.setText(QCoreApplication.translate("MainWindow", u"50", None))
         self.marginLine.setText(QCoreApplication.translate("MainWindow", u"7", None))
+        self.label_5.setText(QCoreApplication.translate("MainWindow", u"Training Panel", None))
         self.ch1Label.setText(QCoreApplication.translate("MainWindow", u"Ch1", None))
         self.ch2Label.setText(QCoreApplication.translate("MainWindow", u"Ch2", None))
         self.ch3Label.setText(QCoreApplication.translate("MainWindow", u"Ch3", None))
@@ -1024,15 +1056,15 @@ class Ui_MainWindow(object):
         self.ch7Label.setText(QCoreApplication.translate("MainWindow", u"Ch7", None))
         self.ch8Label.setText(QCoreApplication.translate("MainWindow", u"Ch8", None))
         self.label_13.setText(QCoreApplication.translate("MainWindow", u"Information", None))
-        self.label_14.setText(QCoreApplication.translate("MainWindow", u"Training page: Train the user's brain activity using the 'Start training!' button. A new window will appear\n"
-" in which the user can record the brain activity according to the instruction given.\n"
-" For help, click on the help button. While training, the brain waves and training values\n"
-" can be seen on the main window and changed if necessary.\n"
+        self.label_14.setText(QCoreApplication.translate("MainWindow", u"Welcome to this BCI app!\n"
+"The dashboard window contains numerous data and parameters for a better understanding of EEG data!\n"
+" Plots: eight channel plots for each electrode of the cap and an FFT and power band plot.\n"
+" In the training panel you can change the training values according to your liking.\n"
+" Lastly, the buttons panel gives you control over the user's window and other features.\n"
 "\n"
-" Testing page: Test the user's brain commands. The resulting commands can be seen\n"
-" in the bottom-right window. The brain waves and values are also displayed.\n"
+" The demos button opens a submenu which contains the possible demo you would like to run.\n"
 "\n"
-"Users page: Select the user that will train/test. Add or edit a user if necessary.", None))
+" Lastly, the user's window allows you to choose and edit users that are going to be trained or tested.", None))
         self.label_15.setText(QCoreApplication.translate("MainWindow", u"Channel numbers with according position", None))
 #if QT_CONFIG(tooltip)
         self.addBtn.setToolTip(QCoreApplication.translate("MainWindow", u"Add user", None))
