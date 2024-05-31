@@ -48,7 +48,7 @@ def filter(y):
     zi = lfilter_zi(b,a)*y[0]
 
     # Apply the filter to each column of the DataFram
-    y_filtered_band, _ = lfilter(b, a, np.array(y), zi=zi)
+    y_filtered_band, _ = lfilter(b, a, np.array(y), zi=zi, axis = 0)
 
     # Define the notch filter parameters
     fs = 250  # Sampling frequency
@@ -60,16 +60,16 @@ def filter(y):
     zi = lfilter_zi(b,a)*y[0]
 
     # Apply the filter to each column of the DataFrame
-    y_filtered, _ = lfilter(b, a, np.array(y), zi=zi)
+    y_filtered, _ = lfilter(b, a, np.array(y), zi=zi, axis = 0)
 
     return y_filtered
 
 # Window settings
-window = 50
+window = 10
 overlap = 0.5
 
 # Plot settings
-pause = 0.1
+pause = 0.01
 
 streams = resolve_stream()
 inlet = StreamInlet(streams[0])
@@ -108,7 +108,8 @@ while not aborted:
     if i % overlap_win == 0 and i != overlap_win and i != 0:
         # apply filter to window
 
-        y_win_filt = filter(y_win)
+        #y_win_filt = filter(y_win)
+        y_win_filt = y_win
 
         # Take the samples that are overlapped
         y_shift = y_win_filt[0:overlap_win+1]
@@ -125,7 +126,7 @@ while not aborted:
         # axis settings
         y_min = np.min(y_shift) - np.std(y_shift) * 5
         y_max = np.max(y_shift) + np.std(y_shift) * 5
-        t_min = np.min(t_shift) - np.std(t_shift) * 10
+        t_min = np.min(t_shift) - np.std(t_shift) * 20
         t_max = np.max(t_shift) + np.std(t_shift) * 2
 
         #plot the shifted data points
