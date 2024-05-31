@@ -65,7 +65,7 @@ def filter(y):
     return y_filtered
 
 # Window settings
-window = 10
+window = 50
 overlap = 0.5
 
 # Plot settings
