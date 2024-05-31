@@ -1,7 +1,15 @@
 <RCC>
   <qresource prefix="newPrefix">
+    <file>pictures/TUDelftFlame_white.png</file>
+    <file>pictures/TUDelftFlame.png</file>
+    <file>pictures/TUDelftFlame_darkblue.png</file>
+    <file>pictures/TUDelftFlame_yellow.png</file>
+    <file>pictures/EEG-removebg.png</file>
+    <file>pictures/TUDelft-logo_full-color.png</file>
+    <file>pictures/TUDelftFlame.png</file>
     <file>pictures/calibartion_cross.png</file>
     <file>pictures/column plot.png</file>
+    <file>pictures/TUDelftFlame.png</file>
     <file>pictures/cursor.png</file>
     <file>pictures/EEG cap.png</file>
     <file>pictures/EEG.jpg</file>

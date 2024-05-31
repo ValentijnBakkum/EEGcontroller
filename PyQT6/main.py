@@ -5,17 +5,40 @@ import csv
 from random import randint
 import subprocess
 from ui_interface import *
+from ui_splashscreen import *
 from ui_ERDSWindow import Ui_ERDSWindow
 from ui_userWindow import Ui_UserWindow
 from Custom_Widgets import *
-from PyQt6.QtWidgets import QInputDialog, QMessageBox
-from PySide6.QtCore import QTimer, Slot, Signal
+from PySide6.QtWidgets import QInputDialog, QMessageBox, QSplashScreen
+#from PyQt6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer, Slot, Signal
 import random
 import numpy as np
 import time
 import pyqtgraph as pg
 from pylsl import StreamInlet, resolve_stream
 
+class SplashScreen(QSplashScreen):
+    def __init__(self):
+        super(SplashScreen, self).__init__()
+        self.ui = Ui_SplashScreen()
+        self.ui.setupUi(self)
+        self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+    
+    def showEvent(self, event):
+        super().showEvent(event)
+        self.centerSplash()
+
+    def centerSplash(self):
+        screen = self.screen()
+        screen_geometry = screen.geometry()
+        splash_geometry = self.geometry()
+
+        x = (screen_geometry.width() - splash_geometry.width()) // 2
+        y = (screen_geometry.height() - splash_geometry.height()) // 2
+
+        self.move(x, y)
 
 #Mainwindow from which everything can be called
 class MainWindow(QMainWindow):
@@ -213,6 +236,15 @@ class MainWindow(QMainWindow):
         dlg.setWindowTitle("ERROR")
         dlg.setStandardButtons(QMessageBox.StandardButton.Retry | QMessageBox.StandardButton.Ignore)
         dlg.setText(error_text)
+        
+        screen = self.screen()
+        screen_geometry = screen.geometry()
+        splash_geometry = self.geometry()
+
+        x = (screen_geometry.width() - splash_geometry.width()) // 2
+        y = (screen_geometry.height() - 1.5*splash_geometry.height()) // 2
+
+        dlg.move(x, y)
         button = dlg.exec()
 
         if button == QMessageBox.StandardButton.Retry:
@@ -227,6 +259,7 @@ class MainWindow(QMainWindow):
             dlg.setWindowTitle("Ignored")
             dlg.setText("The program will now run without the EEG cap data and will use simulated data. "
                         "To use the EEG cap restart the program.")
+            dlg.move(x, y)
             button = dlg.exec()
             self.simulate_data = True
         
@@ -757,6 +790,10 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
 
+    
+    splash = SplashScreen()
+    splash.show()
+
     window1 = MainWindow()
     window2 = UserWindow()
     window3 = ERDSWindow()
@@ -776,4 +813,7 @@ if __name__ == "__main__":
     window1.showMaximized()
     window1.show()
     window2.show()
+
+    splash.finish(window1)
+    
     sys.exit(app.exec_())
