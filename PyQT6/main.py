@@ -86,6 +86,10 @@ class MainWindow(QMainWindow):
         self.streams = resolve_stream()
         try:
             self.inlet = StreamInlet(self.streams[0])
+
+             #Counter init
+            sample, timestamp = self.inlet.pull_sample()
+            self.counter_init = sample[15] 
         except:
             self.show_eeg_error("The EEG cap is not connected. Please connect the cap.")
 
@@ -293,7 +297,7 @@ class MainWindow(QMainWindow):
         # gathering the data from the EEG cap
         if not self.simulate_data:
             sample, timestamp = self.inlet.pull_sample()
-            sample_timestamp = (sample[15] - self.counter_init)
+            sample_timestamp = (sample[15] - self.counter_init) / 250
         else:
             sample, timestamp = self.generate_random_sample()  # for testing purposes when not connected to cap
             sample_timestamp = sample[15]
