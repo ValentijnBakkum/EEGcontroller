@@ -65,7 +65,7 @@ def filter(y):
     return y_filtered
 
 # Window settings
-window = 50
+window = 100
 overlap = 0.5
 
 # Plot settings
@@ -95,7 +95,7 @@ while not aborted:
 
     # assign EEG data to array
     y_win[0] = sample[choosen_electrode] # EEG data 1
-    t_win[0] = (sample[15] - counter_init[15])/250 # Counter from EEG cap in seconds
+    t_win[0] = timestamp#(sample[15] - counter_init[15])/250 # Counter from EEG cap in seconds
 
     # Shift the array with one index
     y_win = np.roll(y_win, -1)
@@ -108,8 +108,8 @@ while not aborted:
     if i % overlap_win == 0 and i != overlap_win and i != 0:
         # apply filter to window
 
-        #y_win_filt = filter(y_win)
-        y_win_filt = y_win
+        y_win_filt = filter(y_win)
+        #y_win_filt = y_win
 
         # Take the samples that are overlapped
         y_shift = y_win_filt[0:overlap_win+1]
