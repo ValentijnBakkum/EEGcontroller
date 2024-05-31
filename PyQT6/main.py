@@ -25,6 +25,31 @@ class SplashScreen(QSplashScreen):
         self.ui.setupUi(self)
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+
+        # Initialize progress bar
+        self.ui.progressBar.setMinimum(0)
+        self.ui.progressBar.setMaximum(100)
+
+        # Set up a timer to update the progress bar
+        self.progress_timer = QTimer()
+        self.progress_timer.timeout.connect(self.update_progress)
+        self.progress_timer.start(100)  # Update every 100 milliseconds
+
+        # Counter for tracking progress
+        self.progress_value = 0
+
+    def update_progress(self):
+        # Increment progress value
+        self.progress_value += 1
+
+        # Update progress bar value
+        self.ui.progressBar.setValue(self.progress_value)
+
+        # Check if progress is complete
+        if self.progress_value >= 100:
+            # Stop the timer
+            self.progress_timer.stop()
+
     
     def showEvent(self, event):
         super().showEvent(event)
@@ -778,6 +803,12 @@ class ERDSWindow(QMainWindow):
 
         self.setWindowTitle("ERDS Window")
         
+def show_main_window():
+    window1.showMaximized()
+    window1.show()
+    window2.show()
+
+    splash.finish(window1)
 
 #Creates the app and runs the Mainwindow
 if __name__ == "__main__":
@@ -793,6 +824,7 @@ if __name__ == "__main__":
     
     splash = SplashScreen()
     splash.show()
+    #splash.progress()
 
     window1 = MainWindow()
     window2 = UserWindow()
@@ -810,10 +842,8 @@ if __name__ == "__main__":
     window1.userWindow_startRecording.connect(window2.startRecording)
     window1.userWindow_stopRecording.connect(window2.stopRecording)
 
-    window1.showMaximized()
-    window1.show()
-    window2.show()
+    
 
-    splash.finish(window1)
+    QTimer.singleShot(3000, show_main_window)
     
     sys.exit(app.exec_())
