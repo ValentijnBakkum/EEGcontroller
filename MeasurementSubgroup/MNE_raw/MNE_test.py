@@ -8,9 +8,12 @@ mne.set_log_level('WARNING')
 # Constants
 num_components = 8
 
-allOutputs = np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-144--15-54-35.csv', delimiter=',')
+allOutputs = np.genfromtxt('C:/Users/JackC/Documents/GitHub/EEGcontroller/MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-149--15-45-38.csv', delimiter=',')
 
 channels = allOutputs[1:, 0:8].transpose()
+
+
+print(channels.shape)
 
 # create mne_info object
 ch_names =        ['Fz', 
@@ -36,16 +39,16 @@ ica.fit(raw)
 # labels = label_components(raw, ica, method='iclabel')
 # print(labels)
 
-# ica.plot_components(picks=range(num_components), ch_type='eeg')
+ica.plot_components(picks=range(num_components), ch_type='eeg')
 
-ica.exclude = [0,1]
+# ica.exclude = [0,1]
 
-# ica.apply() changes the Raw object in-place, so let's make a copy first:
-reconst_raw = raw.copy()
-ica.apply(reconst_raw)
+# # ica.apply() changes the Raw object in-place, so let's make a copy first:
+# reconst_raw = raw.copy()
+# ica.apply(reconst_raw)
 
-raw.plot(order=raw, n_channels=len(raw), show_scrollbars=False)
-reconst_raw.plot(
-    order=raw, n_channels=len(raw), show_scrollbars=False
-)
-del reconst_raw
+# raw.plot(order=raw, n_channels=len(raw), show_scrollbars=False)
+# reconst_raw.plot(
+#     order=raw, n_channels=len(raw), show_scrollbars=False
+# )
+# del reconst_raw
