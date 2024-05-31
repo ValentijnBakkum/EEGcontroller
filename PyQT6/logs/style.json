@@ -34,13 +34,13 @@
 		}],
 		"expandedSize": [{
 			"width": 1000,
-			"height": 250
+			"height": 260
 		}],
 		"toggleButton": [{
 			"buttonName": "infoBtn"
 		}],
 		"menuTransitionAnimation": [{
-			"animationDuration": 500,
+			"animationDuration": 300,
 			"animationEasingCurve": "Linear"
 		}],
 		"floatPosition": [
@@ -75,7 +75,7 @@
 			"buttonName": "demosBtn"
 		}],
 		"menuTransitionAnimation": [{
-			"animationDuration": 500,
+			"animationDuration": 300,
 			"animationEasingCurve": "Linear"
 		}]
 	},
@@ -101,7 +101,7 @@
 			}]
 		}],
 		"menuTransitionAnimation": [{
-			"animationDuration": 500,
+			"animationDuration": 300,
 			"animationEasingCurve": "Linear"
 		}]
 	}]

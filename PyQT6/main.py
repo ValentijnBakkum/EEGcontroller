@@ -33,7 +33,7 @@ class SplashScreen(QSplashScreen):
         # Set up a timer to update the progress bar
         self.progress_timer = QTimer()
         self.progress_timer.timeout.connect(self.update_progress)
-        self.progress_timer.start(100)  # Update every 100 milliseconds
+        self.progress_timer.start(100)
 
         # Counter for tracking progress
         self.progress_value = 0
@@ -41,13 +41,10 @@ class SplashScreen(QSplashScreen):
     def update_progress(self):
         # Increment progress value
         self.progress_value += 1
-
-        # Update progress bar value
         self.ui.progressBar.setValue(self.progress_value)
 
         # Check if progress is complete
         if self.progress_value >= 100:
-            # Stop the timer
             self.progress_timer.stop()
 
     
@@ -74,6 +71,7 @@ class MainWindow(QMainWindow):
     userWindow_to_promptPage = Signal()
     userWindow_startRecording = Signal()
     userWindow_stopRecording = Signal()
+    userWindow_startPromptTimer = Signal()
 
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -86,8 +84,7 @@ class MainWindow(QMainWindow):
         self.streams = resolve_stream()
         try:
             self.inlet = StreamInlet(self.streams[0])
-
-             #Counter init
+            #Counter init
             sample, timestamp = self.inlet.pull_sample()
             self.counter_init = sample[15] 
         except:
@@ -112,26 +109,24 @@ class MainWindow(QMainWindow):
         self.ui.downBtn.clicked.connect(self.downUser)
         self.ui.sortBtn.clicked.connect(self.sortUser)
         self.ui.usersList.itemClicked.connect(self.ChooseUser)
-        #menu
-        #self.ui.reconnectBtn.clicked.connect(self.reconnect_cap)
+        #Menu
+        self.ui.reconnectBtn.clicked.connect(self.reconnect_cap)
         self.ui.overviewBtn.clicked.connect(self.changeOverviewBtn)
         self.ui.usersBtn.clicked.connect(self.changeUsersBtn)
         self.ui.demosBtn.clicked.connect(self.changeDemosBtn)
         self.ui.exitBtn.clicked.connect(self.exitApp)
-
+        #Demos submenu
         self.ui.cursorBtn.clicked.connect(self.setCursorPage)
         self.ui.trainBtn.clicked.connect(self.setTrainPage)
-        self.ui.promptBtn.clicked.connect(self.setPromptPage)
         self.ui.game1Btn.clicked.connect(self.setGame1Page)
         self.ui.game2Btn.clicked.connect(self.setGame2Page)
-
+        #Button panel
         self.ui.startRecordingBtn.clicked.connect(self.startRecording)
         self.ui.stopRecordingBtn.clicked.connect(self.stopRecording)
-        #Training window
-        #self.ui.trainBtn.clicked.connect(self.openUserWindow)
+        self.ui.openUserWindowBtn.clicked.connect(self.openUserWindow)
         self.ui.ERDSBtn.clicked.connect(self.openERDSWindow)
-
-        
+        self.ui.openPromptBtn.clicked.connect(self.setPromptPage)
+        self.ui.startTimerBtn.clicked.connect(self.startPromptTimer)
 
         # add users to user list from file
         with open('users.csv', newline='') as user_file:
@@ -215,9 +210,14 @@ class MainWindow(QMainWindow):
  
             # incrementing the counter
             self.count+= 1
+        else:
+            self.count=0
  
         # getting text from count
-        text = str(self.count / 10)
+        if self.count < 47:
+            text = "0.0"
+        else:
+            text = str(float("{:.1f}".format(self.count / 10 - 4.7)))
  
         # showing text
         self.ui.stopwatch.setText(text)
@@ -236,14 +236,19 @@ class MainWindow(QMainWindow):
 
     def setPromptPage(self):
             self.userWindow_to_promptPage.emit()
+            self.ui.stopwatch.setText("0.0")
+            self.flag = False
     
     def startRecording(self):
             self.userWindow_startRecording.emit()
-            self.flag = True
 
     def stopRecording(self):
             self.userWindow_stopRecording.emit()
             self.flag = False
+
+    def startPromptTimer(self):
+            self.flag = True
+            self.userWindow_startPromptTimer.emit()
 
     
     def reconnect_cap(self):
@@ -271,7 +276,7 @@ class MainWindow(QMainWindow):
         splash_geometry = self.geometry()
 
         x = (screen_geometry.width() - splash_geometry.width()) // 2
-        y = (screen_geometry.height() - 1.5*splash_geometry.height()) // 2
+        y = 0#(screen_geometry.height() - 1.5*splash_geometry.height()) // 2
 
         dlg.move(x, y)
         button = dlg.exec()
@@ -321,7 +326,7 @@ class MainWindow(QMainWindow):
                     symbolBrush="b",
                 )
                 self.ui.FFTPlot.setXRange(0, 60)
-                self.ui.FFTPlot.setYRange(0, 100)
+                self.ui.FFTPlot.setYRange(0, 500)
                 self.ui.FFTPlot.setMouseEnabled(x=False, y=False)
                 self.ui.FFTPlot.setMenuEnabled(False)
                 self.ui.FFTPlot.hideButtons()
@@ -377,6 +382,12 @@ class MainWindow(QMainWindow):
         #recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
         
         self.ERDSWindow.show()
+
+    def openUserWindow(self):
+        if self.userWindow.isVisible():
+            pass
+        else:
+            self.userWindow.show()
 
     def exitApp(self):
         QApplication.quit()
@@ -542,28 +553,28 @@ class MainWindow(QMainWindow):
     # for test controlling the "mouse"
     # TODO make the ML output prediction do this
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key_1:
+        if event.key() == Qt.Key.Key_1:
             self.yBarGraph = np.array([sum(self.ydata[0][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[0]),self.av_height)])
             self.channel = 1
-        elif event.key() == Qt.Key_2:
+        elif event.key() == Qt.Key.Key_2:
             self.yBarGraph = np.array([sum(self.ydata[1][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[1]),self.av_height)])
             self.channel = 2
-        elif event.key() == Qt.Key_3:
+        elif event.key() == Qt.Key.Key_3:
             self.yBarGraph = np.array([sum(self.ydata[2][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[2]),self.av_height)])
             self.channel = 3
-        elif event.key() == Qt.Key_4:
+        elif event.key() == Qt.Key.Key_4:
             self.yBarGraph = np.array([sum(self.ydata[3][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[3]),self.av_height)])
             self.channel = 4
-        elif event.key() == Qt.Key_5:
+        elif event.key() == Qt.Key.Key_5:
             self.yBarGraph = np.array([sum(self.ydata[4][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[4]),self.av_height)])
             self.channel = 5
-        elif event.key() == Qt.Key_6:
+        elif event.key() == Qt.Key.Key_6:
             self.yBarGraph = np.array([sum(self.ydata[5][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[5]),self.av_height)])
             self.channel = 6
-        elif event.key() == Qt.Key_7:
+        elif event.key() == Qt.Key.Key_7:
             self.yBarGraph = np.array([sum(self.ydata[6][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[6]),self.av_height)])
             self.channel = 7
-        elif event.key() == Qt.Key_8:
+        elif event.key() == Qt.Key.Key_8:
             self.yBarGraph = np.array([sum(self.ydata[7][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[7]),self.av_height)])
             self.channel = 8
         '''
@@ -648,10 +659,12 @@ class UserWindow(QMainWindow):
         
         #Timer
         self.timer = QTimer()
+        self.promptTimer = QTimer()
 
         self.stepsize = 10
         #Check clicked buttons and call their respective functions
         self.timer.timeout.connect(lambda: self.changePages())
+        self.promptTimer.timeout.connect(lambda: self.changePrompt())
 
         #self.ui.dataTrainingBtn.clicked.connect(self.trainingData)
 
@@ -719,20 +732,24 @@ class UserWindow(QMainWindow):
 
     @Slot()
     def startRecording(self):
-        if self.ui.demosPages.currentWidget() == self.ui.trainingPage:
-            #recProcess.stdout.read1(1)
-            #recProcess.stdin.write(b"G\n") # G for go
-            #recProcess.stdin.flush()
-            self.timer.start(500)
-            global count
-            global pageArray
-            global i
-            i = 0
-            count = 0
-            pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0]
+        #recProcess.stdout.read1(1)
+        #recProcess.stdin.write(b"G\n") # G for go
+        #recProcess.stdin.flush()
+        self.timer.start(500)
+        global count
+        global pageArray
+        global i
+        i = 0
+        count = 0
+        pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0]
 
-        if self.ui.demosPages.currentWidget() == self.ui.promptPage:
-            self.timer.start(500)
+    @Slot()
+    def startPromptTimer(self):
+            self.promptTimer.start(5000)
+
+    def changePrompt(self):
+            self.ui.promptTestWidget.setCurrentWidget(self.ui.promptPromptPage)
+            self.promptTimer.stop()
 
     def changePages(self):
         if self.ui.demosPages.currentWidget() == self.ui.trainingPage:
@@ -751,15 +768,11 @@ class UserWindow(QMainWindow):
                 self.timer.stop()
             count = count + 1
 
-        if self.ui.demosPages.currentWidget() == self.ui.promptPage:
-            self.ui.promptTestWidget.setCurrentWidget(self.ui.promptPromptPage)
-
     @Slot()
     def stopRecording(self):
         #recProcess.kill()
         self.timer.stop()
         self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
-        self.ui.promptTestWidget.setCurrentWidget(self.ui.calibrationPromptPage)
     
     def help(self):
         QMessageBox.information(None,"Help",
@@ -775,6 +788,8 @@ class UserWindow(QMainWindow):
     @Slot()
     def handle_signal_promptPage(self):
         self.ui.demosPages.setCurrentWidget(self.ui.promptPage)
+        self.ui.promptTestWidget.setCurrentWidget(self.ui.calibrationPromptPage)
+        self.promptTimer.stop()
     @Slot()
     def handle_signal_game1Page(self):
         self.ui.demosPages.setCurrentWidget(self.ui.game1Page)
@@ -828,7 +843,6 @@ if __name__ == "__main__":
     
     splash = SplashScreen()
     splash.show()
-    #splash.progress()
 
     window1 = MainWindow()
     window2 = UserWindow()
@@ -845,8 +859,7 @@ if __name__ == "__main__":
     window1.userWindow_to_game2Page.connect(window2.handle_signal_game2Page)
     window1.userWindow_startRecording.connect(window2.startRecording)
     window1.userWindow_stopRecording.connect(window2.stopRecording)
-
-    
+    window1.userWindow_startPromptTimer.connect(window2.startPromptTimer)
 
     QTimer.singleShot(3000, show_main_window)
     
