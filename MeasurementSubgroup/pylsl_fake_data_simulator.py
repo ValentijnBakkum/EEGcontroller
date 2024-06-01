@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from pylsl import StreamInfo, StreamOutlet# Create a new stream info (name, type, channel count, nominal sampling rate, channel format, source id)
 
-info = StreamInfo('FakeDataStream', 'EEG', 8, 250, 'float32', 'myuid34234')
+info = StreamInfo('FakeDataStream', 'EEG', 18, 250, 'float32', 'myuid34234')
 
 # Create a new outlet with this stream info
 outlet = StreamOutlet(info)
@@ -20,7 +20,7 @@ data = np.array(df)
 i = 0
 
 while True:
-    sample = data[i,:8]
+    sample = data[i,:]
 
     # Push the sample to the outlet
     outlet.push_sample(sample)
@@ -28,10 +28,13 @@ while True:
     # Sleep for a while (simulating a sampling rate of 250 Hz)
     time.sleep(0.004)
 
+    if i > 72000:
+        i = 0
+
     i += 1
 
 # Instructions
-# 1. Change the 'sample' if needed to the desired file/data
+# 1. Change the 'sample' or 'df' if needed to the desired file/data
 # 2. Run this code in a seperate console
 # 3. Run the code of another file needing the LSL streaming
 # 4. It will stream 'sample' data (representing the real data) without needing the cap

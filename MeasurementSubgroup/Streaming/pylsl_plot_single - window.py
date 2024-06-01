@@ -48,7 +48,7 @@ def filter(y):
     zi = lfilter_zi(b,a)*y[0]
 
     # Apply the filter to each column of the DataFram
-    y_filtered_band, _ = lfilter(b, a, np.array(y), zi=zi, axis = 0)
+    y_filtered_band, _ = lfilter(b, a, np.array(y), zi=zi)
 
     # Define the notch filter parameters
     fs = 250  # Sampling frequency
@@ -60,12 +60,12 @@ def filter(y):
     zi = lfilter_zi(b,a)*y[0]
 
     # Apply the filter to each column of the DataFrame
-    y_filtered, _ = lfilter(b, a, np.array(y), zi=zi, axis = 0)
+    y_filtered, _ = lfilter(b, a, np.array(y), zi=zi)
 
     return y_filtered
 
 # Window settings
-window = 100
+window = 250
 overlap = 0.5
 
 # Plot settings
@@ -89,13 +89,14 @@ aborted = False
 while not aborted:
     # Get data from LSL interface
     sample,timestamp = inlet.pull_sample() 
+    #print(sample)
 
     #calculate sample overlap
     overlap_win = int(overlap * window)
 
     # assign EEG data to array
     y_win[0] = sample[choosen_electrode] # EEG data 1
-    t_win[0] = timestamp#(sample[15] - counter_init[15])/250 # Counter from EEG cap in seconds
+    t_win[0] = (sample[15] - counter_init[15])/250 # Counter from EEG cap in seconds
 
     # Shift the array with one index
     y_win = np.roll(y_win, -1)
@@ -108,8 +109,8 @@ while not aborted:
     if i % overlap_win == 0 and i != overlap_win and i != 0:
         # apply filter to window
 
-        #y_win_filt = filter(y_win)
-        y_win_filt = y_win
+        y_win_filt = filter(y_win)
+        #y_win_filt = y_win
 
         # Take the samples that are overlapped
         y_shift = y_win_filt[0:overlap_win+1]
@@ -124,11 +125,11 @@ while not aborted:
         t_win[0:overlap_win] = np.zeros(overlap_win)
 
         # axis settings
-        y_min = np.min(y_shift) - np.std(y_shift) * 5
-        y_max = np.max(y_shift) + np.std(y_shift) * 5
+        y_min = -100 #np.min(y_shift) - np.std(y_shift) * 5
+        y_max = 100 #np.max(y_shift) + np.std(y_shift) * 5
         t_min = np.min(t_shift) - np.std(t_shift) * 20
         t_max = np.max(t_shift) + np.std(t_shift) * 2
-
+        
         #plot the shifted data points
         plt.axis([t_min, t_max, y_min, y_max])
         plt.plot(t_shift, y_shift, 'o-')
