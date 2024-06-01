@@ -108,8 +108,8 @@ while not aborted:
     if i % overlap_win == 0 and i != overlap_win and i != 0:
         # apply filter to window
 
-        y_win_filt = filter(y_win)
-        #y_win_filt = y_win
+        #y_win_filt = filter(y_win)
+        y_win_filt = y_win
 
         # Take the samples that are overlapped
         y_shift = y_win_filt[0:overlap_win+1]
