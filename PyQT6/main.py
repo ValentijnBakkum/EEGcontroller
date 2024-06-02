@@ -309,6 +309,7 @@ class MainWindow(QMainWindow):
         
     # Update graphs
     def update_plot(self):
+        pen = pg.mkPen(self.channel - 1, width = 2)
         # gathering the data from the EEG cap
         if not self.simulate_data:
             sample, timestamp = self.inlet.pull_sample()
@@ -324,7 +325,7 @@ class MainWindow(QMainWindow):
         else:
             if not self.startFFT:
                 self.startFFT = True
-                pen = pg.mkPen(color=(255, 0, 0), width = 2)
+                print(self.channel)
                 symbol_sign = None
                 self.FFT_plot = self.ui.FFTPlot.plot(
                     self.xdata,
@@ -335,7 +336,7 @@ class MainWindow(QMainWindow):
                     symbolSize=5,
                     symbolBrush="b",
                 )
-                self.ui.FFTPlot.setXRange(0, 60)
+                self.ui.FFTPlot.setXRange(5, 60)
                 self.ui.FFTPlot.setYRange(0, 500)
                 self.ui.FFTPlot.setMouseEnabled(x=False, y=False)
                 self.ui.FFTPlot.setMenuEnabled(False)
@@ -352,12 +353,13 @@ class MainWindow(QMainWindow):
         if self.i % self.plot_update_size == 0:
             for i in range(8):
                 self.lines[i].setData(self.xdata, self.ydata[i])
-            self.power_band_1.setOpts(height=self.yBarGraph[[0, 1, 2, 3, 4]])
-            self.power_band_2.setOpts(height=self.yBarGraph[[5]])
-            self.power_band_3.setOpts(height=self.yBarGraph[[6]])
+            self.power_band_1.setOpts(height=self.yBarGraph[[0, 1, 2, 3, 4]], brush=pg.mkBrush(self.channel - 1))
+            self.power_band_2.setOpts(height=self.yBarGraph[[5]], brush=pg.mkBrush(self.channel - 1))
+            self.power_band_3.setOpts(height=self.yBarGraph[[6]], brush=pg.mkBrush(self.channel - 1))
 
             if self.startFFT:
                 self.FFT_plot.setData(self.xdata, self.ydata[self.channel - 1])
+                self.FFT_plot.setPen(pg.mkPen(self.channel - 1))
 
             # change the power band plots from channel
             self.yBarGraph = np.array(
