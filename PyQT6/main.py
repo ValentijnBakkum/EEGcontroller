@@ -100,6 +100,25 @@ class MainWindow(QMainWindow):
                         "logs/style.json"
                             }) 
         
+        # Predefined colors
+        colors = [
+            QColor(255, 0, 0),    # Red
+            QColor(255, 165, 0),  # Orange
+            QColor(144, 238, 144),# Light Green
+            QColor(0, 128, 0),    # Green
+            QColor(0, 128, 128),  # Blue-Green
+            QColor(0, 255, 255),  # Cyan
+            QColor(0, 0, 139),    # Dark Blue
+            QColor(128, 0, 128),  # Purple
+            QColor(255, 0, 255),  # Magenta
+            QColor(255, 255, 0),  # Yellow
+            QColor(0, 255, 0),    # Green
+            QColor(0, 0, 255)     # Blue
+        ]
+
+        # Convert to pastel colors
+        self.pastel_colors = [self.make_pastel(color) for color in colors]
+        
         #Check if the buttons are clicked and evoke their function
         #User page:
         self.ui.addBtn.clicked.connect(self.addUser)
@@ -172,9 +191,9 @@ class MainWindow(QMainWindow):
             del export[:]
             p.hideButtons()
             self.subplots.append(p)
-            self.lines.append(p.plot(pen=pg.mkPen(i, width = 2)))
-            p.hideAxis('bottom')
-            p.hideAxis('left')
+            self.lines.append(p.plot(pen=pg.mkPen(self.pastel_colors[i], width = 2)))
+            #p.hideAxis('bottom')
+            #p.hideAxis('left')
         #self.subplots[0].setYRange(240500, 241300)
         #self.subplots[1].setYRange(249400, 249900)
         #self.subplots[2].setYRange(278700, 331200)
@@ -212,6 +231,15 @@ class MainWindow(QMainWindow):
         self.stopwatch = QTimer()
         self.stopwatch.timeout.connect(self.showTime)
         self.stopwatch.start(100)
+    
+    def make_pastel(self, color, factor=0.5):
+        white = QColor(255, 255, 255)
+        color = QColor(color)
+        return QColor(
+            int(color.red() + (white.red() - color.red()) * factor),
+            int(color.green() + (white.green() - color.green()) * factor),
+            int(color.blue() + (white.blue() - color.blue()) * factor)
+        )
 
     def showTime(self):
  
@@ -309,7 +337,7 @@ class MainWindow(QMainWindow):
         
     # Update graphs
     def update_plot(self):
-        pen = pg.mkPen(self.channel - 1, width = 2)
+        pen = pg.mkPen(self.pastel_colors[self.channel - 1], width = 2)
         # gathering the data from the EEG cap
         if not self.simulate_data:
             sample, timestamp = self.inlet.pull_sample()
@@ -353,13 +381,13 @@ class MainWindow(QMainWindow):
         if self.i % self.plot_update_size == 0:
             for i in range(8):
                 self.lines[i].setData(self.xdata, self.ydata[i])
-            self.power_band_1.setOpts(height=self.yBarGraph[[0, 1, 2, 3, 4]], brush=pg.mkBrush(self.channel - 1))
-            self.power_band_2.setOpts(height=self.yBarGraph[[5]], brush=pg.mkBrush(self.channel - 1))
-            self.power_band_3.setOpts(height=self.yBarGraph[[6]], brush=pg.mkBrush(self.channel - 1))
+            self.power_band_1.setOpts(height=self.yBarGraph[[0, 1, 2, 3, 4]], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
+            self.power_band_2.setOpts(height=self.yBarGraph[[5]], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
+            self.power_band_3.setOpts(height=self.yBarGraph[[6]], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
 
             if self.startFFT:
                 self.FFT_plot.setData(self.xdata, self.ydata[self.channel - 1])
-                self.FFT_plot.setPen(pg.mkPen(self.channel - 1))
+                self.FFT_plot.setPen(pg.mkPen(self.pastel_colors[self.channel - 1], width = 2))
 
             # change the power band plots from channel
             self.yBarGraph = np.array(
