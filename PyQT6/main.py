@@ -172,7 +172,9 @@ class MainWindow(QMainWindow):
             del export[:]
             p.hideButtons()
             self.subplots.append(p)
-            self.lines.append(p.plot(pen=pg.mkPen('r')))
+            self.lines.append(p.plot(pen=pg.mkPen(i)))
+            #p.setYRange(240000, 241000)
+            #p.hideAxis('bottom')
 
         # Bar graph power band
         self.xBarGraph = np.array([2,6,10,14,18,25,40]) #Center points of the columns with according width /<--
