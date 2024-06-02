@@ -162,7 +162,7 @@ class MainWindow(QMainWindow):
 
         self.j = 0
 
-        self.ui.channelsPlot.setBackground('w')
+        self.ui.channelsPlot.setBackground(QColor(255, 255, 255))
 
         for i in range(8):
             p = self.ui.channelsPlot.addPlot(row=i, col=0)
@@ -172,9 +172,17 @@ class MainWindow(QMainWindow):
             del export[:]
             p.hideButtons()
             self.subplots.append(p)
-            self.lines.append(p.plot(pen=pg.mkPen(i)))
-            #p.setYRange(240000, 241000)
-            #p.hideAxis('bottom')
+            self.lines.append(p.plot(pen=pg.mkPen(i, width = 2)))
+            p.hideAxis('bottom')
+            p.hideAxis('left')
+        #self.subplots[0].setYRange(240500, 241300)
+        #self.subplots[1].setYRange(249400, 249900)
+        #self.subplots[2].setYRange(278700, 331200)
+        #self.subplots[3].setYRange(259500, 296400)
+        #self.subplots[4].setYRange(217000, 218000)
+        #self.subplots[5].setYRange(239200, 240050)
+        #self.subplots[6].setYRange(233100, 234300)
+        #self.subplots[7].setYRange(222050, 223100)
 
         # Bar graph power band
         self.xBarGraph = np.array([2,6,10,14,18,25,40]) #Center points of the columns with according width /<--
@@ -316,7 +324,7 @@ class MainWindow(QMainWindow):
         else:
             if not self.startFFT:
                 self.startFFT = True
-                pen = pg.mkPen(color=(255, 0, 0))
+                pen = pg.mkPen(color=(255, 0, 0), width = 2)
                 symbol_sign = None
                 self.FFT_plot = self.ui.FFTPlot.plot(
                     self.xdata,
