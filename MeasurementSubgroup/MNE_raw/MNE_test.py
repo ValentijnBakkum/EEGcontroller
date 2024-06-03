@@ -73,6 +73,15 @@ raw.filter(0.5, 30)
 ica = mne.preprocessing.ICA(method='picard', fit_params=dict(ortho=False,extended=True), n_components=num_components, random_state=0)
 ica.fit(raw)
 
+# assuming you have a Raw and ICA instance previously fitted
+#labels = label_components(raw, ica, method='iclabel')
+#print(labels)
+
+raw.load_data()
+ica.plot_sources(raw, show_scrollbars=False)
+
+ica.plot_components(picks=range(num_components), ch_type='eeg')
+
 ica.exclude = [0,4,5]  # indices chosen based on various plots above
 
 # ica.apply() changes the Raw object in-place, so let's make a copy first:
