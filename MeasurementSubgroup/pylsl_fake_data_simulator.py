@@ -21,6 +21,7 @@ i = 0
 
 while True:
     sample = data[i,:]
+    print(sample)
 
     # Push the sample to the outlet
     outlet.push_sample(sample)
