@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from pylsl import StreamInfo, StreamOutlet# Create a new stream info (name, type, channel count, nominal sampling rate, channel format, source id)
 
-info = StreamInfo('FakeDataStream', 'EEG', 18, 250, 'float32', 'myuid34234')
+info = StreamInfo('FakeDataStream', 'EEG', 8, 250, 'float32', 'myuid34234')
 
 # Create a new outlet with this stream info
 outlet = StreamOutlet(info)
@@ -20,7 +20,7 @@ data = np.array(df)
 i = 0
 
 while True:
-    sample = data[i,:]
+    sample = data[i,:8]
 
     # Push the sample to the outlet
     outlet.push_sample(sample)
