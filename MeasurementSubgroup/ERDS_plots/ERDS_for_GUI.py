@@ -34,6 +34,7 @@ perform cluster-based permutation tests to estimate significant ERDS values
 
 # As usual, we import everything we need.
 
+import os
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -85,27 +86,11 @@ def multifile(string_array):
     return (output, events)
     
 
-
-
-#———————————————————————————————————————————————————————————————————————
-#np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-144--14-56-37.csv', delimiter=',')
-#(allOutputs, events) = multifile(["EEGdata-2024-149--15-20-21.csv", 
-#                                  "EEGdata-2024-149--15-35-40.csv",
-#                                  "EEGdata-2024-149--15-45-38.csv",
-#                                  "EEGdata-2024-149--15-57-42.csv"
-#                                  ])
 #———————————————————————————————————————————————————————————————————————
 #(allOutputs, events) = multifile(["EEGdata-2024-149--16-41-44.csv"])
 #———————————————————————————————————————————————————————————————————————
-(allOutputs, events) = multifile(["EEGdata-2024-150--14-48-32.csv",
-                                  "EEGdata-2024-150--14-55-28.csv",
-                                  "EEGdata-2024-150--15-01-30.csv",
-                                  "EEGdata-2024-150--15-07-57.csv",
-                                  "EEGdata-2024-150--15-14-53.csv",
-                                  "EEGdata-2024-150--15-30-23.csv",
-                                  "EEGdata-2024-150--15-36-40.csv",
-                                  "EEGdata-2024-150--15-42-38.csv"
-                                  ])
+recordings_list = os.listdir('MeasurementSubgroup/Our_measurements/Measurement_prompt')
+(allOutputs, events) = multifile([recordings_list[-1]])
 #———————————————————————————————————————————————————————————————————————
 
 channels = allOutputs[:, 0:8].transpose()
