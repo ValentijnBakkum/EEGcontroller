@@ -65,11 +65,11 @@ def filter(y):
     return y_filtered
 
 # Window settings
-window = 50
+window = 2
 overlap = 0.5
 
 # Plot settings
-pause = 0.1
+pause = 0.04
 
 streams = resolve_stream()
 inlet = StreamInlet(streams[0])
@@ -95,7 +95,7 @@ while not aborted:
 
     # assign EEG data to array
     y_win[0] = sample[choosen_electrode] # EEG data 1
-    t_win[0] = (sample[15] - counter_init[15])/250 # Counter from EEG cap in seconds
+    t_win[0] = (i)/250 # Counter from EEG cap in seconds
 
     # Shift the array with one index
     y_win = np.roll(y_win, -1)
