@@ -424,9 +424,11 @@ class MainWindow(QMainWindow):
         self.ERDSWindow.show()
 
     def openUserWindow(self):
+        global recProcess
         if self.userWindow.isVisible():
             pass
         else:
+            recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
             self.userWindow.show()
 
     def exitApp(self):
@@ -772,10 +774,10 @@ class UserWindow(QMainWindow):
 
     @Slot()
     def startRecording(self):
-        #recProcess.stdout.read1(1)
-        #recProcess.stdin.write(b"G\n") # G for go
-        #recProcess.stdin.flush()
-        self.timer.start(500)
+        recProcess.stdout.read1(1)
+        recProcess.stdin.write(b"G\n") # G for go
+        recProcess.stdin.flush()
+        self.timer.start(250)
         global count
         global pageArray
         global i
@@ -810,7 +812,7 @@ class UserWindow(QMainWindow):
 
     @Slot()
     def stopRecording(self):
-        #recProcess.kill()
+        recProcess.kill()
         self.timer.stop()
         self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
     
@@ -865,7 +867,6 @@ class ERDSWindow(QMainWindow):
 def show_main_window():
     window1.showMaximized()
     window1.show()
-    window2.show()
 
     splash.finish(window1)
 
