@@ -337,7 +337,7 @@ class MainWindow(QMainWindow):
         
     # Update graphs
     def update_plot(self):
-
+        pen = pg.mkPen(self.pastel_colors[self.channel - 1], width = 2)
         #gathering the data from the EEG cap
         if not self.simulate_data:
             sample, timestamp = self.inlet.pull_sample()
@@ -346,20 +346,59 @@ class MainWindow(QMainWindow):
             sample, timestamp = self.generate_random_sample()  # for testing purposes when not connected to cap
             sample_timestamp = self.i / 250
 
+        if self.i <= self.max_graph_width:
+            pass
+        else:
+            if not self.startFFT:
+                self.startFFT = True
+                print(self.channel)
+                symbol_sign = None
+                self.FFT_plot = self.ui.FFTPlot.plot(
+                    self.xdata,
+                    self.ydata[self.channel - 1],
+                    name="Power Sensor",
+                    pen=pen,
+                    symbol=symbol_sign,
+                    symbolSize=5,
+                    symbolBrush="b",
+                )
+                self.ui.FFTPlot.setXRange(5, 60)
+                self.ui.FFTPlot.setYRange(0, 500)
+                self.ui.FFTPlot.setMouseEnabled(x=False, y=False)
+                self.ui.FFTPlot.setMenuEnabled(False)
+                self.ui.FFTPlot.hideButtons()
+                self.FFT_plot.setFftMode(True)
+
         # only update the plot everytime it has collected plot update data sized data
         if self.i % 50 == 0:
             self.xdata = np.roll(self.xdata, -1)
             self.xdata[-1] = sample_timestamp
+
             for k in range(8):
                 self.ydata[k] = np.roll(self.ydata[k], -1)
                 self.ydata[k][-1] = sample[k]
                 self.lines[k].setData(self.xdata, self.ydata[k])
+
+            self.power_band_1.setOpts(height=self.yBarGraph[[0, 1, 2, 3, 4]], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
+            self.power_band_2.setOpts(height=self.yBarGraph[[5]], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
+            self.power_band_3.setOpts(height=self.yBarGraph[[6]], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
+
+            if self.startFFT:
+                self.FFT_plot.setData(self.xdata, self.ydata[self.channel - 1])
+                self.FFT_plot.setPen(pg.mkPen(self.pastel_colors[self.channel - 1], width = 2))
+
+            # change the power band plots from channel
+            self.yBarGraph = np.array(
+                [sum(self.ydata[self.channel - 1][i:i + self.av_height]) // self.av_height for i in
+                 range(0, len(self.ydata[self.channel - 1]), self.av_height)])
 
         self.i += 1
         print(self.i)
 
         if self.i == 1000:
             print(time.time() - self.start_time)
+
+
 
     # for testing purposes
     def generate_random_sample(self):
