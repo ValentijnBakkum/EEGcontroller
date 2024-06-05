@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'interfacedqgAqv.ui'
+## Form generated from reading UI file 'interfaceHOxJDc.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -30,7 +30,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1595, 831)
+        MainWindow.resize(1601, 843)
         MainWindow.setMinimumSize(QSize(0, 0))
         icon = QIcon()
         icon.addFile(u":/newPrefix/pictures/EEG.jpg", QSize(), QIcon.Normal, QIcon.Off)
@@ -1014,7 +1014,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.mainPages.setCurrentIndex(1)
+        self.mainPages.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -1064,7 +1064,7 @@ class Ui_MainWindow(object):
         self.startRecordingBtn.setText(QCoreApplication.translate("MainWindow", u"Start Recording", None))
         self.stopRecordingBtn.setText(QCoreApplication.translate("MainWindow", u"Stop Recording", None))
         self.ERDSBtn.setText(QCoreApplication.translate("MainWindow", u"ERDS", None))
-        self.userID_test.setText(QCoreApplication.translate("MainWindow", u"User ID", None))
+        self.userID_test.setText(QCoreApplication.translate("MainWindow", u"No User selected", None))
         self.directionLine.setText(QCoreApplication.translate("MainWindow", u"Direction", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Learning rate:   ", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Batch size:   ", None))

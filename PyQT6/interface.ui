@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1595</width>
-    <height>831</height>
+    <width>1601</width>
+    <height>843</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -513,7 +513,7 @@ QPushButton{
        <string notr="true">background-color: rgb(255, 255, 255);</string>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="mainBodyContainerGUI">
        <property name="styleSheet">
@@ -961,7 +961,7 @@ border-radius: 10px;</string>
               </font>
              </property>
              <property name="text">
-              <string>User ID</string>
+              <string>No User selected</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
