@@ -4,6 +4,11 @@ from pylsl import StreamInlet, resolve_stream
 from datetime import datetime
 import pandas as pd
 import numpy as np
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename = "test.log", level = logging.INFO)
+logger.info('Started')
 
 # initialize the streaming layer
 finished = False
@@ -27,6 +32,8 @@ while True:
 
    print("R") #R for ready
    recieved = input()
+
+   logger.info(recieved)
 
    i = 0
    pageNumber = 0
@@ -73,26 +80,26 @@ while True:
 
    data_df.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
 
-   # Get unique values in the 'number' column
-   unique_values = data_df['Label'].unique()[1:]
-   subsets = {}
+   # # Get unique values in the 'number' column
+   # unique_values = data_df['Label'].unique()[1:]
+   # subsets = {}
 
-   # Split the DataFrame and save each subset to a separate dictionary
-   for value in unique_values:
-      subset_df = data_df[data_df['Label'] == value]
-      subsets[value] = subset_df
+   # # Split the DataFrame and save each subset to a separate dictionary
+   # for value in unique_values:
+   #    subset_df = data_df[data_df['Label'] == value]
+   #    subsets[value] = subset_df
 
-   # Assign labels to seperate arrays
-   Label1 = subsets.get(1)
-   Label2 = subsets.get(2)
-   Label3 = subsets.get(3)
-   Label4 = subsets.get(4)
+   # # Assign labels to seperate arrays
+   # Label1 = subsets.get(1)
+   # Label2 = subsets.get(2)
+   # Label3 = subsets.get(3)
+   # Label4 = subsets.get(4)
 
-   # # save to csv
-   Label1.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_1.csv', index = False)
-   Label2.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_2.csv', index = False)
-   Label3.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_3.csv', index = False)
-   Label4.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_4.csv', index = False)
+   # # # save to csv
+   # Label1.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_1.csv', index = False)
+   # Label2.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_2.csv', index = False)
+   # Label3.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_3.csv', index = False)
+   # Label4.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_4.csv', index = False)
+
    finished = False
-
-
+   logger.info('Finished')
