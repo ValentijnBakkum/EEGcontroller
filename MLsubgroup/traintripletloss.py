@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from ModelWang import cnnnet1
+from ModelWang import escargot
 from attentionmod import blockblock
 #from Dataloader import DataReader
 import numpy as np
@@ -50,7 +50,7 @@ print(targets_train.shape)
 
 
 #-----Model-----#
-model = cnnnet1().to(device)
+model = escargot().to(device)
 #model.load_state_dict(torch.load("cnnnet2.pt"))
 model.train()
 #-----Model-----#
