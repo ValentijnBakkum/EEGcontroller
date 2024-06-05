@@ -65,11 +65,11 @@ def filter(y):
     return y_filtered
 
 # Window settings
-window = 50
+window = 250
 overlap = 0.5
 
 # Plot settings
-pause = 0.1
+pause = 0.01
 
 streams = resolve_stream()
 inlet = StreamInlet(streams[0])
@@ -89,6 +89,7 @@ aborted = False
 while not aborted:
     # Get data from LSL interface
     sample,timestamp = inlet.pull_sample() 
+    #print(sample)
 
     #calculate sample overlap
     overlap_win = int(overlap * window)
@@ -109,6 +110,7 @@ while not aborted:
         # apply filter to window
 
         y_win_filt = filter(y_win)
+        #y_win_filt = y_win
 
         # Take the samples that are overlapped
         y_shift = y_win_filt[0:overlap_win+1]
@@ -123,11 +125,11 @@ while not aborted:
         t_win[0:overlap_win] = np.zeros(overlap_win)
 
         # axis settings
-        y_min = np.min(y_shift) - np.std(y_shift) * 5
-        y_max = np.max(y_shift) + np.std(y_shift) * 5
-        t_min = np.min(t_shift) - np.std(t_shift) * 10
+        y_min = -100 #np.min(y_shift) - np.std(y_shift) * 5
+        y_max = 100 #np.max(y_shift) + np.std(y_shift) * 5
+        t_min = np.min(t_shift) - np.std(t_shift) * 20
         t_max = np.max(t_shift) + np.std(t_shift) * 2
-
+        
         #plot the shifted data points
         plt.axis([t_min, t_max, y_min, y_max])
         plt.plot(t_shift, y_shift, 'o-')
