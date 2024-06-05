@@ -43,12 +43,10 @@ class convblock(nn.Module):
         x7 = self.act(self.conv7(x))
         xall = torch.cat((x3,x5,x7),dim = 1)
         x = torch.cat((x,x,x),dim=1)
-        print(x.shape,x3.shape,x5.shape,x7.shape)
-        print(xall.shape)
         if i == 1:
             return self.max(self.batchnorm(xall))
         else:
-            return self.max(self.batchnorm(xall+x))
+            return self.max(self.batchnorm(self.act(xall+x)))
 
 #Lstm layer
 class lstmmodule(nn.Module):
@@ -58,7 +56,7 @@ class lstmmodule(nn.Module):
         self.num_layers = num_layers
         self.lstm = nn.LSTM(input_len,hidden_size,num_layers,batch_first=True)
         self.fc = nn.Sequential(nn.Linear(256*hidden_size,256),
-                                nn.Dropout(p=0.3),
+                                nn.Dropout(p=0.2),
                                 nn.LeakyReLU()
                                 )
         self.flatten = nn.Flatten()
@@ -81,9 +79,9 @@ class Dense(nn.Module):
         return(self.dense(x))
 
 #model
-class cnnnet1(nn.Module):
+class escargot(nn.Module):
     def __init__(self,in_channels = 1):
-        super(cnnnet1,self).__init__()
+        super(escargot,self).__init__()
         self.arch = arch_2
         self.in_channels = in_channels
         self.Cnn = self.Create_conv_layers(self.arch)
@@ -117,17 +115,15 @@ class cnnnet1(nn.Module):
         return nn.Sequential(*list) # * unpacks list into nn.Sequential module
     def create_nn(self): #creates the nn used in the model
         return nn.Sequential(nn.Flatten(),
-                             nn.Linear(3712,512,bias=True),
-                             nn.Dropout(p=0.3),
+                             nn.Linear(3712,1024,bias=True),
+                             nn.Dropout(p=0.2),
                              L2NormalizationLayer(),
-                             spline_activation(device = device, input_dim = 512),
-                             nn.Linear(512,4)
+                             spline_activation(device = device, input_dim = 1024),
+                             nn.Linear(1024,4)
                              #nn.Softmax()
-        )
-    
-
+                            )
 #summary of the model
-model = cnnnet1().to(device)
+model = escargot().to(device)
 summary(model,input_size=(2,1,256,16))
 #a = torch.rand(1,1,576,16).to(device)
 #print(model(a))

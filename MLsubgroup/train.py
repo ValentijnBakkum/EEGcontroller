@@ -1,11 +1,8 @@
-from Dataloader import DataReader
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import Dataset
-from ModelWang import cnnnet1
-from attentionmod import blockblock
-from torch.utils.data import DataLoader
+from ModelWang import escargot
 import numpy as np
 import matplotlib.pyplot as plt 
 import os
@@ -23,7 +20,7 @@ lr_warmup = 1e-3
 lr_fin = 1e-8
 n_warmup = 30
 max_iters = n_warmup + 1000
-eval_interval = 10
+eval_interval = 100
 #-----HYPERPARAMETERS/training-----#
 
 
@@ -65,7 +62,7 @@ def warmup(current_step):
 
 #-----Model-----#
 arr = os.listdir("C:\\Users\\Gebruiker\\Desktop\\Bap\\Code")
-model = cnnnet1().to(device)
+model = escargot().to(device)
 #model.load_state_dict(torch.load("cnnnet1.pt"))
 model.train()
 #-----Model-----#
@@ -98,7 +95,7 @@ for itere in range(max_iters):
         a = np.sum((torch.eq(ind.to("cpu"),tt_list.to("cpu")).numpy()))
         accuracy = (a/g)*100
         tlist.append(accuracy)
-        avgloss = (np.sum(avloss)/(eval_interval-1))
+        avgloss = (np.sum(avloss)/len(avloss))
         progress = (itere/max_iters) * 100
         print("accuracy : {}, validation loss : {}, progress : {}".format(accuracy, avgloss, progress))
         avloss = []
