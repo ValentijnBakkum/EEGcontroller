@@ -6,14 +6,12 @@ import pandas as pd
 import numpy as np
 import logging
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(filename = "test.log", level = logging.INFO)
-logger.info('Started')
+# logger = logging.getLogger(__name__)
+# logging.basicConfig(filename = "test.log", level = logging.INFO)
+# logger.info('Started')
 
 # initialize the streaming layer
 finished = False
-streams = resolve_stream()
-inlet = StreamInlet(streams[0])
 
 # initialize the colomns of your data and your dictionary to capture the data.
 #columns=['Time','FZ', 'C3', 'CZ', 'C4', 'PZ', 'PO7', 'OZ', 'PO8','AccX','AccY','AccZ','Gyro1','Gyro2','Gyro3', 'Battery','Counter','Validation']
@@ -27,13 +25,17 @@ pageNumber = 0
 
 
 while True:
+   streams = resolve_stream()
+   inlet = StreamInlet(streams[0])
+   #logger.info("connected")
+
    data_dict = dict((k, []) for k in columns)
    label = []
 
    print("R") #R for ready
    recieved = input()
 
-   logger.info(recieved)
+   #logger.info(recieved)
 
    i = 0
    pageNumber = 0
@@ -44,6 +46,8 @@ while True:
 
       sample, timestamp = inlet.pull_sample()
       all_data = sample
+
+      #logger.info(len(data_dict['Counter']))
 
       #print(all_data) # print the data coming from the EEG cap
 
@@ -66,10 +70,8 @@ while True:
          i += 1
       
       # data is collected at 250 Hz. Let's stop data collection after 60 seconds. Meaning we stop when we collected 250*60 samples.
-      if len(data_dict['Counter']) >= 72005: # 72005 = sampling_rate * seconds_per_prompt * num_prompts + 5_seconds_leeway
+      if len(data_dict['Counter']) >= 3005: # 72005 = sampling_rate * seconds_per_prompt * num_prompts + 5_seconds_leeway
          finished = True                     # 72005 = 250*(6+6)*(4*6)+5
-
-      inlet.close_stream()
 
    # lastly, we can save our data to a CSV format.
    data_df = pd.DataFrame.from_dict(data_dict) 
@@ -79,6 +81,8 @@ while True:
    data_df["Label"] = label # add new column to the Dataframe
 
    data_df.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
+
+   inlet.close_stream()
 
    # # Get unique values in the 'number' column
    # unique_values = data_df['Label'].unique()[1:]
@@ -102,4 +106,4 @@ while True:
    # Label4.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_4.csv', index = False)
 
    finished = False
-   logger.info('Finished')
+   #logger.info('Finished')
