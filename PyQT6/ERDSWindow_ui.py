@@ -15,8 +15,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QGraphicsView, QHBoxLayout, QMainWindow,
-    QSizePolicy, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QSizePolicy,
+    QWidget)
 
 class Ui_ERDSWindow(object):
     def setupUi(self, ERDSWindow):
@@ -33,61 +33,10 @@ class Ui_ERDSWindow(object):
 "}")
         self.horizontalLayout_2 = QHBoxLayout(self.centralwidget)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.horizontalLayout = QHBoxLayout()
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.verticalLayout = QVBoxLayout()
-        self.verticalLayout.setObjectName(u"verticalLayout")
-        self.ERDS1 = QGraphicsView(self.centralwidget)
-        self.ERDS1.setObjectName(u"ERDS1")
+        self.plotWidget = QWidget(self.centralwidget)
+        self.plotWidget.setObjectName(u"plotWidget")
 
-        self.verticalLayout.addWidget(self.ERDS1)
-
-        self.ERDS3 = QGraphicsView(self.centralwidget)
-        self.ERDS3.setObjectName(u"ERDS3")
-
-        self.verticalLayout.addWidget(self.ERDS3)
-
-        self.ERDS5 = QGraphicsView(self.centralwidget)
-        self.ERDS5.setObjectName(u"ERDS5")
-
-        self.verticalLayout.addWidget(self.ERDS5)
-
-        self.ERDS7 = QGraphicsView(self.centralwidget)
-        self.ERDS7.setObjectName(u"ERDS7")
-
-        self.verticalLayout.addWidget(self.ERDS7)
-
-
-        self.horizontalLayout.addLayout(self.verticalLayout)
-
-        self.verticalLayout_2 = QVBoxLayout()
-        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.ERDS2 = QGraphicsView(self.centralwidget)
-        self.ERDS2.setObjectName(u"ERDS2")
-
-        self.verticalLayout_2.addWidget(self.ERDS2)
-
-        self.ERDS4 = QGraphicsView(self.centralwidget)
-        self.ERDS4.setObjectName(u"ERDS4")
-
-        self.verticalLayout_2.addWidget(self.ERDS4)
-
-        self.ERDS6 = QGraphicsView(self.centralwidget)
-        self.ERDS6.setObjectName(u"ERDS6")
-        self.ERDS6.setStyleSheet(u"")
-
-        self.verticalLayout_2.addWidget(self.ERDS6)
-
-        self.ERDS8 = QGraphicsView(self.centralwidget)
-        self.ERDS8.setObjectName(u"ERDS8")
-
-        self.verticalLayout_2.addWidget(self.ERDS8)
-
-
-        self.horizontalLayout.addLayout(self.verticalLayout_2)
-
-
-        self.horizontalLayout_2.addLayout(self.horizontalLayout)
+        self.horizontalLayout_2.addWidget(self.plotWidget)
 
         ERDSWindow.setCentralWidget(self.centralwidget)
 

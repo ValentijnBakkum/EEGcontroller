@@ -39,6 +39,10 @@ class Ui_UserWindow(object):
         self.demosPages.setObjectName(u"demosPages")
         self.trainingPage = QWidget()
         self.trainingPage.setObjectName(u"trainingPage")
+        self.trainingPage.setStyleSheet(u"*{\n"
+"	background-color:rgb(0, 0, 0);\n"
+"	color: rgb(200,200,200);\n"
+"}")
         self.horizontalLayout = QHBoxLayout(self.trainingPage)
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -75,7 +79,7 @@ class Ui_UserWindow(object):
         sizePolicy.setHeightForWidth(self.frame_7.sizePolicy().hasHeightForWidth())
         self.frame_7.setSizePolicy(sizePolicy)
         self.frame_7.setMaximumSize(QSize(20, 16777215))
-        self.frame_7.setStyleSheet(u"background-color: rgb(0, 0, 0);")
+        self.frame_7.setStyleSheet(u"background-color: rgb(200, 200, 200);")
         self.frame_7.setFrameShape(QFrame.StyledPanel)
         self.frame_7.setFrameShadow(QFrame.Raised)
 
@@ -85,7 +89,7 @@ class Ui_UserWindow(object):
         self.frame_8.setObjectName(u"frame_8")
         sizePolicy.setHeightForWidth(self.frame_8.sizePolicy().hasHeightForWidth())
         self.frame_8.setSizePolicy(sizePolicy)
-        self.frame_8.setStyleSheet(u"background-color: rgb(0, 0, 0);")
+        self.frame_8.setStyleSheet(u"background-color: rgb(200, 200, 200);")
         self.frame_8.setFrameShape(QFrame.StyledPanel)
         self.frame_8.setFrameShadow(QFrame.Raised)
 
@@ -95,7 +99,7 @@ class Ui_UserWindow(object):
         self.frame_6.setObjectName(u"frame_6")
         sizePolicy.setHeightForWidth(self.frame_6.sizePolicy().hasHeightForWidth())
         self.frame_6.setSizePolicy(sizePolicy)
-        self.frame_6.setStyleSheet(u"background-color: rgb(0, 0, 0);")
+        self.frame_6.setStyleSheet(u"background-color: rgb(200, 200, 200);")
         self.frame_6.setFrameShape(QFrame.StyledPanel)
         self.frame_6.setFrameShadow(QFrame.Raised)
 
@@ -106,7 +110,7 @@ class Ui_UserWindow(object):
         sizePolicy.setHeightForWidth(self.frame_9.sizePolicy().hasHeightForWidth())
         self.frame_9.setSizePolicy(sizePolicy)
         self.frame_9.setMaximumSize(QSize(16777215, 20))
-        self.frame_9.setStyleSheet(u"background-color: rgb(0, 0, 0);")
+        self.frame_9.setStyleSheet(u"background-color: rgb(200, 200, 200);")
         self.frame_9.setFrameShape(QFrame.StyledPanel)
         self.frame_9.setFrameShadow(QFrame.Raised)
 
@@ -116,7 +120,7 @@ class Ui_UserWindow(object):
         self.frame.setObjectName(u"frame")
         sizePolicy.setHeightForWidth(self.frame.sizePolicy().hasHeightForWidth())
         self.frame.setSizePolicy(sizePolicy)
-        self.frame.setStyleSheet(u"background-color: rgb(0, 0, 0);")
+        self.frame.setStyleSheet(u"background-color: rgb(200, 200, 200);")
         self.frame.setFrameShape(QFrame.StyledPanel)
         self.frame.setFrameShadow(QFrame.Raised)
 
@@ -315,6 +319,7 @@ class Ui_UserWindow(object):
         self.promptTestWidget.setObjectName(u"promptTestWidget")
         self.calibrationPromptPage = QWidget()
         self.calibrationPromptPage.setObjectName(u"calibrationPromptPage")
+        self.calibrationPromptPage.setStyleSheet(u"background-color: rgb(0,0,0);")
         self.gridLayout_8 = QGridLayout(self.calibrationPromptPage)
         self.gridLayout_8.setSpacing(0)
         self.gridLayout_8.setObjectName(u"gridLayout_8")
@@ -346,7 +351,7 @@ class Ui_UserWindow(object):
         sizePolicy.setHeightForWidth(self.frame_11.sizePolicy().hasHeightForWidth())
         self.frame_11.setSizePolicy(sizePolicy)
         self.frame_11.setMaximumSize(QSize(20, 16777215))
-        self.frame_11.setStyleSheet(u"background-color: rgb(0, 0, 0);")
+        self.frame_11.setStyleSheet(u"background-color: rgb(200, 200, 200);")
         self.frame_11.setFrameShape(QFrame.StyledPanel)
         self.frame_11.setFrameShadow(QFrame.Raised)
 
@@ -356,7 +361,7 @@ class Ui_UserWindow(object):
         self.frame_12.setObjectName(u"frame_12")
         sizePolicy.setHeightForWidth(self.frame_12.sizePolicy().hasHeightForWidth())
         self.frame_12.setSizePolicy(sizePolicy)
-        self.frame_12.setStyleSheet(u"background-color: rgb(0, 0, 0);")
+        self.frame_12.setStyleSheet(u"background-color: rgb(200, 200, 200);")
         self.frame_12.setFrameShape(QFrame.StyledPanel)
         self.frame_12.setFrameShadow(QFrame.Raised)
 
@@ -366,7 +371,7 @@ class Ui_UserWindow(object):
         self.frame_13.setObjectName(u"frame_13")
         sizePolicy.setHeightForWidth(self.frame_13.sizePolicy().hasHeightForWidth())
         self.frame_13.setSizePolicy(sizePolicy)
-        self.frame_13.setStyleSheet(u"background-color: rgb(0, 0, 0);")
+        self.frame_13.setStyleSheet(u"background-color: rgb(200, 200, 200);")
         self.frame_13.setFrameShape(QFrame.StyledPanel)
         self.frame_13.setFrameShadow(QFrame.Raised)
 
@@ -377,7 +382,7 @@ class Ui_UserWindow(object):
         sizePolicy.setHeightForWidth(self.frame_14.sizePolicy().hasHeightForWidth())
         self.frame_14.setSizePolicy(sizePolicy)
         self.frame_14.setMaximumSize(QSize(16777215, 20))
-        self.frame_14.setStyleSheet(u"background-color: rgb(0, 0, 0);")
+        self.frame_14.setStyleSheet(u"background-color: rgb(200, 200, 200);")
         self.frame_14.setFrameShape(QFrame.StyledPanel)
         self.frame_14.setFrameShadow(QFrame.Raised)
 
@@ -387,7 +392,7 @@ class Ui_UserWindow(object):
         self.frame_3.setObjectName(u"frame_3")
         sizePolicy.setHeightForWidth(self.frame_3.sizePolicy().hasHeightForWidth())
         self.frame_3.setSizePolicy(sizePolicy)
-        self.frame_3.setStyleSheet(u"background-color: rgb(0, 0, 0);")
+        self.frame_3.setStyleSheet(u"background-color: rgb(200, 200, 200);")
         self.frame_3.setFrameShape(QFrame.StyledPanel)
         self.frame_3.setFrameShadow(QFrame.Raised)
 
@@ -410,12 +415,14 @@ class Ui_UserWindow(object):
         self.promptTestWidget.addWidget(self.calibrationPromptPage)
         self.promptPromptPage = QWidget()
         self.promptPromptPage.setObjectName(u"promptPromptPage")
+        self.promptPromptPage.setStyleSheet(u"color: rgb(200,200,200);")
         self.horizontalLayout_8 = QHBoxLayout(self.promptPromptPage)
         self.horizontalLayout_8.setSpacing(0)
         self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
         self.horizontalLayout_8.setContentsMargins(0, 0, 0, 0)
         self.frame_4 = QFrame(self.promptPromptPage)
         self.frame_4.setObjectName(u"frame_4")
+        self.frame_4.setStyleSheet(u"background-color: rgb(0,0,0);")
         self.frame_4.setFrameShape(QFrame.StyledPanel)
         self.frame_4.setFrameShadow(QFrame.Raised)
         self.gridLayout_10 = QGridLayout(self.frame_4)
@@ -440,6 +447,7 @@ class Ui_UserWindow(object):
         self.rightLabel_2 = QLabel(self.rightFrame_2)
         self.rightLabel_2.setObjectName(u"rightLabel_2")
         self.rightLabel_2.setFont(font)
+        self.rightLabel_2.setStyleSheet(u"")
         self.rightLabel_2.setAlignment(Qt.AlignCenter)
 
         self.horizontalLayout_11.addWidget(self.rightLabel_2)

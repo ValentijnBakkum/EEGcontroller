@@ -24,44 +24,7 @@ QGraphicsView{
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QGraphicsView" name="ERDS1"/>
-        </item>
-        <item>
-         <widget class="QGraphicsView" name="ERDS3"/>
-        </item>
-        <item>
-         <widget class="QGraphicsView" name="ERDS5"/>
-        </item>
-        <item>
-         <widget class="QGraphicsView" name="ERDS7"/>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="QGraphicsView" name="ERDS2"/>
-        </item>
-        <item>
-         <widget class="QGraphicsView" name="ERDS4"/>
-        </item>
-        <item>
-         <widget class="QGraphicsView" name="ERDS6">
-          <property name="styleSheet">
-           <string notr="true"/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGraphicsView" name="ERDS8"/>
-        </item>
-       </layout>
-      </item>
-     </layout>
+     <widget class="QWidget" name="plotWidget" native="true"/>
     </item>
    </layout>
   </widget>
