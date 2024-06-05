@@ -62,6 +62,8 @@ while True:
       if len(data_dict['Counter']) >= 72005: # 72005 = sampling_rate * seconds_per_prompt * num_prompts + 5_seconds_leeway
          finished = True                     # 72005 = 250*(6+6)*(4*6)+5
 
+      inlet.close_stream()
+
    # lastly, we can save our data to a CSV format.
    data_df = pd.DataFrame.from_dict(data_dict) 
    now = datetime.now()
