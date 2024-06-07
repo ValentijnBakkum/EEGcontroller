@@ -364,7 +364,7 @@ class MainWindow(QMainWindow):
                     symbolSize=5,
                     symbolBrush="b",
                 )
-                self.ui.FFTPlot.setXRange(5, 40)
+                self.ui.FFTPlot.setXRange(5, 35)
                 self.ui.FFTPlot.setYRange(0, 50)
                 self.ui.FFTPlot.setMouseEnabled(x=False, y=False)
                 self.ui.FFTPlot.setMenuEnabled(False)
@@ -713,6 +713,7 @@ class UserWindow(QMainWindow):
         #cap
         self.streams = resolve_stream()
         self.inlet = StreamInlet(self.streams[0])
+        recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
 
         self.grid_layout = QGridLayout(self.ui.game1Widget)
 
@@ -778,6 +779,7 @@ class UserWindow(QMainWindow):
 
     @Slot()
     def startRecording(self):
+        #recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
         global count
         global pageArray
         global i
@@ -785,13 +787,9 @@ class UserWindow(QMainWindow):
         count = 0
         pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0]
         recProcess.stdout.read1(1)
-        if count == 0:
-            recProcess.stdin.write(b"G\n") # G for go
-        else:
-            recProcess.stdin.write(b"S\n") # G for go
+        recProcess.stdin.write(b"G\n") # G for go
         recProcess.stdin.flush()
-        self.timer.start(100)
-
+        self.timer.start(6000)
 
 
     @Slot()
@@ -810,20 +808,25 @@ class UserWindow(QMainWindow):
 
             pageNumber = pageArray[i]
 
+            recProcess.stdin.write(b"Prompt\n") # G for go
+            recProcess.stdin.flush()
+
             if count % 2 != 0:
                 self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
             else:
                 self.ui.promptsWidgets.setCurrentIndex(pageNumber)
                 i = i + 1
             if count == 47:
+                recProcess.stdin.write(b"Done\n") # G for go
+                recProcess.stdin.flush()
                 self.timer.stop()
 
             count = count + 1
 
     @Slot()
     def stopRecording(self):
-        self.count = 47
-        recProcess.stdin.write(b"Stop\n")
+        recProcess.stdin.write(b"Stop\n") # G for go
+        recProcess.stdin.flush()
         self.timer.stop()
         self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
 
