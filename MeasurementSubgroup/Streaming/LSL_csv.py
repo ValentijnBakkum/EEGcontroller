@@ -6,9 +6,9 @@ import pandas as pd
 import numpy as np
 import logging
 
-# logger = logging.getLogger(__name__)
-# logging.basicConfig(filename = "test.log", level = logging.INFO)
-# logger.info('Started')
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename = "test.log", level = logging.INFO)
+logger.info('Started')
 
 # initialize the streaming layer
 finished = False
@@ -25,15 +25,15 @@ pageNumber = 0
 
 
 while True:
-   #logger.info("connected")
+   logger.info("connected")
 
    data_dict = dict((k, []) for k in columns)
    label = []
 
    print("R") #R for ready
    recieved = input()
-   # logger.info("Received1")
-   # logger.info(recieved)
+   logger.info("Received1")
+   logger.info(recieved)
 
    i = 0
    pageNumber = 0
@@ -75,18 +75,18 @@ while True:
          finished = True                     # 72005 = 250*(6+6)*(4*6)+5
 
 
-      if len(data_dict['Counter']) % int(72005/48) == 0:
+      if len(data_dict['Counter']) % int(72000/48) == 0:
          recieved_loop = input()
-         # logger.info("ReceivedLoop:")
-         # logger.info(recieved_loop)
+         logger.info("ReceivedLoop:")
+         logger.info(recieved_loop)
          if recieved_loop == "Stop":
             finished = True
             inlet.close_stream() 
 
    if recieved_loop != "Stop":
       recieved1 = input()
-      # logger.info("Received2")
-      # logger.info(recieved1)
+      logger.info("Received2")
+      logger.info(recieved1)
 
       # lastly, we can save our data to a CSV format.
       data_df = pd.DataFrame.from_dict(data_dict) 
@@ -95,31 +95,31 @@ while True:
       # Add column to the data_df called label
       data_df["Label"] = label # add new column to the Dataframe
       data_df.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
+
+      # Get unique values in the 'number' column
+      unique_values = data_df['Label'].unique()[1:]
+      subsets = {}
+
+      # Split the DataFrame and save each subset to a separate dictionary
+      for value in unique_values:
+         subset_df = data_df[data_df['Label'] == value]
+         subsets[value] = subset_df
+
+      # Assign labels to seperate arrays
+      Label1 = subsets.get(1)
+      Label2 = subsets.get(2)
+      Label3 = subsets.get(3)
+      Label4 = subsets.get(4)
+
+      # # save to csv
+      Label1.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_1.csv', index = False)
+      Label2.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_2.csv', index = False)
+      Label3.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_3.csv', index = False)
+      Label4.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_4.csv', index = False)
    else:
       pass
 
    inlet.close_stream()
 
-   # Get unique values in the 'number' column
-   unique_values = data_df['Label'].unique()[1:]
-   subsets = {}
-
-   # Split the DataFrame and save each subset to a separate dictionary
-   for value in unique_values:
-      subset_df = data_df[data_df['Label'] == value]
-      subsets[value] = subset_df
-
-   # Assign labels to seperate arrays
-   Label1 = subsets.get(1)
-   Label2 = subsets.get(2)
-   Label3 = subsets.get(3)
-   Label4 = subsets.get(4)
-
-   # # save to csv
-   Label1.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_1.csv', index = False)
-   Label2.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_2.csv', index = False)
-   Label3.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_3.csv', index = False)
-   Label4.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt_labels/Label_' + now.strftime("%Y-%j--%H-%M-%S") + '_4.csv', index = False)
-
    finished = False
-   # logger.info('Finished')
+   logger.info('Finished')
