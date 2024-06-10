@@ -22,7 +22,7 @@ pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0]
 pageNumber = 0
 
 # prompt time settings
-prompt_time = 0.2 # time of each prompt
+prompt_time = 6 # time of each prompt in seconds
 promptsamples = prompt_time * 48 * 250 # amount of samples of each recording (time * amount of prompts * sampling rate + 5 samples as buffer)
 
 # 1. Right hand, 2. Left hand, 3. Tongue, 4. Feet, 0. Rest
