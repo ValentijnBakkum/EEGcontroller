@@ -158,8 +158,8 @@ class MainWindow(QMainWindow):
         #Data live plotting
         self.i = 0
         self.j = 0
-        self.max_graph_width = 70
-        self.plot_update_size = 10
+        self.max_graph_width = 50
+        self.plot_update_size = 2
         self.columns = 7
         self.av_height = int(self.max_graph_width/self.columns)
         self.channel = 1
@@ -222,7 +222,7 @@ class MainWindow(QMainWindow):
         # Add a timer to simulate new temperature measurements
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_plot)
-        self.timer.start(3)
+        self.timer.start(0.04)
 
         #Stopwatch variables
         self.count = 0
@@ -338,7 +338,7 @@ class MainWindow(QMainWindow):
     # Update graphs
     def update_plot(self):
         pen = pg.mkPen(self.pastel_colors[self.channel - 1], width = 2)
-        # gathering the data from the EEG cap
+        #gathering the data from the EEG cap
         if not self.simulate_data:
             sample, timestamp = self.inlet.pull_sample()
             sample_timestamp = (self.i) / 250
@@ -347,9 +347,7 @@ class MainWindow(QMainWindow):
             sample_timestamp = self.i / 250
 
         if self.i <= self.max_graph_width:
-            self.xdata[self.j:] = sample_timestamp
-            for k in range(8):
-                self.ydata[k][self.j] = sample[k]
+            pass
         else:
             if not self.startFFT:
                 self.startFFT = True
@@ -371,16 +369,16 @@ class MainWindow(QMainWindow):
                 self.ui.FFTPlot.hideButtons()
                 self.FFT_plot.setFftMode(True)
 
+        # only update the plot everytime it has collected plot update data sized data
+        if self.i % 50 == 0:
             self.xdata = np.roll(self.xdata, -1)
             self.xdata[-1] = sample_timestamp
+
             for k in range(8):
                 self.ydata[k] = np.roll(self.ydata[k], -1)
                 self.ydata[k][-1] = sample[k]
+                self.lines[k].setData(self.xdata, self.ydata[k])
 
-        #only update the plot everytime it has collected plot update data sized data
-        if self.i % self.plot_update_size == 0:
-            for i in range(8):
-                self.lines[i].setData(self.xdata, self.ydata[i])
             self.power_band_1.setOpts(height=self.yBarGraph[[0, 1, 2, 3, 4]], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
             self.power_band_2.setOpts(height=self.yBarGraph[[5]], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
             self.power_band_3.setOpts(height=self.yBarGraph[[6]], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
@@ -395,8 +393,12 @@ class MainWindow(QMainWindow):
                  range(0, len(self.ydata[self.channel - 1]), self.av_height)])
 
         self.i += 1
+        print(self.i)
+
         if self.i == 1000:
             print(time.time() - self.start_time)
+
+
 
     # for testing purposes
     def generate_random_sample(self):
