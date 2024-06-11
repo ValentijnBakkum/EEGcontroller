@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'interfaceUDzALt.ui'
+## Form generated from reading UI file 'interfaceHOxJDc.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -30,7 +30,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1595, 831)
+        MainWindow.resize(1601, 843)
         MainWindow.setMinimumSize(QSize(0, 0))
         icon = QIcon()
         icon.addFile(u":/newPrefix/pictures/EEG.jpg", QSize(), QIcon.Normal, QIcon.Off)
@@ -109,7 +109,7 @@ class Ui_MainWindow(object):
         font1 = QFont()
         font1.setPointSize(22)
         self.overviewBtn.setFont(font1)
-        self.overviewBtn.setStyleSheet(u"background-color: rgb(0, 118, 194);")
+        self.overviewBtn.setStyleSheet(u"")
         icon2 = QIcon()
         icon2.addFile(u":/icons/Qss/icons/activity-svgrepo-com.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.overviewBtn.setIcon(icon2)
@@ -130,6 +130,7 @@ class Ui_MainWindow(object):
         self.usersBtn = QPushButton(self.frame_2)
         self.usersBtn.setObjectName(u"usersBtn")
         self.usersBtn.setFont(font1)
+        self.usersBtn.setStyleSheet(u"background-color: rgb(0, 118, 194);")
         icon4 = QIcon()
         icon4.addFile(u":/icons/Qss/icons/users.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.usersBtn.setIcon(icon4)
@@ -767,6 +768,11 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_8.addLayout(self.verticalLayout_14)
 
+        self.widget = QWidget(self.channelsFrame)
+        self.widget.setObjectName(u"widget")
+
+        self.horizontalLayout_8.addWidget(self.widget)
+
         self.channelsPlot = GraphicsLayoutWidget(self.channelsFrame)
         self.channelsPlot.setObjectName(u"channelsPlot")
         self.channelsPlot.setStyleSheet(u"background-color: rgb(255, 255, 255);")
@@ -1058,7 +1064,7 @@ class Ui_MainWindow(object):
         self.startRecordingBtn.setText(QCoreApplication.translate("MainWindow", u"Start Recording", None))
         self.stopRecordingBtn.setText(QCoreApplication.translate("MainWindow", u"Stop Recording", None))
         self.ERDSBtn.setText(QCoreApplication.translate("MainWindow", u"ERDS", None))
-        self.userID_test.setText(QCoreApplication.translate("MainWindow", u"User ID", None))
+        self.userID_test.setText(QCoreApplication.translate("MainWindow", u"No User selected", None))
         self.directionLine.setText(QCoreApplication.translate("MainWindow", u"Direction", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Learning rate:   ", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Batch size:   ", None))

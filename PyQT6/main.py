@@ -192,16 +192,16 @@ class MainWindow(QMainWindow):
             p.hideButtons()
             self.subplots.append(p)
             self.lines.append(p.plot(pen=pg.mkPen(self.pastel_colors[i], width = 2)))
-            #p.hideAxis('bottom')
-            #p.hideAxis('left')
-        #self.subplots[0].setYRange(240500, 241300)
-        #self.subplots[1].setYRange(249400, 249900)
-        #self.subplots[2].setYRange(278700, 331200)
-        #self.subplots[3].setYRange(259500, 296400)
-        #self.subplots[4].setYRange(217000, 218000)
-        #self.subplots[5].setYRange(239200, 240050)
-        #self.subplots[6].setYRange(233100, 234300)
-        #self.subplots[7].setYRange(222050, 223100)
+            # p.hideAxis('bottom')
+            # p.hideAxis('left')
+        # self.subplots[0].setYRange(240500, 241300)
+        # self.subplots[1].setYRange(249400, 249900)
+        # self.subplots[2].setYRange(278700, 331200)
+        # self.subplots[3].setYRange(259500, 296400)
+        # self.subplots[4].setYRange(217000, 218000)
+        # self.subplots[5].setYRange(239200, 240050)
+        # self.subplots[6].setYRange(233100, 234300)
+        # self.subplots[7].setYRange(222050, 223100)
 
         # Bar graph power band
         self.xBarGraph = np.array([2,6,10,14,18,25,40]) #Center points of the columns with according width /<--
@@ -362,8 +362,8 @@ class MainWindow(QMainWindow):
                     symbolSize=5,
                     symbolBrush="b",
                 )
-                self.ui.FFTPlot.setXRange(5, 60)
-                self.ui.FFTPlot.setYRange(0, 500)
+                self.ui.FFTPlot.setXRange(5, 35)
+                self.ui.FFTPlot.setYRange(0, 50)
                 self.ui.FFTPlot.setMouseEnabled(x=False, y=False)
                 self.ui.FFTPlot.setMenuEnabled(False)
                 self.ui.FFTPlot.hideButtons()
@@ -426,9 +426,11 @@ class MainWindow(QMainWindow):
         self.ERDSWindow.show()
 
     def openUserWindow(self):
+        global recProcess
         if self.userWindow.isVisible():
             pass
         else:
+            recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
             self.userWindow.show()
 
     def exitApp(self):
@@ -710,6 +712,11 @@ class UserWindow(QMainWindow):
 
         #self.ui.dataTrainingBtn.clicked.connect(self.trainingData)
 
+        #cap
+        self.streams = resolve_stream()
+        self.inlet = StreamInlet(self.streams[0])
+        recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
+
         self.grid_layout = QGridLayout(self.ui.game1Widget)
 
         #Tic Tac Toe
@@ -774,16 +781,18 @@ class UserWindow(QMainWindow):
 
     @Slot()
     def startRecording(self):
-        #recProcess.stdout.read1(1)
-        #recProcess.stdin.write(b"G\n") # G for go
-        #recProcess.stdin.flush()
-        self.timer.start(500)
+        #recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
         global count
         global pageArray
         global i
         i = 0
         count = 0
         pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0]
+        recProcess.stdout.read1(1)
+        recProcess.stdin.write(b"G\n") # G for go
+        recProcess.stdin.flush()
+        self.timer.start(6000)
+
 
     @Slot()
     def startPromptTimer(self):
@@ -801,21 +810,28 @@ class UserWindow(QMainWindow):
 
             pageNumber = pageArray[i]
 
+            recProcess.stdin.write(b"Prompt\n") # G for go
+            recProcess.stdin.flush()
+
             if count % 2 != 0:
                 self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
             else:
                 self.ui.promptsWidgets.setCurrentIndex(pageNumber)
                 i = i + 1
             if count == 47:
+                recProcess.stdin.write(b"Done\n") # G for go
+                recProcess.stdin.flush()
                 self.timer.stop()
+
             count = count + 1
 
     @Slot()
     def stopRecording(self):
-        #recProcess.kill()
+        recProcess.stdin.write(b"Stop\n") # G for go
+        recProcess.stdin.flush()
         self.timer.stop()
         self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
-    
+
     def help(self):
         QMessageBox.information(None,"Help",
         "Instructions and their respective outputs:\nleft hand -> left\nright hand -> right\nfeet -> down\ntongue -> up",
@@ -867,7 +883,6 @@ class ERDSWindow(QMainWindow):
 def show_main_window():
     window1.showMaximized()
     window1.show()
-    window2.show()
 
     splash.finish(window1)
 
