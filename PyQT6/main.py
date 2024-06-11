@@ -382,6 +382,54 @@ class MainWindow(QMainWindow):
             self.flag = True
             self.userWindow_startPromptTimer.emit()
 
+    def showTime(self):
+ 
+        # checking if flag is true
+        if self.flag:
+ 
+            # incrementing the counter
+            self.count+= 1
+        else:
+            self.count=0
+ 
+        # getting text from count
+        if self.count < 47:
+            text = "0.0"
+        else:
+            text = str(float("{:.1f}".format(self.count / 10 - 4.7)))
+ 
+        # showing text
+        self.ui.stopwatch.setText(text)
+
+    def setCursorPage(self):
+            self.userWindow_to_cursorPage.emit()
+
+    def setGame1Page(self):
+            self.userWindow_to_game1Page.emit()
+    
+    def setGame2Page(self):
+            self.userWindow_to_game2Page.emit()
+    
+    def setTrainPage(self):
+            self.userWindow_to_trainingPage.emit()
+
+    def setPromptPage(self):
+            self.userWindow_to_promptPage.emit()
+            self.ui.stopwatch.setText("0.0")
+            self.flag = False
+    
+    def startRecording(self):
+            self.userWindow_startRecording.emit()
+
+    def stopRecording(self):
+            self.userWindow_stopRecording.emit()
+            self.flag = False
+
+    def startPromptTimer(self):
+            self.flag = True
+            self.userWindow_startPromptTimer.emit()
+
+    
     def reconnect_cap(self):
         try:
             self.inlet = StreamInlet(self.streams[0], max_buflen=0)
@@ -485,6 +533,12 @@ class MainWindow(QMainWindow):
                  range(0, len(self.ydata[self.channel - 1]), self.av_height)])
 
         self.i += 1
+        #print(self.i)
+
+        if self.i == 1000:
+            print(time.time() - self.start_time)
+
+
 
         if self.i == 1000:
             print(time.time() - self.start_time)
@@ -810,7 +864,7 @@ class UserWindow(QMainWindow):
 
         #cap
         self.streams = resolve_stream()
-        #self.inlet = StreamInlet(self.streams[0])
+        self.inlet = StreamInlet(self.streams[0])
         recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
 
     @Slot()
@@ -863,7 +917,7 @@ class UserWindow(QMainWindow):
         recProcess.stdin.flush()
         self.timer.stop()
         self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
-    
+
     def help(self):
         QMessageBox.information(None,"Help",
         "Instructions and their respective outputs:\nleft hand -> left\nright hand -> right\nfeet -> down\ntongue -> up",
@@ -1095,7 +1149,6 @@ def show_main_window():
     window1.show()
 
     splash.finish(window1)
-
 
 #Creates the app and runs the Mainwindow
 if __name__ == "__main__":

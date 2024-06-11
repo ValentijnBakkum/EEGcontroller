@@ -25,6 +25,7 @@ from scipy.fft import rfft, rfftfreq
 from scipy import signal
 from scipy.fft import fftshift
 from scipy.signal import butter, lfilter, lfilter_zi
+from scipy.signal import welch
 
 from pylsl import StreamInlet, resolve_stream
 
@@ -65,11 +66,11 @@ def filter(y):
     return y_filtered
 
 # Window settings
-window = 250
+window = 100
 overlap = 0.5
 
 # Plot settings
-pause = 0.01
+pause = 0.05
 
 streams = resolve_stream()
 inlet = StreamInlet(streams[0])
@@ -96,7 +97,7 @@ while not aborted:
 
     # assign EEG data to array
     y_win[0] = sample[choosen_electrode] # EEG data 1
-    t_win[0] = (sample[15] - counter_init[15])/250 # Counter from EEG cap in seconds
+    t_win[0] = (i)/250 # Counter from EEG cap in seconds
 
     # Shift the array with one index
     y_win = np.roll(y_win, -1)
@@ -108,13 +109,12 @@ while not aborted:
     # When the overlap is reached but not at i = 0 or i = overlap
     if i % overlap_win == 0 and i != overlap_win and i != 0:
         # apply filter to window
-
         y_win_filt = filter(y_win)
         #y_win_filt = y_win
 
         # Take the samples that are overlapped
-        y_shift = y_win_filt[0:overlap_win+1]
-        t_shift = t_win[0:overlap_win+1]
+        y_shift = y_win_filt[0:overlap_win]
+        t_shift = t_win[0:overlap_win]
 
         # Assign the values to an array
         y_shift = np.array(y_shift)
@@ -124,26 +124,69 @@ while not aborted:
         y_win_filt[0:overlap_win] = np.zeros(overlap_win)
         t_win[0:overlap_win] = np.zeros(overlap_win)
 
-        # axis settings
-        y_min = -100 #np.min(y_shift) - np.std(y_shift) * 5
-        y_max = 100 #np.max(y_shift) + np.std(y_shift) * 5
-        t_min = np.min(t_shift) - np.std(t_shift) * 20
-        t_max = np.max(t_shift) + np.std(t_shift) * 2
-        
-        #plot the shifted data points
-        plt.axis([t_min, t_max, y_min, y_max])
-        plt.plot(t_shift, y_shift, 'o-')
+        # # FFT
+        # xf = rfftfreq(int(window*overlap), 1 / 250)
+        # y_fft = rfft(y_shift)
+
+        # plt.plot(xf, np.abs(y_fft))
+        # plt.xlim([0, 50]) 
+        # plt.pause(pause)
+
+        # powerbands
+        # Compute the power spectral density using Welch's method
+        frequencies, psd = welch(y_shift, 250)
+        plt.plot(frequencies,psd)
         plt.pause(pause)
+
+        # Define frequency bands
+        delta_band = (0.5, 4)
+        theta_band = (4, 8)
+        alpha_band = (8, 12)
+        beta_band = (12, 30)
+        gamma_band = (30, 50)
+
+        # Function to calculate power in a specific frequency band
+        def bandpower(frequencies, psd, band):
+            band_freq_indices = np.logical_and(frequencies >= band[0], frequencies <= band[1])
+            band_power = np.sum(psd[band_freq_indices])
+            return band_power
+        
+        # Calculate power for each band
+        delta_power = bandpower(frequencies, psd, delta_band)
+        theta_power = bandpower(frequencies, psd, theta_band)
+        alpha_power = bandpower(frequencies, psd, alpha_band)
+        beta_power = bandpower(frequencies, psd, beta_band)
+        gamma_power = bandpower(frequencies, psd, gamma_band)
+
+        # Power values
+        powers = [delta_power, theta_power, alpha_power, beta_power, gamma_power]
+        print(powers)
+        bands = ['Delta (0.5-4 Hz)', 'Theta (4-8 Hz)', 'Alpha (8-13 Hz)', 'Beta (13-30 Hz)', 'Gamma (30-50 Hz)']
+
+        # plt.figure(figsize=(10, 6))
+        # plt.bar(bands, powers, color=['blue', 'green', 'red', 'purple', 'orange'])
+        # plt.xlabel('Frequency Bands')
+        # plt.ylabel('Power')
+        # plt.title('EEG Power Band Distribution')
+        # plt.pause(pause)
+
+        # # axis settings
+        # y_min = np.min(y_shift) - np.std(y_shift) * 5
+        # y_max = np.max(y_shift) + np.std(y_shift) * 5
+        # t_min = np.min(t_shift) - np.std(t_shift) * 10
+        # t_max = np.max(t_shift) + np.std(t_shift) * 2
+
+        # #plot the shifted data points
+        # plt.axis([t_min, t_max, y_min, y_max])
+        # plt.plot(t_shift, y_shift, 'o-')
+        # plt.pause(pause)
 
     # increment
     i += 1
     t += 1
 
-    #if i % 100 == 0:
-    #    plt.cla() 
+    if i % 50 == 0:
+       plt.cla() 
 
     if msvcrt.kbhit() and msvcrt.getch()[0] == 27:
         aborted = True
-
-    #if i % 500 == 0:
-    #    plt.cla() 
