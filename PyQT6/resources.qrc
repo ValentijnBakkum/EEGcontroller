@@ -1,5 +1,13 @@
 <RCC>
   <qresource prefix="icons">
+    <file>Qss/icons/alien-gray-line-drawing-svgrepo-com.svg</file>
+    <file>Qss/icons/fire-svgrepo-com.svg</file>
+    <file>Qss/icons/activity-svgrepo-com.svg</file>
+    <file>Qss/icons/tic-tac-toe-svgrepo-com.svg</file>
+    <file>Qss/icons/console-controller-gamepad-play-svgrepo-com.svg</file>
+    <file>Qss/icons/cursor-square-svgrepo-com.svg</file>
+    <file>Qss/icons/cursor-svgrepo-com.svg</file>
+    <file>Qss/icons/eight-ball.svg</file>
     <file>Qss/icons/target.svg</file>
     <file>Qss/icons/sliders.svg</file>
     <file>Qss/icons/alert-circle.svg</file>

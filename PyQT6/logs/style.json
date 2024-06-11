@@ -6,8 +6,7 @@
 				{
 					"navigationButtons":[
 						{
-							"trainBtn": "mainBodyContainerTrain",
-							"testBtn": "mainBodyContainerTest",
+							"overviewBtn": "mainBodyContainerGUI",
 							"usersBtn": "mainBodyContainerUsers"
 						}
 					]
@@ -35,13 +34,13 @@
 		}],
 		"expandedSize": [{
 			"width": 1000,
-			"height": 250
+			"height": 260
 		}],
 		"toggleButton": [{
 			"buttonName": "infoBtn"
 		}],
 		"menuTransitionAnimation": [{
-			"animationDuration": 500,
+			"animationDuration": 300,
 			"animationEasingCurve": "Linear"
 		}],
 		"floatPosition": [
@@ -57,6 +56,28 @@
 				]
 			}
 		]
+	},
+	{
+		"name": "leftSubMenu",
+		"defaultSize": [{
+			"width": 0,
+			"height": "parent"
+		}],
+		"collapsedSize": [{
+			"width": 0,
+			"height": "parent"
+		}],
+		"expandedSize": [{
+			"width": 151,
+			"height": "parent"
+		}],
+		"toggleButton": [{
+			"buttonName": "demosBtn"
+		}],
+		"menuTransitionAnimation": [{
+			"animationDuration": 300,
+			"animationEasingCurve": "Linear"
+		}]
 	},
 	{
 		"name": "leftMenuContainer",
@@ -80,7 +101,7 @@
 			}]
 		}],
 		"menuTransitionAnimation": [{
-			"animationDuration": 500,
+			"animationDuration": 300,
 			"animationEasingCurve": "Linear"
 		}]
 	}]
