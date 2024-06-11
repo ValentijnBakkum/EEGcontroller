@@ -37,5 +37,5 @@ while True:
 # Instructions
 # 1. Change the 'sample' or 'df' if needed to the desired file/data
 # 2. Run this code in a seperate console
-# 3. Run the code 2 another file needing the LSL streaming
+# 3. Run the code of another file needing the LSL streaming
 # 4. It will stream 'sample' data (representing the real data) without needing the cap

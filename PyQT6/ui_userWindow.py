@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'userWindowcOsaAt.ui'
+## Form generated from reading UI file 'userWindowuAqIuf.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -34,7 +34,9 @@ class Ui_UserWindow(object):
         self.centralwidget = QWidget(UserWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout_12 = QHBoxLayout(self.centralwidget)
+        self.horizontalLayout_12.setSpacing(0)
         self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
+        self.horizontalLayout_12.setContentsMargins(0, 0, 0, 0)
         self.demosPages = QStackedWidget(self.centralwidget)
         self.demosPages.setObjectName(u"demosPages")
         self.trainingPage = QWidget()

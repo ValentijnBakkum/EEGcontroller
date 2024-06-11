@@ -2,18 +2,18 @@ import os
 import sys
 import json
 import csv
-from random import randint
 import subprocess
 from ui_interface import *
 from ui_splashscreen import *
 from ui_ERDSWindow import Ui_ERDSWindow
 from ui_userWindow import Ui_UserWindow
 from Custom_Widgets import *
-from PySide6.QtWidgets import QInputDialog, QMessageBox, QSplashScreen
-#from PyQt6.QtCore import Qt
-from PySide6.QtCore import Qt, QTimer, Slot, Signal
+from PySide6.QtWidgets import QInputDialog, QMessageBox, QSplashScreen, QFrame
+from PySide6.QtCore import Qt, QTimer, Slot, Signal, QEvent, QBasicTimer
+from PySide6.QtGui import QPainter, QColor, QFont
 import random
 import numpy as np
+import pandas as pd
 import time
 import pyqtgraph as pg
 from pylsl import StreamInlet, resolve_stream
@@ -85,13 +85,21 @@ class MainWindow(QMainWindow):
         try:
             self.inlet = StreamInlet(self.streams[0])
             #Counter init
-            # sample, timestamp = self.inlet.pull_sample()
-            # self.counter_init = sample[15] 
+            #sample, timestamp = self.inlet.pull_sample()
+            #self.counter_init = sample[15] 
         except:
             self.show_eeg_error("The EEG cap is not connected. Please connect the cap.")
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.df = pd.read_csv("C:/Users/davbe/OneDrive/Documenten/Y3/BAP/PyQT6/EEGdata-2024-149--15-57-42.csv", sep=",")
+        # Get the control panel
+        self.controlPanel = self.findChild(QWidget, "buttonsBox")
+        # Install event filter for double click
+        if self.controlPanel:
+            self.controlPanel.installEventFilter(self)
+        else:
+            print("Error: buttonsBox not found in the UI")
 
         self.setWindowTitle("EEG-based BCI")
 
@@ -137,8 +145,8 @@ class MainWindow(QMainWindow):
         #Demos submenu
         self.ui.cursorBtn.clicked.connect(self.setCursorPage)
         self.ui.trainBtn.clicked.connect(self.setTrainPage)
-        self.ui.game1Btn.clicked.connect(self.setGame1Page)
-        self.ui.game2Btn.clicked.connect(self.setGame2Page)
+        self.ui.game1Btn.clicked.connect(self.openLavaGame)
+        self.ui.game2Btn.clicked.connect(self.openAsteroid)
         #Button panel
         self.ui.startRecordingBtn.clicked.connect(self.startRecording)
         self.ui.stopRecordingBtn.clicked.connect(self.stopRecording)
@@ -192,16 +200,16 @@ class MainWindow(QMainWindow):
             p.hideButtons()
             self.subplots.append(p)
             self.lines.append(p.plot(pen=pg.mkPen(self.pastel_colors[i], width = 2)))
-            # p.hideAxis('bottom')
-            # p.hideAxis('left')
-        # self.subplots[0].setYRange(240500, 241300)
-        # self.subplots[1].setYRange(249400, 249900)
-        # self.subplots[2].setYRange(278700, 331200)
-        # self.subplots[3].setYRange(259500, 296400)
-        # self.subplots[4].setYRange(217000, 218000)
-        # self.subplots[5].setYRange(239200, 240050)
-        # self.subplots[6].setYRange(233100, 234300)
-        # self.subplots[7].setYRange(222050, 223100)
+            #p.hideAxis('bottom')
+            #p.hideAxis('left')
+        #self.subplots[0].setYRange(240500, 241300)
+        #self.subplots[1].setYRange(249400, 249900)
+        #self.subplots[2].setYRange(278700, 331200)
+        #self.subplots[3].setYRange(259500, 296400)
+        #self.subplots[4].setYRange(217000, 218000)
+        #self.subplots[5].setYRange(239200, 240050)
+        #self.subplots[6].setYRange(233100, 234300)
+        #self.subplots[7].setYRange(222050, 223100)
 
         # Bar graph power band
         self.xBarGraph = np.array([2,6,10,14,18,25,40]) #Center points of the columns with according width /<--
@@ -231,8 +239,94 @@ class MainWindow(QMainWindow):
         self.stopwatch = QTimer()
         self.stopwatch.timeout.connect(self.showTime)
         self.stopwatch.start(100)
+
+        #Threshold of minimum width of window
+        self.min_width = 1000
+        self.original_geometry = self.geometry()
+
+    def eventFilter(self, obj, event):
+        if obj == self.controlPanel and event.type() == QEvent.MouseButtonDblClick:
+            self.minimizeWindow()
+            return True
+        return super().eventFilter(obj, event)
+
+    def minimizeWindow(self):
+        if self.width() > self.min_width:
+            # Remove other components
+            self.ui.leftMenuContainer.hide()
+            self.ui.frame_2.hide()
+            self.ui.frame_3.hide()
+            self.ui.leftSubMenu.expandMenu()
+            #self.ui.leftSubMenu.hide()
+            self.ui.UserIDBox.hide()
+            self.ui.infoWidgetContainer.hide()
+            self.ui.leftBodyFrameOverview.hide()
+            self.ui.FFTFrame.hide()
+            self.ui.powerBandFrame.hide()
+
+            # Resize the window to the size of the control panel widget
+            self.setFixedSize(900,200)
+            self.setWindowFlags(Qt.Widget | Qt.WindowStaysOnTopHint)
+
+            # Set background to transparent
+            self.setAttribute(Qt.WA_TranslucentBackground, True)
+            self.show()
+
+        else:
+            self.setFixedSize(1595, 831)
+            self.setMinimumSize(0, 0)
+            self.setMaximumSize(16777215, 16777215)
+
+            # Restore window frame and background
+            self.setWindowFlags(Qt.Widget)
+            self.setAttribute(Qt.WA_TranslucentBackground, False)
+            self.setGeometry(self.original_geometry)
+
+            self.ui.leftMenuContainer.show()
+            self.ui.frame_2.show()
+            self.ui.frame_3.show()
+            self.ui.leftSubMenu.show()
+            self.ui.leftSubMenu.collapseMenu()
+            self.ui.UserIDBox.show()
+            self.ui.infoWidgetContainer.show()
+            self.ui.leftBodyFrameOverview.show()
+            self.ui.FFTFrame.show()
+            self.ui.powerBandFrame.show()
+
+            self.showMaximized()
+        '''
+        if self.width() < self.min_width:
+            self.ui.leftMenuContainer.hide()
+            self.ui.leftMenuContainer.setContentsMargins(0, 0, 0, 0)
+            self.ui.mainBodyContainerGUI.setContentsMargins(0, 0, 0, 0)
+            self.ui.frame_2.hide()
+            self.ui.frame_2.setContentsMargins(0, 0, 0, 0)
+            self.ui.frame_3.hide()
+            self.ui.frame_3.setContentsMargins(0, 0, 0, 0)
+            self.ui.leftSubMenu.hide()
+            self.ui.leftSubMenu.setContentsMargins(0, 0, 0, 0)
+            self.ui.UserIDBox.hide()
+            self.ui.UserIDBox.setContentsMargins(0, 0, 0, 0)
+            self.ui.infoWidgetContainer.hide()
+            self.ui.infoWidgetContainer.setContentsMargins(0, 0, 0, 0)
+            self.ui.leftBodyFrameOverview.hide()
+            self.ui.leftBodyFrameOverview.setContentsMargins(0, 0, 0, 0)
+            self.ui.FFTFrame.hide()
+            self.ui.FFTFrame.setContentsMargins(0, 0, 0, 0)
+            self.ui.powerBandFrame.hide()
+            self.ui.powerBandFrame.setContentsMargins(0, 0, 0, 0)
+            self.resize(690,0)
+        else:
+            self.ui.leftMenuContainer.show()
+            self.ui.leftSubMenu.show()
+            self.ui.UserIDBox.show()
+            self.ui.infoWidgetContainer.show()
+            self.ui.leftBodyFrameOverview.show()
+            self.ui.FFTFrame.show()
+            self.ui.powerBandFrame.show()
+        '''
     
-    def make_pastel(self, color, factor=0.5):
+    def make_pastel(self, color, factor=0.3):
         white = QColor(255, 255, 255)
         color = QColor(color)
         return QColor(
@@ -288,10 +382,57 @@ class MainWindow(QMainWindow):
             self.flag = True
             self.userWindow_startPromptTimer.emit()
 
+    def showTime(self):
+ 
+        # checking if flag is true
+        if self.flag:
+ 
+            # incrementing the counter
+            self.count+= 1
+        else:
+            self.count=0
+ 
+        # getting text from count
+        if self.count < 47:
+            text = "0.0"
+        else:
+            text = str(float("{:.1f}".format(self.count / 10 - 4.7)))
+ 
+        # showing text
+        self.ui.stopwatch.setText(text)
+
+    def setCursorPage(self):
+            self.userWindow_to_cursorPage.emit()
+
+    def setGame1Page(self):
+            self.userWindow_to_game1Page.emit()
+    
+    def setGame2Page(self):
+            self.userWindow_to_game2Page.emit()
+    
+    def setTrainPage(self):
+            self.userWindow_to_trainingPage.emit()
+
+    def setPromptPage(self):
+            self.userWindow_to_promptPage.emit()
+            self.ui.stopwatch.setText("0.0")
+            self.flag = False
+    
+    def startRecording(self):
+            self.userWindow_startRecording.emit()
+
+    def stopRecording(self):
+            self.userWindow_stopRecording.emit()
+            self.flag = False
+
+    def startPromptTimer(self):
+            self.flag = True
+            self.userWindow_startPromptTimer.emit()
+
     
     def reconnect_cap(self):
         try:
-            self.inlet = StreamInlet(self.streams[0])
+            self.inlet = StreamInlet(self.streams[0], max_buflen=0)
             dlg = QMessageBox()
             dlg.setWindowTitle("EEG cap connected")
             dlg.setText("The EEG cap is succesfully connected. The data shown will now be the real data.")
@@ -322,7 +463,7 @@ class MainWindow(QMainWindow):
         if button == QMessageBox.StandardButton.Retry:
             print("retrying....")
             try:
-                self.inlet = StreamInlet(self.streams[0])
+                self.inlet = StreamInlet(self.streams[0], max_buflen=0)
                 self.simulate_data = False
             except:
                 self.show_eeg_error(error_text)
@@ -351,7 +492,6 @@ class MainWindow(QMainWindow):
         else:
             if not self.startFFT:
                 self.startFFT = True
-                print(self.channel)
                 symbol_sign = None
                 self.FFT_plot = self.ui.FFTPlot.plot(
                     self.xdata,
@@ -393,27 +533,22 @@ class MainWindow(QMainWindow):
                  range(0, len(self.ydata[self.channel - 1]), self.av_height)])
 
         self.i += 1
-        print(self.i)
+        #print(self.i)
 
         if self.i == 1000:
             print(time.time() - self.start_time)
 
 
 
+        if self.i == 1000:
+            print(time.time() - self.start_time)
     # for testing purposes
     def generate_random_sample(self):
         # Simulate random data generation
         return random.sample(range(0, 100), 15) + [time.time()], 0
-
+    
     def setUserWindow(self, userWindow):
         self.userWindow = userWindow
-
-    #Call the training window
-    #def openUserWindow(self):
-    #    #global recProcess
-    #    #recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
-    #    
-    #    self.userWindow.show()
 
     def setERDSWindow(self, ERDSWindow):
         self.ERDSWindow = ERDSWindow
@@ -433,8 +568,25 @@ class MainWindow(QMainWindow):
             recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
             self.userWindow.show()
 
+    def setLavaGameWindow(self, LavaGame):
+        self.LavaGame = LavaGame
+
+    #Call the training window
+    def openLavaGame(self):
+        self.LavaGame.showMaximized()
+        self.userWindow.hide()
+
+    def setAsteroidWindow(self, Asteroid):
+        self.Asteroid = Asteroid
+
+    #Call the training window
+    def openAsteroid(self):
+        self.Asteroid.showMaximized()
+        self.userWindow.hide()
+
     def exitApp(self):
         QApplication.quit()
+    
     '''
     @Slot()
     def handle_signal_trainData(self):  # will start training the ML model on the new data
@@ -710,78 +862,13 @@ class UserWindow(QMainWindow):
         self.timer.timeout.connect(lambda: self.changePages())
         self.promptTimer.timeout.connect(lambda: self.changePrompt())
 
-        #self.ui.dataTrainingBtn.clicked.connect(self.trainingData)
-
         #cap
         self.streams = resolve_stream()
         self.inlet = StreamInlet(self.streams[0])
         recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
 
-        self.grid_layout = QGridLayout(self.ui.game1Widget)
-
-        #Tic Tac Toe
-        self.buttons = [[None for _ in range(3)] for _ in range(3)]
-        self.current_player = 'X'
-        self.game_over = False
-
-        for row in range(3):
-            for col in range(3):
-                button = QPushButton("")
-                button.setFixedSize(QSize(100, 100))
-                font = button.font()
-                font.setPointSize(24)
-                button.setFont(font)
-                button.clicked.connect(lambda _, r=row, c=col: self.on_button_clicked(r, c))
-                self.grid_layout.addWidget(button, row, col)
-                self.buttons[row][col] = button
-
-    def on_button_clicked(self, row, col):
-        if self.game_over or self.buttons[row][col].text():
-            return
-
-        self.buttons[row][col].setText(self.current_player)
-        if self.check_winner():
-            self.show_winner(self.current_player)
-            self.game_over = True
-        elif self.is_draw():
-            self.show_winner("No one")
-            self.game_over = True
-        else:
-            self.current_player = 'O' if self.current_player == 'X' else 'X'
-
-    def check_winner(self):
-        for row in range(3):
-            if self.buttons[row][0].text() == self.buttons[row][1].text() == self.buttons[row][2].text() != '':
-                return True
-        for col in range(3):
-            if self.buttons[0][col].text() == self.buttons[1][col].text() == self.buttons[2][col].text() != '':
-                return True
-        if self.buttons[0][0].text() == self.buttons[1][1].text() == self.buttons[2][2].text() != '':
-            return True
-        if self.buttons[0][2].text() == self.buttons[1][1].text() == self.buttons[2][0].text() != '':
-            return True
-        return False
-
-    def is_draw(self):
-        for row in range(3):
-            for col in range(3):
-                if not self.buttons[row][col].text():
-                    return False
-        return True
-
-    def show_winner(self, winner):
-        msg = QMessageBox()
-        msg.setWindowTitle("Game Over")
-        msg.setText(f"{winner} wins!")
-        msg.exec()
-
-    def trainingData(self):
-        self.signal_to_trainData.emit()
-        self.close()
-
     @Slot()
     def startRecording(self):
-        #recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
         global count
         global pageArray
         global i
@@ -792,7 +879,6 @@ class UserWindow(QMainWindow):
         recProcess.stdin.write(b"G\n") # G for go
         recProcess.stdin.flush()
         self.timer.start(6000)
-
 
     @Slot()
     def startPromptTimer(self):
@@ -856,16 +942,16 @@ class UserWindow(QMainWindow):
         self.ui.demosPages.setCurrentWidget(self.ui.game2Page)
 
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key_W:
+        if event.key() == Qt.Key.Key_W:
             if self.ui.mouseCursor.y() - self.stepsize > 0:
                 self.ui.mouseCursor.move(self.ui.mouseCursor.x(), self.ui.mouseCursor.y() - self.stepsize)
-        elif event.key() == Qt.Key_A:
+        elif event.key() == Qt.Key.Key_A:
             if self.ui.mouseCursor.x() - self.stepsize > 0:
                 self.ui.mouseCursor.move(self.ui.mouseCursor.x() - self.stepsize, self.ui.mouseCursor.y())
-        elif event.key() == Qt.Key_S:
+        elif event.key() == Qt.Key.Key_S:
             if self.ui.mouseCursor.y() + self.stepsize < (self.ui.cursorFrame.height() - self.ui.mouseCursor.height()):
                 self.ui.mouseCursor.move(self.ui.mouseCursor.x(), self.ui.mouseCursor.y() + self.stepsize)
-        elif event.key() == Qt.Key_D:
+        elif event.key() == Qt.Key.Key_D:
             if self.ui.mouseCursor.x() + self.stepsize < (self.ui.cursorFrame.width() - self.ui.mouseCursor.width()):
                 self.ui.mouseCursor.move(self.ui.mouseCursor.x() + self.stepsize, self.ui.mouseCursor.y())
 
@@ -879,7 +965,185 @@ class ERDSWindow(QMainWindow):
         self.ui.setupUi(self)
 
         self.setWindowTitle("ERDS Window")
-        
+
+
+class LavaGame(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("The Floor is Lava")
+        self.central_widget = QWidget(self)
+        self.setCentralWidget(self.central_widget)
+
+        self.grid_layout = QGridLayout(self.central_widget)
+        self.central_widget.setLayout(self.grid_layout)
+
+        self.create_grid()
+        self.create_player()
+
+        self.warning_timer = QTimer(self)
+        self.warning_timer.timeout.connect(self.generate_warning)
+
+        self.check_collision_timer = QTimer(self)
+        self.check_collision_timer.timeout.connect(self.check_collision)
+
+        self.game_over = False
+
+        # Countdown setup
+        self.countdown_label = QLabel(self.central_widget)
+        self.countdown_label.setAlignment(Qt.AlignCenter)
+        self.countdown_label.setStyleSheet("font-size: 100px; color: red;")
+        self.countdown_label.setGeometry(0, 0, self.width(), self.height())
+        self.countdown_timer = QTimer(self)
+        self.countdown_timer.timeout.connect(self.update_countdown)
+        self.countdown_value = 5  # Increased countdown value to 5 seconds
+
+        # Start the game with countdown
+        self.start_countdown()
+
+    def start_countdown(self):
+        self.countdown_value = 5  # Start countdown from 5
+        self.countdown_label.setText(str(self.countdown_value))
+        self.countdown_label.show()
+        self.countdown_timer.start(1000)
+
+    def update_countdown(self):
+        self.countdown_value -= 1
+        if self.countdown_value > 0:
+            self.countdown_label.setText(str(self.countdown_value))
+        else:
+            self.countdown_timer.stop()
+            self.countdown_label.hide()
+            self.start_game()
+
+    def start_game(self):
+        self.warning_timer.start(7000)  # Start the warning timer with an initial delay
+        self.check_collision_timer.start(50)  # Check collision every 50 milliseconds
+
+    def create_grid(self):
+        grid_size = 8
+        self.red_tiles = set()
+        self.empty_cells = set()  # Store the empty cells separately
+
+        # Add empty cells to the left
+        for row in range(grid_size):
+            empty_cell_widget = QWidget()
+            empty_cell_widget.setStyleSheet("border: none;")  # No border or background color
+            self.grid_layout.addWidget(empty_cell_widget, row, 0)
+            self.empty_cells.add(empty_cell_widget)  # Add empty cells to the set
+
+        for row in range(grid_size):
+            empty_cell_widget = QWidget()
+            empty_cell_widget.setStyleSheet("border: none;")  # No border or background color
+            self.grid_layout.addWidget(empty_cell_widget, row, 1)
+            self.empty_cells.add(empty_cell_widget)  # Add empty cells to the set
+
+        # Add empty cells to the right
+        for row in range(grid_size):
+            empty_cell_widget = QWidget()
+            empty_cell_widget.setStyleSheet("border: none;")  # No border or background color
+            self.grid_layout.addWidget(empty_cell_widget, row, grid_size + 1)
+            self.empty_cells.add(empty_cell_widget)  # Add empty cells to the set
+
+        for row in range(grid_size):
+            empty_cell_widget = QWidget()
+            empty_cell_widget.setStyleSheet("border: none;")  # No border or background color
+            self.grid_layout.addWidget(empty_cell_widget, row, grid_size + 2)
+            self.empty_cells.add(empty_cell_widget)  # Add empty cells to the set
+
+        for row in range(grid_size):
+            empty_cell_widget = QWidget()
+            empty_cell_widget.setStyleSheet("border: none;")  # No border or background color
+            self.grid_layout.addWidget(empty_cell_widget, row, grid_size + 3)
+            self.empty_cells.add(empty_cell_widget)  # Add empty cells to the set
+
+        # Add game cells
+        for row in range(grid_size):
+            for col in range(grid_size):
+                cell_widget = QWidget()
+                cell_widget.setStyleSheet("background-color: white; border: 1px solid black;")
+                self.grid_layout.addWidget(cell_widget, row, col + 2)  # Offset by 2 to skip the empty columns
+
+    def create_player(self):
+        self.player = QWidget(self.central_widget)
+        self.player.setFixedSize(120, 120)
+        self.player.setStyleSheet("background-color: blue; border: 1px solid black;")
+        self.player.move(1220, 640)  # Position the player initially
+
+    def generate_warning(self):
+        if self.game_over:
+            return
+        for tile in self.red_tiles:
+            tile.setStyleSheet("background-color: white; border: 1px solid black;")
+        self.red_tiles.clear()
+
+        num_warning_tiles = random.randint(4, 6)
+        available_cells = [self.grid_layout.itemAt(i).widget() for i in range(self.grid_layout.count()) if self.grid_layout.itemAt(i).widget() not in self.empty_cells]
+        warning_tiles = random.sample(available_cells, num_warning_tiles)
+        for tile in warning_tiles:
+            tile.setStyleSheet("background-color: yellow; border: 1px solid black;")
+            self.red_tiles.add(tile)
+
+        QTimer.singleShot(3000, self.generate_lava)  # Schedule turning warning tiles to lava after 3 seconds
+
+    def generate_lava(self):
+        for tile in self.red_tiles:
+            tile.setStyleSheet("background-color: red; border: 1px solid black;")
+        QTimer.singleShot(3000, self.revert_lava)  # Schedule reverting lava tiles to white after 3 seconds
+
+    def revert_lava(self):
+        for tile in self.red_tiles:
+            tile.setStyleSheet("background-color: white; border: 1px solid black;")
+        self.start_game()  # Start a new cycle of the game
+
+    def check_collision(self):
+        if not self.game_over:
+            player_rect = self.player.geometry()
+            for tile in self.red_tiles:
+                if tile.styleSheet() == "background-color: red; border: 1px solid black;" and player_rect.intersects(tile.geometry()):
+                    self.game_over = True
+                    #self.player.setFixedSize(1000, 100)
+                    #self.player.move(self.width() / 2 - self.player.width() / 2, self.height() / 2 - self.player.height() / 2)  # Move player to center
+                    #self.player.setStyleSheet("background-color: black;")
+                    self.game_over_label = QLabel("Game Over", self.central_widget)  # Set the parent to the central widget
+                    self.game_over_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                    self.game_over_label.setGeometry(0, 0, self.width(), self.height())  # Position the QLabel to cover the entire window
+                    self.game_over_label.setStyleSheet("font-size: 100px; color: red;")
+                    self.game_over_label.raise_()  # Raise the QLabel to the top of the z-order
+                    self.game_over_label.show()  # Ensure the QLabel is visible
+    def keyPressEvent(self, event):
+        if not self.game_over:
+            self.step = 40  # Define step size for movement
+            if event.key() == Qt.Key.Key_W:
+                if self.player.y() - self.step + 10 > 0:
+                    self.player.move(self.player.x(), self.player.y() - self.step)
+            elif event.key() == Qt.Key.Key_A:
+                if self.player.x() - self.step > 420:
+                    self.player.move(self.player.x() - self.step, self.player.y())
+            elif event.key() == Qt.Key.Key_S:
+                if self.player.y() + self.step < (self.height() - self.player.height()):
+                    self.player.move(self.player.x(), self.player.y() + self.step)
+            elif event.key() == Qt.Key.Key_D:
+                if self.player.x() + self.step < (self.width() - self.player.width())-420:
+                    self.player.move(self.player.x() + self.step, self.player.y())
+
+    def closeEvent(self, event):
+        # Stop all game timers and reset game state
+        self.warning_timer.stop()
+        self.check_collision_timer.stop()
+        self.countdown_timer.stop()
+        self.game_over = False  # Reset game over flag
+        self.countdown_label.hide()
+        if hasattr(self, 'game_over_label'):
+            self.game_over_label.hide()
+        event.accept()  # Accept the close event
+
+    def showEvent(self, event):
+        # Restart the game when the window is shown
+        self.start_countdown()
+        event.accept()  # Accept the show event
+
+
+
 def show_main_window():
     window1.showMaximized()
     window1.show()
@@ -904,9 +1168,11 @@ if __name__ == "__main__":
     window1 = MainWindow()
     window2 = UserWindow()
     window3 = ERDSWindow()
+    window4 = LavaGame()
 
     window1.setUserWindow(window2)
     window1.setERDSWindow(window3)
+    window1.setLavaGameWindow(window4)
     
     #window2.signal_to_trainData.connect(window1.handle_signal_trainData)
     window1.userWindow_to_cursorPage.connect(window2.handle_signal_cursorPage)

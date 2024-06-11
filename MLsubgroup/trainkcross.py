@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import Dataset, TensorDataset
-from ModelWang import cnnnet1
+from ModelWang import escargot
 from attentionmod import blockblock
 from torch.utils.data import DataLoader
 import numpy as np
@@ -52,7 +52,7 @@ for fold, (train_idx, val_idx) in enumerate(kf.split(dataset)):
     trainloader = DataLoader(dataset, batch_size=batch_size, sampler=train_subsampler)
     valloader = DataLoader(dataset, batch_size=test_size, sampler=val_subsampler)
 
-    model = cnnnet1().to(device)
+    model = escargot().to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
     loss_fn = torch.nn.CrossEntropyLoss()
     scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=warmup)

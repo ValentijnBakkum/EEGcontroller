@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="icons">
+    <file>Qss/icons/alien-gray-line-drawing-svgrepo-com.svg</file>
+    <file>Qss/icons/fire-svgrepo-com.svg</file>
     <file>Qss/icons/activity-svgrepo-com.svg</file>
     <file>Qss/icons/tic-tac-toe-svgrepo-com.svg</file>
     <file>Qss/icons/console-controller-gamepad-play-svgrepo-com.svg</file>

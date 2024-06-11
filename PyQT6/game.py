@@ -1,409 +1,429 @@
 import sys
 import random
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QGridLayout, QWidget, QMessageBox
-from PyQt6.QtCore import QSize, QTimer
-from PyQt6.QtGui import QFont
-from PyQt6.QtCore import *
-from PyQt6.QtWidgets import *
-from PyQt6.QtGui import *
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, QLabel
+from PySide6.QtCore import QTimer, QSize, Qt
 
-class SnakeGame(QMainWindow):
-    def __init__(self):
-        super(SnakeGame, self).__init__()
- 
-        # creating a board object
-        self.board = Board(self)
- 
-        # creating a status bar to show result
-        self.statusbar = self.statusBar()
- 
-        # adding border to the status bar
-        self.statusbar.setStyleSheet("& quot border: 2px solid black & quot")
- 
-        # calling showMessage method when signal received by board
-        self.board.msg2statusbar[str].connect(self.statusbar.showMessage)
- 
-        # adding board as a central widget
-        self.setCentralWidget(self.board)
- 
-        # setting title to the window
-        self.setWindowTitle('Snake game')
- 
-        # setting geometry to the window
-        self.setGeometry(100, 100, 600, 400)
- 
-        # starting the board object
-        self.board.start()
- 
-        # showing the main window
-        self.show()
- 
-# creating a board class
-# that inherits QFrame
- 
- 
-class Board(QFrame):
- 
-    # creating signal object
-    msg2statusbar = pyqtSignal(str)
- 
-    # speed of the snake
-    # timer countdown time
-    SPEED = 80
- 
-    # block width and height
-    WIDTHINBLOCKS = 60
-    HEIGHTINBLOCKS = 40
- 
-    # constructor
-    def __init__(self, parent):
-        super(Board, self).__init__(parent)
- 
-        # creating a timer
-        self.timer = QBasicTimer()
- 
-        # snake
-        self.snake = [[5, 10], [5, 11]]
- 
-        # current head x head
-        self.current_x_head = self.snake[0][0]
-        # current y head
-        self.current_y_head = self.snake[0][1]
- 
-        # food list
-        self.food = []
- 
-        # growing is false
-        self.grow_snake = False
- 
-        # board list
-        self.board = []
- 
-        # direction
-        self.direction = 1
- 
-        # called drop food method
-        self.drop_food()
- 
-        # setting focus
-        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
- 
-    # square width method
-    def square_width(self):
-        return self.contentsRect().width() / Board.WIDTHINBLOCKS
- 
-    # square height
-    def square_height(self):
-        return self.contentsRect().height() / Board.HEIGHTINBLOCKS
- 
-    # start method
-    def start(self):
-        # msg for status bar
-        # score = current len - 2
-        self.msg2statusbar.emit(str(len(self.snake) - 2))
- 
-        # starting timer
-        self.timer.start(Board.SPEED, self)
- 
-    # paint event
-    def paintEvent(self, event):
- 
-        # creating painter object
-        painter = QPainter(self)
- 
-        # getting rectangle
-        rect = self.contentsRect()
- 
-        # board top
-        boardtop = rect.bottom() - Board.HEIGHTINBLOCKS * self.square_height()
- 
-        # drawing snake
-        for pos in self.snake:
-            self.draw_square(painter, rect.left() + pos[0] * self.square_width(),
-                             boardtop + pos[1] * self.square_height())
- 
-        # drawing food
-        for pos in self.food:
-            self.draw_square(painter, rect.left() + pos[0] * self.square_width(),
-                             boardtop + pos[1] * self.square_height())
- 
-    # drawing square
-    def draw_square(self, painter, x, y):
-        # color
-        color = QColor(0x228B22)
- 
-        # painting rectangle
-        painter.fillRect(x + 1, y + 1, self.square_width() - 2,
-                         self.square_height() - 2, color)
- 
-    # key press event
-    def keyPressEvent(self, event):
- 
-        # getting key pressed
-        key = event.key()
- 
-        # if left key pressed
-        if key == Qt.Key.Key_Left:
-            # if direction is not right
-            if self.direction != 2:
-                # set direction to left
-                self.direction = 1
- 
-        # if right key is pressed
-        elif key == Qt.Key.Key_Right:
-            # if direction is not left
-            if self.direction != 1:
-                # set direction to right
-                self.direction = 2
- 
-        # if down key is pressed
-        elif key == Qt.Key.Key_Down:
-            # if direction is not up
-            if self.direction != 4:
-                # set direction to down
-                self.direction = 3
- 
-        # if up key is pressed
-        elif key == Qt.Key.Key_Up:
-            # if direction is not down
-            if self.direction != 3:
-                # set direction to up
-                self.direction = 4
- 
-    # method to move the snake
-    def move_snake(self):
- 
-        # if direction is left change its position
-        if self.direction == 1:
-            self.current_x_head, self.current_y_head = self.current_x_head - 1, self.current_y_head
- 
-        # if direction is right change its position
-        if self.direction == 2:
-            self.current_x_head, self.current_y_head = self.current_x_head + 1, self.current_y_head
-            # if it goes beyond right wall
-            if self.current_x_head == Board.WIDTHINBLOCKS:
-                self.current_x_head = 0
- 
-        # if direction is down change its position
-        if self.direction == 3:
-            self.current_x_head, self.current_y_head = self.current_x_head, self.current_y_head + 1
-            # if it goes beyond down wall
-            if self.current_y_head == Board.HEIGHTINBLOCKS:
-                self.current_y_head = 0
- 
-        # if direction is up change its position
-        if self.direction == 4:
-            self.current_x_head, self.current_y_head = self.current_x_head, self.current_y_head - 1
- 
-        # changing head position
-        head = [self.current_x_head, self.current_y_head]
-        # inset head in snake list
-        self.snake.insert(0, head)
- 
-        # if snake grow is False
-        if not self.grow_snake:
-            # pop the last element
-            self.snake.pop()
- 
-        else:
-            # show msg in status bar
-            self.msg2statusbar.emit(str(len(self.snake)-2))
-            # make grow_snake to false
-            self.grow_snake = False
- 
-    # time event method
-    def timerEvent(self, event):
- 
-        # checking timer id
-        if event.timerId() == self.timer.timerId():
- 
-            # call move snake method
-            self.move_snake()
-            # call food collision method
-            self.is_food_collision()
-            # call is suicide method
-            self.is_suicide()
-            # update the window
-            self.update()
- 
-    # method to check if snake collides itself
-    def is_suicide(self):
-        # traversing the snake
-        for i in range(1, len(self.snake)):
-            # if collision found
-            if self.snake[i] == self.snake[0]:
-                # show game ended msg in status bar
-                self.msg2statusbar.emit(str("& quot Game Ended & quot"))
-                # making background color black
-                self.setStyleSheet("& quotbackground-color: black& quot")
-                # stopping the timer
-                self.timer.stop()
-                # updating the window
-                self.update()
- 
-    # method to check if the food cis collied
-    def is_food_collision(self):
- 
-        # traversing the position of the food
-        for pos in self.food:
-            # if food position is similar of snake position
-            if pos == self.snake[0]:
-                # remove the food
-                self.food.remove(pos)
-                # call drop food method
-                self.drop_food()
-                # grow the snake
-                self.grow_snake = True
- 
-    # method to drop food on screen
-    def drop_food(self):
-        # creating random co-ordinates
-        x = random.randint(3, 58)
-        y = random.randint(3, 38)
- 
-        # traversing if snake position is not equal to the
-        # food position so that food do not drop on snake
-        for pos in self.snake:
-            # if position matches
-            if pos == [x, y]:
-                # call drop food method again
-                self.drop_food()
- 
-        # append food location
-        self.food.append([x, y])
 
-class TicTacToeGame(QMainWindow):
+class LavaGame(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Tic-Tac-Toe")
-        self.setGeometry(100, 100, 300, 300)
-
-        self.central_widget = QWidget()
+        self.setWindowTitle("The Floor is Lava")
+        self.central_widget = QWidget(self)
         self.setCentralWidget(self.central_widget)
 
         self.grid_layout = QGridLayout(self.central_widget)
+        self.central_widget.setLayout(self.grid_layout)
 
-        self.buttons = [[None for _ in range(3)] for _ in range(3)]
-        self.current_player = 'X'
+        self.create_grid()
+        self.create_player()
+
+        self.warning_timer = QTimer(self)
+        self.warning_timer.timeout.connect(self.generate_warning)
+
+        self.check_collision_timer = QTimer(self)
+        self.check_collision_timer.timeout.connect(self.check_collision)
+
         self.game_over = False
 
-        for row in range(3):
-            for col in range(3):
-                button = QPushButton("")
-                button.setFixedSize(QSize(100, 100))
-                font = button.font()
-                font.setPointSize(24)
-                button.setFont(font)
-                button.clicked.connect(lambda _, r=row, c=col: self.on_button_clicked(r, c))
-                self.grid_layout.addWidget(button, row, col)
-                self.buttons[row][col] = button
+        # Countdown setup
+        self.countdown_label = QLabel(self.central_widget)
+        self.countdown_label.setAlignment(Qt.AlignCenter)
+        self.countdown_label.setStyleSheet("font-size: 100px; color: red;")
+        self.countdown_label.setGeometry(0, 0, self.width(), self.height())
+        self.countdown_timer = QTimer(self)
+        self.countdown_timer.timeout.connect(self.update_countdown)
+        self.countdown_value = 5  # Increased countdown value to 5 seconds
 
-    def on_button_clicked(self, row, col):
-        if self.game_over or self.buttons[row][col].text():
-            return
+        # Start the game with countdown
+        self.start_countdown()
 
-        self.buttons[row][col].setText(self.current_player)
-        if self.check_winner():
-            self.show_winner(self.current_player)
-            self.game_over = True
-        elif self.is_draw():
-            self.show_winner("No one")
-            self.game_over = True
+    def start_countdown(self):
+        self.countdown_value = 5  # Start countdown from 5
+        self.countdown_label.setText(str(self.countdown_value))
+        self.countdown_label.show()
+        self.countdown_timer.start(1000)
+
+    def update_countdown(self):
+        self.countdown_value -= 1
+        if self.countdown_value > 0:
+            self.countdown_label.setText(str(self.countdown_value))
         else:
-            self.current_player = 'O' if self.current_player == 'X' else 'X'
+            self.countdown_timer.stop()
+            self.countdown_label.hide()
+            self.start_game()
 
-    def check_winner(self):
-        for row in range(3):
-            if self.buttons[row][0].text() == self.buttons[row][1].text() == self.buttons[row][2].text() != '':
-                return True
-        for col in range(3):
-            if self.buttons[0][col].text() == self.buttons[1][col].text() == self.buttons[2][col].text() != '':
-                return True
-        if self.buttons[0][0].text() == self.buttons[1][1].text() == self.buttons[2][2].text() != '':
-            return True
-        if self.buttons[0][2].text() == self.buttons[1][1].text() == self.buttons[2][0].text() != '':
-            return True
-        return False
+    def start_game(self):
+        self.warning_timer.start(7000)  # Start the warning timer with an initial delay
+        self.check_collision_timer.start(50)  # Check collision every 50 milliseconds
 
-    def is_draw(self):
-        for row in range(3):
-            for col in range(3):
-                if not self.buttons[row][col].text():
-                    return False
-        return True
+    def create_grid(self):
+        grid_size = 8
+        self.red_tiles = set()
+        self.empty_cells = set()  # Store the empty cells separately
 
-    def show_winner(self, winner):
-        msg = QMessageBox()
-        msg.setWindowTitle("Game Over")
-        msg.setText(f"{winner} wins!")
-        msg.exec()
+        # Add empty cells to the left
+        for row in range(grid_size):
+            empty_cell_widget = QWidget()
+            empty_cell_widget.setStyleSheet("border: none;")  # No border or background color
+            self.grid_layout.addWidget(empty_cell_widget, row, 0)
+            self.empty_cells.add(empty_cell_widget)  # Add empty cells to the set
+
+        for row in range(grid_size):
+            empty_cell_widget = QWidget()
+            empty_cell_widget.setStyleSheet("border: none;")  # No border or background color
+            self.grid_layout.addWidget(empty_cell_widget, row, 1)
+            self.empty_cells.add(empty_cell_widget)  # Add empty cells to the set
+
+        # Add empty cells to the right
+        for row in range(grid_size):
+            empty_cell_widget = QWidget()
+            empty_cell_widget.setStyleSheet("border: none;")  # No border or background color
+            self.grid_layout.addWidget(empty_cell_widget, row, grid_size + 1)
+            self.empty_cells.add(empty_cell_widget)  # Add empty cells to the set
+
+        for row in range(grid_size):
+            empty_cell_widget = QWidget()
+            empty_cell_widget.setStyleSheet("border: none;")  # No border or background color
+            self.grid_layout.addWidget(empty_cell_widget, row, grid_size + 2)
+            self.empty_cells.add(empty_cell_widget)  # Add empty cells to the set
+
+        for row in range(grid_size):
+            empty_cell_widget = QWidget()
+            empty_cell_widget.setStyleSheet("border: none;")  # No border or background color
+            self.grid_layout.addWidget(empty_cell_widget, row, grid_size + 3)
+            self.empty_cells.add(empty_cell_widget)  # Add empty cells to the set
+
+        # Add game cells
+        for row in range(grid_size):
+            for col in range(grid_size):
+                cell_widget = QWidget()
+                cell_widget.setStyleSheet("background-color: white; border: 1px solid black;")
+                self.grid_layout.addWidget(cell_widget, row, col + 2)  # Offset by 2 to skip the empty columns
+
+    def create_player(self):
+        self.player = QWidget(self.central_widget)
+        self.player.setFixedSize(120, 120)
+        self.player.setStyleSheet("background-color: blue; border: 1px solid black;")
+        self.player.move(1220, 640)  # Position the player initially
+
+    def generate_warning(self):
+        if self.game_over:
+            return
+        for tile in self.red_tiles:
+            tile.setStyleSheet("background-color: white; border: 1px solid black;")
+        self.red_tiles.clear()
+
+        num_warning_tiles = random.randint(4, 6)
+        available_cells = [self.grid_layout.itemAt(i).widget() for i in range(self.grid_layout.count()) if self.grid_layout.itemAt(i).widget() not in self.empty_cells]
+        warning_tiles = random.sample(available_cells, num_warning_tiles)
+        for tile in warning_tiles:
+            tile.setStyleSheet("background-color: yellow; border: 1px solid black;")
+            self.red_tiles.add(tile)
+
+        QTimer.singleShot(3000, self.generate_lava)  # Schedule turning warning tiles to lava after 3 seconds
+
+    def generate_lava(self):
+        for tile in self.red_tiles:
+            tile.setStyleSheet("background-color: red; border: 1px solid black;")
+        QTimer.singleShot(3000, self.revert_lava)  # Schedule reverting lava tiles to white after 3 seconds
+
+    def revert_lava(self):
+        for tile in self.red_tiles:
+            tile.setStyleSheet("background-color: white; border: 1px solid black;")
+        self.start_game()  # Start a new cycle of the game
+
+    def check_collision(self):
+        if not self.game_over:
+            player_rect = self.player.geometry()
+            for tile in self.red_tiles:
+                if tile.styleSheet() == "background-color: red; border: 1px solid black;" and player_rect.intersects(tile.geometry()):
+                    self.game_over = True
+                    self.player.setFixedSize(1000, 100)
+                    self.player.move(self.width() / 2 - self.player.width() / 2, self.height() / 2 - self.player.height() / 2)  # Move player to center
+                    self.player.setStyleSheet("background-color: black;")
+                    self.game_over_label = QLabel("Game Over", self.central_widget)  # Set the parent to the central widget
+                    self.game_over_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                    self.game_over_label.setGeometry(0, 0, self.width(), self.height())  # Position the QLabel to cover the entire window
+                    self.game_over_label.setStyleSheet("font-size: 100px; color: red;")
+                    self.game_over_label.raise_()  # Raise the QLabel to the top of the z-order
+                    self.game_over_label.show()  # Ensure the QLabel is visible
+    def keyPressEvent(self, event):
+        if not self.game_over:
+            self.step = 40  # Define step size for movement
+            if event.key() == Qt.Key.Key_W:
+                if self.player.y() - self.step + 10 > 0:
+                    self.player.move(self.player.x(), self.player.y() - self.step)
+            elif event.key() == Qt.Key.Key_A:
+                if self.player.x() - self.step > 420:
+                    self.player.move(self.player.x() - self.step, self.player.y())
+            elif event.key() == Qt.Key.Key_S:
+                if self.player.y() + self.step < (self.height() - self.player.height()):
+                    self.player.move(self.player.x(), self.player.y() + self.step)
+            elif event.key() == Qt.Key.Key_D:
+                if self.player.x() + self.step < (self.width() - self.player.width())-420:
+                    self.player.move(self.player.x() + self.step, self.player.y())
+
+    def closeEvent(self, event):
+        # Stop the game timers when the window is closed
+        self.warning_timer.stop()
+        self.check_collision_timer.stop()
+        self.countdown_timer.stop()
+        event.accept()  # Accept the close event
+
+    def showEvent(self, event):
+        # Restart the game when the window is shown
+        self.start_countdown()
+        event.accept()  # Accept the show event:
+        # Restart the game when the window is shown
+        self.start_countdown()
+        event.accept()  # Accept the show event
 
 
-class MemoryMatchGame(QMainWindow):
+# importing libraries
+from PySide6.QtCore import Qt, QBasicTimer
+from PySide6.QtWidgets import QMainWindow, QApplication, QFrame
+from PySide6.QtGui import QPainter, QColor, QFont
+import random
+import sys
+
+
+# creating game window
+class Asteroid(QMainWindow):
     def __init__(self):
-        super().__init__()
-        self.setWindowTitle("Memory Match")
-        self.setGeometry(100, 100, 400, 400)
+        super(Asteroid, self).__init__()
 
-        self.central_widget = QWidget()
-        self.setCentralWidget(self.central_widget)
+        # creating a board object
+        self.game = Game(self)
 
-        self.grid_layout = QGridLayout(self.central_widget)
+        # adding board as a central widget
+        self.setCentralWidget(self.game)
 
-        self.buttons = [[None for _ in range(4)] for _ in range(4)]
-        self.values = list(range(1, 9)) * 2
-        random.shuffle(self.values)
-        self.current_pair = []
-        self.matched_pairs = 0
+        # setting title to the window
+        self.setWindowTitle('Asteroid Shooter')
 
-        for row in range(4):
-            for col in range(4):
-                button = QPushButton("")
-                button.setFixedSize(QSize(100, 100))
-                font = button.font()
-                font.setPointSize(24)
-                button.setFont(font)
-                button.clicked.connect(lambda _, r=row, c=col: self.on_button_clicked(r, c))
-                self.grid_layout.addWidget(button, row, col)
-                self.buttons[row][col] = button
+        # setting geometry to the window
+        self.setGeometry(100, 100, 600, 400)
 
-    def on_button_clicked(self, row, col):
-        button = self.buttons[row][col]
-        if button.text() or len(self.current_pair) == 2:
-            return
+        # starting the board object
+        self.game.start()
 
-        button.setText(str(self.values[row * 4 + col]))
-        self.current_pair.append((row, col))
+        # showing the main window
+        self.show()
 
-        if len(self.current_pair) == 2:
-            QTimer.singleShot(1000, self.check_pair)
 
-    def check_pair(self):
-        row1, col1 = self.current_pair[0]
-        row2, col2 = self.current_pair[1]
+# The game
+class Game(QFrame):
+    # timer countdown time
+    SPEED = 80
 
-        if self.values[row1 * 4 + col1] == self.values[row2 * 4 + col2]:
-            self.buttons[row1][col1].setEnabled(False)
-            self.buttons[row2][col2].setEnabled(False)
-            self.matched_pairs += 1
-            if self.matched_pairs == 8:
-                self.show_winner()
+    # meteor settings
+    MAXMETEORS = 3
+    METEOR_SPEED = 3
+
+    # constructor
+    def __init__(self, parent):
+        super(Game, self).__init__(parent)
+
+        # creating a timer
+        self.timer = QBasicTimer()
+
+        # player location
+        self.playerloc = 750
+
+        # meteor list
+        self.meteor = []
+        # bullet list
+        self.bullet = []
+
+        self.spawn_bullet = False
+
+        # keeps track of score
+        self.score = 0
+        self.lives = 3
+
+        # sizes of objects
+        self.playerSize = 70
+        self.cometSize = 70
+        self.border_size = 470
+
+        # direction of player
+        self.direction = -1
+
+        self.game_active = True
+
+        # setting focus
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+
+    # start method
+    def start(self):
+        # starting timer
+        self.timer.start(Game.SPEED, self)
+
+    # paint event
+    def paintEvent(self, event):
+        painter = QPainter(self)
+
+        # draw side panels
+        self.draw_side_panels(painter)
+
+        # draw the meteors
+        for pos in self.meteor:
+            self.draw_square(painter, pos[0], pos[1], self.cometSize, self.cometSize, QColor(0xFF0000))
+
+        # draw the bullets
+        for pos in self.bullet:
+            self.draw_square(painter, pos[0], pos[1], 5, 10, QColor(0xFF0000))
+
+        # draw the score (if the game is active, not active when player is gameOver)
+        if self.game_active:
+            self.draw_score(painter)
+
+            # drawing player
+            self.draw_square(painter, self.playerloc, self.height() - self.playerSize,
+                             self.playerSize, self.playerSize, QColor(0x228B22))
         else:
-            self.buttons[row1][col1].setText("")
-            self.buttons[row2][col2].setText("")
+            self.draw_game_over(painter)
 
-        self.current_pair = []
+    # drawing side panels
+    def draw_side_panels(self, painter):
+        # left panel
+        painter.fillRect(0, 0, self.border_size, self.height(), QColor(0x404040))
+        # right panel
+        painter.fillRect(self.width() - self.border_size, 0, self.border_size, self.height(), QColor(0x404040))
 
-    def show_winner(self):
-        msg = QMessageBox()
-        msg.setWindowTitle("Game Over")
-        msg.setText("You found all pairs!")
-        msg.exec()
+    # drawing score
+    def draw_score(self, painter):
+        painter.setPen(QColor(0xFFFFFF))
+        painter.setFont(QFont('Arial', 50))
+        score_text = f"Score: {self.score}"
+        painter.drawText(10, 70, score_text)
+        painter.setFont(QFont('Arial', 40))
+        lives_text = f"Lives: {self.lives}"
+        painter.drawText(10, 120, lives_text)
 
-if __name__ == "__main__":
+    # drawing square
+    def draw_square(self, painter, x, y, width, height, color):
+        painter.fillRect(x, y, width, height, color)
+
+    # draw Game Over text with score
+    def draw_game_over(self, painter):
+        painter.setPen(QColor(0xFF0000))
+        painter.setFont(QFont('Arial', 50))
+        game_over_text = f"GAME OVER"
+        text_width = painter.fontMetrics().horizontalAdvance(game_over_text)
+        painter.drawText((self.width() - text_width) // 2, self.height() // 2, game_over_text)
+        painter.setPen(QColor(0x000000))
+        painter.setFont(QFont('Arial', 30))
+        score_text = f"Score: {self.score}"
+        text_width = painter.fontMetrics().horizontalAdvance(score_text)
+        painter.drawText((self.width() - text_width) // 2, self.height() // 2 + 50, score_text)
+
+    # key press event
+    def keyPressEvent(self, event):
+        key = event.key()
+        # if left key is pressed
+        if key == Qt.Key.Key_A:
+            # if direction is not right
+            self.direction = 0
+
+        # if right key is pressed
+        elif key == Qt.Key.Key_D:
+            # if direction is not left
+            self.direction = 1
+
+        # if space key is pressed
+        elif key == Qt.Key.Key_Space:
+            self.spawn_bullet = True
+
+    # method to move the player
+    def move_player(self):
+        # if direction is left
+        if self.direction == 0:
+            if self.playerloc > self.border_size + self.playerSize // 2:
+                self.playerloc -= self.playerSize
+            # reset direction until new move button is pressed
+            self.direction = -1
+        # if direction is right
+        elif self.direction == 1:
+            if self.playerloc < self.width() - self.border_size - self.playerSize * 2:
+                self.playerloc += self.playerSize
+            # reset direction until new move button is pressed
+            self.direction = -1
+
+
+    # time event method
+    def timerEvent(self, event):
+        # checking timer id
+        if event.timerId() == self.timer.timerId():
+            # if the player is not gameover
+            if self.game_active:
+                # move the player and spawn meteors and bullets if needed
+                self.move_player()
+                self.spawn_meteor()
+                if self.spawn_bullet:
+                    self.bullet.append([self.playerloc + self.playerSize // 2, self.height() - self.playerSize])
+                    self.spawn_bullet = False
+                # call update meteor and bullet methods
+                self.update_meteor()
+                self.update_bullet()
+                # update the window
+                self.update()
+
+    # spawns a meteor
+    def spawn_meteor(self):
+        # if there are less than the max amount of meteors, spawn one
+        if len(self.meteor) < self.MAXMETEORS:
+            # getting new random x location until its not the same as an already existing meteor's location
+            while True:
+                # creating random x coord for the meteor within vertical field
+                x = random.randint(self.border_size, self.width() - self.border_size - self.cometSize)
+                # extract x-coordinates of existing meteors and check for overlap
+                overlapping = False
+                for pos in self.meteor:
+                    if abs(x - pos[0]) < self.cometSize:
+                        overlapping = True
+                        break
+                if not overlapping:
+                    break
+            self.meteor.append([x, 0])
+
+    # move the meteors down
+    def update_meteor(self):
+        for index, pos in enumerate(self.meteor[:]):
+            pos[1] += Game.METEOR_SPEED
+            # if it hits the ground, remove a life and the meteor
+            if pos[1] > self.height() - self.playerSize:
+                self.lives -= 1
+                self.meteor.remove(pos)
+                # call Game over method when no lives are left
+                if self.lives <= 0:
+                    self.game_over()
+
+    # when no lives are left, destroy all bullets and meteors
+    def game_over(self):
+        self.game_active = False
+        for index, pos in enumerate(self.meteor[:]):
+            self.meteor.remove(pos)
+        for index, pos in enumerate(self.meteor[:]):
+            self.bullet.remove(pos)
+
+    # move all bullets up and check for collision
+    def update_bullet(self):
+        for pos in self.bullet[:]:
+            pos[1] -= self.playerSize
+            # if bullet is too high, destroy it
+            if pos[1] < 0:
+                self.bullet.remove(pos)
+            # if bullet collides with meteor, remove the bullet and meteor and add a point to the players score
+            for pos_meteor in self.meteor[:]:
+                if pos[0] > pos_meteor[0] and pos[0] < pos_meteor[0] + self.cometSize and pos[1] < pos_meteor[1] + self.cometSize:
+                    self.bullet.remove(pos)
+                    self.meteor.remove(pos_meteor)
+                    self.score += 1
+
+# main method
+if __name__ == '__main__':
     app = QApplication(sys.argv)
-    #game = TicTacToeGame()
-    #game = MemoryMatchGame()
-    game = SnakeGame()
-    game.show()
+    window = LavaGame()
+    window.showMaximized()
     sys.exit(app.exec())
