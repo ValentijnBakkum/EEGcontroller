@@ -48,101 +48,27 @@ from mne.stats import permutation_cluster_1samp_test as pcluster_test
 # config
 mne.set_log_level('WARNING')
 
-def multifile(string_array):
-    output = np.empty((0, 11), dtype=int)
-    events = np.empty((0,  3), dtype=int)
-    i = 0
-    for file in string_array:
-        output = np.concatenate((output, np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/' + file, delimiter=',')[1:, :]), axis=0)
-        temp_events = np.array([[ 1500, 0, 1],
-                                [ 4500, 0, 2],
-                                [ 7500, 0, 3],
-                                [10500, 0, 4],
-                                [13500, 0, 4],
-                                [16500, 0, 3],
-                                [19500, 0, 2],
-                                [22500, 0, 1],
-                                [25500, 0, 2],
-                                [28500, 0, 3],
-                                [31500, 0, 4],
-                                [34500, 0, 1],
-                                [37500, 0, 1],
-                                [40500, 0, 3],
-                                [43500, 0, 4],
-                                [46500, 0, 2],
-                                [49500, 0, 3],
-                                [52500, 0, 2],
-                                [55500, 0, 4],
-                                [58500, 0, 1],
-                                [61500, 0, 4],
-                                [64500, 0, 1],
-                                [67500, 0, 2],
-                                [70500, 0, 3]])
-        temp_events[:, 0] = temp_events[:, 0] + (i * 72005)
-        events = np.concatenate((events, temp_events), axis=0)
-        i = i + 1
+rawGDF = mne.io.read_raw_gdf('MeasurementSubgroup/Testing dataset analysis/A09T.gdf')
+(events_A, events_id_A) = mne.events_from_annotations(rawGDF)
 
-    return (output, events)
-    
-
-
-
-#———————————————————————————————————————————————————————————————————————
-#np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-144--14-56-37.csv', delimiter=',')
-#(allOutputs, events) = multifile(["EEGdata-2024-149--15-20-21.csv", 
-#                                  "EEGdata-2024-149--15-35-40.csv",
-#                                  "EEGdata-2024-149--15-45-38.csv",
-#                                  "EEGdata-2024-149--15-57-42.csv"
-#                                  ])
-#———————————————————————————————————————————————————————————————————————
-#(allOutputs, events) = multifile(["EEGdata-2024-149--16-41-44.csv"])
-#———————————————————————————————————————————————————————————————————————
-(allOutputs, events) = multifile(["EEGdata-2024-150--14-48-32.csv",
-                                  "EEGdata-2024-150--14-55-28.csv",
-                                  "EEGdata-2024-150--15-01-30.csv",
-                                  "EEGdata-2024-150--15-07-57.csv",
-                                  "EEGdata-2024-150--15-14-53.csv",
-                                  "EEGdata-2024-150--15-30-23.csv",
-                                  "EEGdata-2024-150--15-36-40.csv",
-                                  "EEGdata-2024-150--15-42-38.csv"
-                                  ])
-#———————————————————————————————————————————————————————————————————————
-#(allOutputs, events) = multifile(["EEGdata-2024-156--14-35-07.csv",
-#                                  "EEGdata-2024-156--14-42-54.csv",
-#                                  "EEGdata-2024-156--14-51-06.csv",
-#                                  "EEGdata-2024-156--14-58-57.csv",
-#                                  "EEGdata-2024-156--15-06-57.csv"
-#                                  ])
-#———————————————————————————————————————————————————————————————————————
-
-channels = allOutputs[:, 0:8].transpose()
-
-# create mne_info object
-ch_names =        ['Fz', 
-            'C3',  'Cz',  'C4', 
-                   'Pz', 
-            'PO7', 'Oz',  'PO8'] 
-
-ch_type = ['eeg' for i in range(8)]
-mne_info = mne.create_info(ch_names, float(250), ch_types=ch_type)
-
-#create mne.raw object
-raw = mne.io.RawArray(channels, mne_info)
-raw.set_montage(mne.channels.make_standard_montage("standard_1005"))
+print(events_id_A)
 
 tmin, tmax = -1, 4
-event_ids = {'right': 1, "left": 2, 'tongue': 3, 'feet': 4}  # map event IDs to tasks
+
+#769 0x0301 Cue onset left (class 1)
+#770 0x0302 Cue onset right (class 2)
+#771 0x0303 Cue onset foot (class 3)
+#772 0x0304 Cue onset tongue (class 4)
 
 epochs = mne.Epochs(
-    raw,
-    events = events,
-    event_id=[1, 2, 3, 4],
+    rawGDF,
+    events = events_A,
+    event_id=[events_id_A['770'], events_id_A['769'], events_id_A['771'], events_id_A['772']],
     tmin=tmin - 0.5,
     tmax=tmax + 0.5,
-    picks=(    'Fz', 
-        'C3',  'Cz',  'C4', 
-               'Pz', 
-        'PO7', 'Oz',  'PO8'),
+    picks=(         'EEG-Fz', 
+         'EEG-C3',  'EEG-Cz',  'EEG-C4', 
+                    'EEG-Pz'),
     baseline=None,
     preload=True,
 )
@@ -248,12 +174,12 @@ df = df[df.band.isin(freq_bands_of_interest)]
 df["band"] = df["band"].cat.remove_unused_categories()
 
 # Order channels for plotting:
-df["channel"] = df["channel"].cat.reorder_categories(('Fz', 'C3', 'Cz', 'C4', 'Pz', 'PO7', 'Oz', 'PO8'), ordered=True)
+df["channel"] = df["channel"].cat.reorder_categories(('EEG-Fz', 'EEG-C3',  'EEG-Cz',  'EEG-C4', 'EEG-Pz'), ordered=True)
 
 df = df.drop(df.index[df['time'].isin([-1.004])], axis=0)
 
 g = sns.FacetGrid(df, row="band", col="channel", margin_titles=True)
-g.map(sns.lineplot, "time", "value", "condition", n_boot=10, errorbar=("pi", 100))
+g.map(sns.lineplot, "time", "value", "condition", n_boot=10)
 axline_kw = dict(color="black", linestyle="dashed", linewidth=0.5, alpha=0.5)
 g.map(plt.axhline, y=0, **axline_kw)
 g.map(plt.axvline, x=0, **axline_kw)
