@@ -3,25 +3,25 @@ import numpy as np
 import pandas as pd
 from pylsl import StreamInfo, StreamOutlet# Create a new stream info (name, type, channel count, nominal sampling rate, channel format, source id)
 
-info = StreamInfo('FakeDataStream', 'EEG', 18, 250, 'float32', 'myuid34234')
+info = StreamInfo('FakeDataStream', 'EEG', 17, 250, 'float32', 'myuid34234')
 
 # Create a new outlet with this stream info
 outlet = StreamOutlet(info)
 
 print("Now sending data...")
 
-df = pd.read_csv("MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-149--15-57-42.csv", sep=",")
+# df = pd.read_csv("MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-2024-149--15-57-42.csv", sep=",")
 
-for i in range(7):
-    # Insert empty columns at index 8 to set counter at index 15, and mimic real data
-    df.insert(8, 'empty_col'+str(7-i), 0)
+# for i in range(6):
+#     # Insert empty columns at index 8 to set counter at index 15, and mimic real data
+#     df.insert(8, 'empty_col'+str(7-i), 0)
 
-data = np.array(df)
 i = 0
 
+# data = np.array(df)
+
 while True:
-    sample = data[i,:]
-    #print(sample)
+    sample = [i, i, i, i, i, i, i, i, 0, 0, 0, 0, 0, 0, 0, 0 ,0]
 
     # Push the sample to the outlet
     outlet.push_sample(sample)

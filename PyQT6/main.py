@@ -2,44 +2,104 @@ import os
 import sys
 import json
 import csv
-from random import randint
 import subprocess
 from ui_interface import *
-from ui_trainWindow import Ui_TrainWindow
+from ui_splashscreen import *
+from ui_ERDSWindow import Ui_ERDSWindow
+from ui_userWindow import Ui_UserWindow
 from Custom_Widgets import *
-from PyQt6.QtWidgets import QInputDialog, QMessageBox
-from PySide6.QtCore import QTimer, Slot, Signal
+from PySide6.QtWidgets import QInputDialog, QMessageBox, QSplashScreen, QFrame
+from PySide6.QtCore import Qt, QTimer, Slot, Signal, QEvent, QBasicTimer
+from PySide6.QtGui import QPainter, QColor, QFont
 import random
 import numpy as np
+import pandas as pd
 import time
 import pyqtgraph as pg
 from pylsl import StreamInlet, resolve_stream
 
+class SplashScreen(QSplashScreen):
+    def __init__(self):
+        super(SplashScreen, self).__init__()
+        self.ui = Ui_SplashScreen()
+        self.ui.setupUi(self)
+        self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+
+        # Initialize progress bar
+        self.ui.progressBar.setMinimum(0)
+        self.ui.progressBar.setMaximum(100)
+
+        # Set up a timer to update the progress bar
+        self.progress_timer = QTimer()
+        self.progress_timer.timeout.connect(self.update_progress)
+        self.progress_timer.start(100)
+
+        # Counter for tracking progress
+        self.progress_value = 0
+
+    def update_progress(self):
+        # Increment progress value
+        self.progress_value += 1
+        self.ui.progressBar.setValue(self.progress_value)
+
+        # Check if progress is complete
+        if self.progress_value >= 100:
+            self.progress_timer.stop()
+
+    
+    def showEvent(self, event):
+        super().showEvent(event)
+        self.centerSplash()
+
+    def centerSplash(self):
+        screen = self.screen()
+        screen_geometry = screen.geometry()
+        splash_geometry = self.geometry()
+
+        x = (screen_geometry.width() - splash_geometry.width()) // 2
+        y = (screen_geometry.height() - splash_geometry.height()) // 2
+
+        self.move(x, y)
+
 #Mainwindow from which everything can be called
 class MainWindow(QMainWindow):
+    userWindow_to_cursorPage = Signal()
+    userWindow_to_game1Page = Signal()
+    userWindow_to_game2Page = Signal()
+    userWindow_to_trainingPage = Signal()
+    userWindow_to_promptPage = Signal()
+    userWindow_startRecording = Signal()
+    userWindow_stopRecording = Signal()
+    userWindow_startPromptTimer = Signal()
+
     def __init__(self):
         super(MainWindow, self).__init__()
 
-        self.stepsize = 5
         self.startFFT = False
         self.done_recording = False
 
         # for EEG cap data
         self.simulate_data = False
+        self.streams = resolve_stream()
         try:
-            self.streams = resolve_stream()
             self.inlet = StreamInlet(self.streams[0])
-
-            # Counter init
-            sample, timestamp = self.inlet.pull_sample()
-            self.counter_init = sample[15] 
-
+            #Counter init
+            #sample, timestamp = self.inlet.pull_sample()
+            #self.counter_init = sample[15] 
         except:
             self.show_eeg_error("The EEG cap is not connected. Please connect the cap.")
-            self.counter_init = 0
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.df = pd.read_csv("C:/Users/davbe/OneDrive/Documenten/Y3/BAP/PyQT6/EEGdata-2024-149--15-57-42.csv", sep=",")
+        # Get the control panel
+        self.controlPanel = self.findChild(QWidget, "buttonsBox")
+        # Install event filter for double click
+        if self.controlPanel:
+            self.controlPanel.installEventFilter(self)
+        else:
+            print("Error: buttonsBox not found in the UI")
 
         self.setWindowTitle("EEG-based BCI")
 
@@ -47,6 +107,25 @@ class MainWindow(QMainWindow):
         loadJsonStyle(self, self.ui, jsonFiles = {
                         "logs/style.json"
                             }) 
+        
+        # Predefined colors
+        colors = [
+            QColor(255, 0, 0),    # Red
+            QColor(255, 165, 0),  # Orange
+            QColor(144, 238, 144),# Light Green
+            QColor(0, 128, 0),    # Green
+            QColor(0, 128, 128),  # Blue-Green
+            QColor(0, 255, 255),  # Cyan
+            QColor(0, 0, 139),    # Dark Blue
+            QColor(128, 0, 128),  # Purple
+            QColor(255, 0, 255),  # Magenta
+            QColor(255, 255, 0),  # Yellow
+            QColor(0, 255, 0),    # Green
+            QColor(0, 0, 255)     # Blue
+        ]
+
+        # Convert to pastel colors
+        self.pastel_colors = [self.make_pastel(color) for color in colors]
         
         #Check if the buttons are clicked and evoke their function
         #User page:
@@ -57,14 +136,24 @@ class MainWindow(QMainWindow):
         self.ui.downBtn.clicked.connect(self.downUser)
         self.ui.sortBtn.clicked.connect(self.sortUser)
         self.ui.usersList.itemClicked.connect(self.ChooseUser)
-        #menu
+        #Menu
         self.ui.reconnectBtn.clicked.connect(self.reconnect_cap)
-        self.ui.trainBtn.clicked.connect(self.changeTrainBtn)
-        self.ui.testBtn.clicked.connect(self.changeTestBtn)
+        self.ui.overviewBtn.clicked.connect(self.changeOverviewBtn)
         self.ui.usersBtn.clicked.connect(self.changeUsersBtn)
+        self.ui.demosBtn.clicked.connect(self.changeDemosBtn)
         self.ui.exitBtn.clicked.connect(self.exitApp)
-        #Training window
-        self.ui.startTrainBtn.clicked.connect(self.openTrainWindow)
+        #Demos submenu
+        self.ui.cursorBtn.clicked.connect(self.setCursorPage)
+        self.ui.trainBtn.clicked.connect(self.setTrainPage)
+        self.ui.game1Btn.clicked.connect(self.openLavaGame)
+        self.ui.game2Btn.clicked.connect(self.openAsteroid)
+        #Button panel
+        self.ui.startRecordingBtn.clicked.connect(self.startRecording)
+        self.ui.stopRecordingBtn.clicked.connect(self.stopRecording)
+        self.ui.openUserWindowBtn.clicked.connect(self.openUserWindow)
+        self.ui.ERDSBtn.clicked.connect(self.openERDSWindow)
+        self.ui.openPromptBtn.clicked.connect(self.setPromptPage)
+        self.ui.startTimerBtn.clicked.connect(self.startPromptTimer)
 
         # add users to user list from file
         with open('users.csv', newline='') as user_file:
@@ -77,8 +166,8 @@ class MainWindow(QMainWindow):
         #Data live plotting
         self.i = 0
         self.j = 0
-        self.max_graph_width = 70
-        self.plot_delay = 5
+        self.max_graph_width = 50
+        self.plot_update_size = 2
         self.columns = 7
         self.av_height = int(self.max_graph_width/self.columns)
         self.channel = 1
@@ -94,185 +183,256 @@ class MainWindow(QMainWindow):
         self.loss_data = np.array([100])
         self.loss_data_iter = np.zeros(1)
 
-        pen = pg.mkPen(color=(255, 0, 0))
-        # Get a line reference
-        self.line = self.ui.graphicsView.plot(
-            self.xdata,
-            self.ydata[0],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_2 = self.ui.graphicsView_2.plot(
-            self.xdata,
-            self.ydata[1],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_3 = self.ui.graphicsView_3.plot(
-            self.xdata,
-            self.ydata[2],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_4 = self.ui.graphicsView_4.plot(
-            self.xdata,
-            self.ydata[3],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_5 = self.ui.graphicsView_5.plot(
-            self.xdata,
-            self.ydata[4],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_6 = self.ui.graphicsView_6.plot(
-            self.xdata,
-            self.ydata[5],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_7 = self.ui.graphicsView_7.plot(
-            self.xdata,
-            self.ydata[6],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_8 = self.ui.graphicsView_8.plot(
-            self.xdata,
-            self.ydata[7],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_9 = self.ui.graphicsView_9.plot(
-            self.xdata,
-            self.ydata[0],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_10 = self.ui.graphicsView_10.plot(
-            self.xdata,
-            self.ydata[1],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_11 = self.ui.graphicsView_11.plot(
-            self.xdata,
-            self.ydata[2],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_12 = self.ui.graphicsView_12.plot(
-            self.xdata,
-            self.ydata[3],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_13 = self.ui.graphicsView_13.plot(
-            self.xdata,
-            self.ydata[4],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_14 = self.ui.graphicsView_14.plot(
-            self.xdata,
-            self.ydata[5],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_15 = self.ui.graphicsView_15.plot(
-            self.xdata,
-            self.ydata[6],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
-        self.line_16 = self.ui.graphicsView_16.plot(
-            self.xdata,
-            self.ydata[7],
-            name="Power Sensor",
-            pen=pen,
-            symbol=symbol_sign,
-            symbolSize=5,
-            symbolBrush="b",
-        )
+        # Create subplots and lines
+        self.subplots = []
+        self.lines = []
+
+        self.j = 0
+
+        self.ui.channelsPlot.setBackground(QColor(255, 255, 255))
+
+        for i in range(8):
+            p = self.ui.channelsPlot.addPlot(row=i, col=0)
+            p.setMouseEnabled(x=False, y=False)
+            p.setMenuEnabled(False)
+            export = self.ui.channelsPlot.sceneObj.contextMenu
+            del export[:]
+            p.hideButtons()
+            self.subplots.append(p)
+            self.lines.append(p.plot(pen=pg.mkPen(self.pastel_colors[i], width = 2)))
+            #p.hideAxis('bottom')
+            #p.hideAxis('left')
+        #self.subplots[0].setYRange(240500, 241300)
+        #self.subplots[1].setYRange(249400, 249900)
+        #self.subplots[2].setYRange(278700, 331200)
+        #self.subplots[3].setYRange(259500, 296400)
+        #self.subplots[4].setYRange(217000, 218000)
+        #self.subplots[5].setYRange(239200, 240050)
+        #self.subplots[6].setYRange(233100, 234300)
+        #self.subplots[7].setYRange(222050, 223100)
+
         # Bar graph power band
         self.xBarGraph = np.array([2,6,10,14,18,25,40]) #Center points of the columns with according width /<--
-        self.line_18_1 = pg.BarGraphItem(x=self.xBarGraph[[0,1,2,3,4]], height = self.yBarGraph[[0,1,2,3,4]], width = 4, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.line_18_2 = pg.BarGraphItem(x=self.xBarGraph[[5]], height = self.yBarGraph[[5]], width = 10, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.line_18_3 = pg.BarGraphItem(x=self.xBarGraph[[6]], height = self.yBarGraph[[6]], width = 20, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.ui.graphicsView_18.addItem(self.line_18_1)
-        self.ui.graphicsView_18.addItem(self.line_18_2)
-        self.ui.graphicsView_18.addItem(self.line_18_3)
-        self.ui.graphicsView_18.setYRange(10,100)
-        self.ui.graphicsView_18.setXRange(0,50)
+        self.power_band_1= pg.BarGraphItem(x=self.xBarGraph[[0,1,2,3,4]], height = self.yBarGraph[[0,1,2,3,4]], width = 4, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.power_band_2 = pg.BarGraphItem(x=self.xBarGraph[[5]], height = self.yBarGraph[[5]], width = 10, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.power_band_3 = pg.BarGraphItem(x=self.xBarGraph[[6]], height = self.yBarGraph[[6]], width = 20, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.ui.powerBandPlot.addItem(self.power_band_1)
+        self.ui.powerBandPlot.addItem(self.power_band_2)
+        self.ui.powerBandPlot.addItem(self.power_band_3)
+        self.ui.powerBandPlot.setYRange(10, 100)
+        self.ui.powerBandPlot.setXRange(0, 50)
+        self.ui.powerBandPlot.setMouseEnabled(x=False, y=False)
+        self.ui.powerBandPlot.setMenuEnabled(False)
+        self.ui.powerBandPlot.hideButtons()
 
-        self.line_20_1 = pg.BarGraphItem(x=self.xBarGraph[[0,1,2,3,4]], height = self.yBarGraph[[0,1,2,3,4]], width = 4, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.line_20_2 = pg.BarGraphItem(x=self.xBarGraph[[5]], height = self.yBarGraph[[5]], width = 10, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.line_20_3 = pg.BarGraphItem(x=self.xBarGraph[[6]], height = self.yBarGraph[[6]], width = 20, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.ui.graphicsView_20.addItem(self.line_20_1)
-        self.ui.graphicsView_20.addItem(self.line_20_2)
-        self.ui.graphicsView_20.addItem(self.line_20_3)
-        self.ui.graphicsView_20.setYRange(10,100)
-        self.ui.graphicsView_20.setXRange(0,50)
+        self.start_time = time.time()
 
         # Add a timer to simulate new temperature measurements
         self.timer = QTimer()
-        self.timer.setInterval(100)
         self.timer.timeout.connect(self.update_plot)
-        self.timer.start()
+        self.timer.start(0.04)
 
-        
-        self.show()
+        #Stopwatch variables
+        self.count = 0
+        self.flag = False
+        self.ui.stopwatch.setText(str(self.count))
+        self.stopwatch = QTimer()
+        self.stopwatch.timeout.connect(self.showTime)
+        self.stopwatch.start(100)
 
+        #Threshold of minimum width of window
+        self.min_width = 1000
+        self.original_geometry = self.geometry()
+
+    def eventFilter(self, obj, event):
+        if obj == self.controlPanel and event.type() == QEvent.MouseButtonDblClick:
+            self.minimizeWindow()
+            return True
+        return super().eventFilter(obj, event)
+
+    def minimizeWindow(self):
+        if self.width() > self.min_width:
+            # Remove other components
+            self.ui.leftMenuContainer.hide()
+            self.ui.frame_2.hide()
+            self.ui.frame_3.hide()
+            self.ui.leftSubMenu.expandMenu()
+            #self.ui.leftSubMenu.hide()
+            self.ui.UserIDBox.hide()
+            self.ui.infoWidgetContainer.hide()
+            self.ui.leftBodyFrameOverview.hide()
+            self.ui.FFTFrame.hide()
+            self.ui.powerBandFrame.hide()
+
+            # Resize the window to the size of the control panel widget
+            self.setFixedSize(900,200)
+            self.setWindowFlags(Qt.Widget | Qt.WindowStaysOnTopHint)
+
+            # Set background to transparent
+            self.setAttribute(Qt.WA_TranslucentBackground, True)
+            self.show()
+
+        else:
+            self.setFixedSize(1595, 831)
+            self.setMinimumSize(0, 0)
+            self.setMaximumSize(16777215, 16777215)
+
+            # Restore window frame and background
+            self.setWindowFlags(Qt.Widget)
+            self.setAttribute(Qt.WA_TranslucentBackground, False)
+            self.setGeometry(self.original_geometry)
+
+            self.ui.leftMenuContainer.show()
+            self.ui.frame_2.show()
+            self.ui.frame_3.show()
+            self.ui.leftSubMenu.show()
+            self.ui.leftSubMenu.collapseMenu()
+            self.ui.UserIDBox.show()
+            self.ui.infoWidgetContainer.show()
+            self.ui.leftBodyFrameOverview.show()
+            self.ui.FFTFrame.show()
+            self.ui.powerBandFrame.show()
+
+            self.showMaximized()
+        '''
+        if self.width() < self.min_width:
+            self.ui.leftMenuContainer.hide()
+            self.ui.leftMenuContainer.setContentsMargins(0, 0, 0, 0)
+            self.ui.mainBodyContainerGUI.setContentsMargins(0, 0, 0, 0)
+            self.ui.frame_2.hide()
+            self.ui.frame_2.setContentsMargins(0, 0, 0, 0)
+            self.ui.frame_3.hide()
+            self.ui.frame_3.setContentsMargins(0, 0, 0, 0)
+            self.ui.leftSubMenu.hide()
+            self.ui.leftSubMenu.setContentsMargins(0, 0, 0, 0)
+            self.ui.UserIDBox.hide()
+            self.ui.UserIDBox.setContentsMargins(0, 0, 0, 0)
+            self.ui.infoWidgetContainer.hide()
+            self.ui.infoWidgetContainer.setContentsMargins(0, 0, 0, 0)
+            self.ui.leftBodyFrameOverview.hide()
+            self.ui.leftBodyFrameOverview.setContentsMargins(0, 0, 0, 0)
+            self.ui.FFTFrame.hide()
+            self.ui.FFTFrame.setContentsMargins(0, 0, 0, 0)
+            self.ui.powerBandFrame.hide()
+            self.ui.powerBandFrame.setContentsMargins(0, 0, 0, 0)
+            self.resize(690,0)
+        else:
+            self.ui.leftMenuContainer.show()
+            self.ui.leftSubMenu.show()
+            self.ui.UserIDBox.show()
+            self.ui.infoWidgetContainer.show()
+            self.ui.leftBodyFrameOverview.show()
+            self.ui.FFTFrame.show()
+            self.ui.powerBandFrame.show()
+        '''
+    
+    def make_pastel(self, color, factor=0.3):
+        white = QColor(255, 255, 255)
+        color = QColor(color)
+        return QColor(
+            int(color.red() + (white.red() - color.red()) * factor),
+            int(color.green() + (white.green() - color.green()) * factor),
+            int(color.blue() + (white.blue() - color.blue()) * factor)
+        )
+
+    def showTime(self):
+ 
+        # checking if flag is true
+        if self.flag:
+ 
+            # incrementing the counter
+            self.count+= 1
+        else:
+            self.count=0
+ 
+        # getting text from count
+        if self.count < 47:
+            text = "0.0"
+        else:
+            text = str(float("{:.1f}".format(self.count / 10 - 4.7)))
+ 
+        # showing text
+        self.ui.stopwatch.setText(text)
+
+    def setCursorPage(self):
+            self.userWindow_to_cursorPage.emit()
+
+    def setGame1Page(self):
+            self.userWindow_to_game1Page.emit()
+    
+    def setGame2Page(self):
+            self.userWindow_to_game2Page.emit()
+    
+    def setTrainPage(self):
+            self.userWindow_to_trainingPage.emit()
+
+    def setPromptPage(self):
+            self.userWindow_to_promptPage.emit()
+            self.ui.stopwatch.setText("0.0")
+            self.flag = False
+    
+    def startRecording(self):
+            self.userWindow_startRecording.emit()
+
+    def stopRecording(self):
+            self.userWindow_stopRecording.emit()
+            self.flag = False
+
+    def startPromptTimer(self):
+            self.flag = True
+            self.userWindow_startPromptTimer.emit()
+
+    def showTime(self):
+ 
+        # checking if flag is true
+        if self.flag:
+ 
+            # incrementing the counter
+            self.count+= 1
+        else:
+            self.count=0
+ 
+        # getting text from count
+        if self.count < 47:
+            text = "0.0"
+        else:
+            text = str(float("{:.1f}".format(self.count / 10 - 4.7)))
+ 
+        # showing text
+        self.ui.stopwatch.setText(text)
+
+    def setCursorPage(self):
+            self.userWindow_to_cursorPage.emit()
+
+    def setGame1Page(self):
+            self.userWindow_to_game1Page.emit()
+    
+    def setGame2Page(self):
+            self.userWindow_to_game2Page.emit()
+    
+    def setTrainPage(self):
+            self.userWindow_to_trainingPage.emit()
+
+    def setPromptPage(self):
+            self.userWindow_to_promptPage.emit()
+            self.ui.stopwatch.setText("0.0")
+            self.flag = False
+    
+    def startRecording(self):
+            self.userWindow_startRecording.emit()
+
+    def stopRecording(self):
+            self.userWindow_stopRecording.emit()
+            self.flag = False
+
+    def startPromptTimer(self):
+            self.flag = True
+            self.userWindow_startPromptTimer.emit()
+
+    
     def reconnect_cap(self):
         try:
-            self.streams = resolve_stream()
-            self.inlet = StreamInlet(self.streams[0])
+            self.inlet = StreamInlet(self.streams[0], max_buflen=0)
             dlg = QMessageBox()
             dlg.setWindowTitle("EEG cap connected")
             dlg.setText("The EEG cap is succesfully connected. The data shown will now be the real data.")
@@ -289,13 +449,21 @@ class MainWindow(QMainWindow):
         dlg.setWindowTitle("ERROR")
         dlg.setStandardButtons(QMessageBox.StandardButton.Retry | QMessageBox.StandardButton.Ignore)
         dlg.setText(error_text)
+        
+        screen = self.screen()
+        screen_geometry = screen.geometry()
+        splash_geometry = self.geometry()
+
+        x = (screen_geometry.width() - splash_geometry.width()) // 2
+        y = 0#(screen_geometry.height() - 1.5*splash_geometry.height()) // 2
+
+        dlg.move(x, y)
         button = dlg.exec()
 
         if button == QMessageBox.StandardButton.Retry:
             print("retrying....")
             try:
-                self.streams = resolve_stream()
-                self.inlet = StreamInlet(self.streams[0])
+                self.inlet = StreamInlet(self.streams[0], max_buflen=0)
                 self.simulate_data = False
             except:
                 self.show_eeg_error(error_text)
@@ -304,160 +472,122 @@ class MainWindow(QMainWindow):
             dlg.setWindowTitle("Ignored")
             dlg.setText("The program will now run without the EEG cap data and will use simulated data. "
                         "To use the EEG cap restart the program.")
+            dlg.move(x, y)
             button = dlg.exec()
             self.simulate_data = True
         
     # Update graphs
     def update_plot(self):
-        self.j = self.i // self.plot_delay
+        pen = pg.mkPen(self.pastel_colors[self.channel - 1], width = 2)
+        #gathering the data from the EEG cap
+        if not self.simulate_data:
+            sample, timestamp = self.inlet.pull_sample()
+            sample_timestamp = (self.i) / 250
+        else:
+            sample, timestamp = self.generate_random_sample()  # for testing purposes when not connected to cap
+            sample_timestamp = self.i / 250
 
-        if self.i % self.plot_delay:
-            # gathering the data from the EEG cap
-            if not self.simulate_data:
-                sample, timestamp = self.inlet.pull_sample()
-            else:
-                sample, timestamp = self.generate_random_sample()  # for testing purposes when not connected to cap
-            sample_timestamp = (sample[15] - self.counter_init)
+        if self.i <= self.max_graph_width:
+            pass
+        else:
+            if not self.startFFT:
+                self.startFFT = True
+                symbol_sign = None
+                self.FFT_plot = self.ui.FFTPlot.plot(
+                    self.xdata,
+                    self.ydata[self.channel - 1],
+                    name="Power Sensor",
+                    pen=pen,
+                    symbol=symbol_sign,
+                    symbolSize=5,
+                    symbolBrush="b",
+                )
+                self.ui.FFTPlot.setXRange(5, 35)
+                self.ui.FFTPlot.setYRange(0, 50)
+                self.ui.FFTPlot.setMouseEnabled(x=False, y=False)
+                self.ui.FFTPlot.setMenuEnabled(False)
+                self.ui.FFTPlot.hideButtons()
+                self.FFT_plot.setFftMode(True)
 
-            if self.j < self.ydata[0].size:
-                self.xdata[self.j:] = sample_timestamp
-            else:
-                self.xdata = np.append(self.xdata[1:], sample_timestamp)
-                # start creating the FFT plot
-                if self.startFFT == False:
-                    pen = pg.mkPen(color=(255, 0, 0))
-                    symbol_sign = None
-                    self.line_17 = self.ui.graphicsView_17.plot(
-                        self.xdata,
-                        self.ydata[0],
-                        name="Power Sensor",
-                        pen=pen,
-                        symbol=symbol_sign,
-                        symbolSize=5,
-                        symbolBrush="b",
-                    )
-                    self.ui.graphicsView_17.setXRange(0,60)
-                    self.line_17.setFftMode(True)
-                    self.line_19 = self.ui.graphicsView_19.plot(
-                        self.xdata,
-                        self.ydata[0],
-                        name="Power Sensor",
-                        pen=pen,
-                        symbol=symbol_sign,
-                        symbolSize=5,
-                        symbolBrush="b",
-                    )
-                    self.ui.graphicsView_19.setXRange(0,60)
-                    self.line_19.setFftMode(True)
-                    self.startFFT = True
+        # only update the plot everytime it has collected plot update data sized data
+        if self.i % 50 == 0:
+            self.xdata = np.roll(self.xdata, -1)
+            self.xdata[-1] = sample_timestamp
 
-            # update the data arrays
-            k = 0
-            while k < 8:
-                if self.j < self.ydata[0].size:
-                    self.ydata[k][self.j:] = sample[k]
-                else:
-                    self.ydata[k] = np.append(self.ydata[k][1:], sample[k])
-                k += 1
+            for k in range(8):
+                self.ydata[k] = np.roll(self.ydata[k], -1)
+                self.ydata[k][-1] = sample[k]
+                self.lines[k].setData(self.xdata, self.ydata[k])
 
-            if self.channel == 1:
-                self.yBarGraph = np.array([sum(self.ydata[0][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[0]),self.av_height)])
-            elif self.channel == 2:
-                self.yBarGraph = np.array([sum(self.ydata[1][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[1]),self.av_height)])
-            elif self.channel == 3:
-                self.yBarGraph = np.array([sum(self.ydata[2][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[2]),self.av_height)])
-            elif self.channel == 4:
-                self.yBarGraph = np.array([sum(self.ydata[3][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[3]),self.av_height)])
-            elif self.channel == 5:
-                self.yBarGraph = np.array([sum(self.ydata[4][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[4]),self.av_height)])
-            elif self.channel == 6:
-                self.yBarGraph = np.array([sum(self.ydata[5][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[5]),self.av_height)])
-            elif self.channel == 7:
-                self.yBarGraph = np.array([sum(self.ydata[6][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[6]),self.av_height)])
-            elif self.channel == 8:
-                self.yBarGraph = np.array([sum(self.ydata[7][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[7]),self.av_height)])
+            self.power_band_1.setOpts(height=self.yBarGraph[[0, 1, 2, 3, 4]], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
+            self.power_band_2.setOpts(height=self.yBarGraph[[5]], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
+            self.power_band_3.setOpts(height=self.yBarGraph[[6]], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
 
-        # update the plots with the new data
-        # depending on which screen is active
-        if self.ui.mainPages.currentIndex() == 2:  # training mode
-            self.line.setData(self.xdata, self.ydata[0])
-            self.line_2.setData(self.xdata, self.ydata[1])
-            self.line_3.setData(self.xdata, self.ydata[2])
-            self.line_4.setData(self.xdata, self.ydata[3])
-            self.line_5.setData(self.xdata, self.ydata[4])
-            self.line_6.setData(self.xdata, self.ydata[5])
-            self.line_7.setData(self.xdata, self.ydata[6])
-            self.line_8.setData(self.xdata, self.ydata[7])
-            if self.startFFT and not self.done_recording:
-                if self.channel == 1:
-                    self.line_17.setData(self.xdata, self.ydata[0])
-                elif self.channel == 2:
-                    self.line_17.setData(self.xdata, self.ydata[1])
-                elif self.channel == 3:
-                    self.line_17.setData(self.xdata, self.ydata[2])
-                elif self.channel == 4:
-                    self.line_17.setData(self.xdata, self.ydata[3])
-                elif self.channel == 5:
-                    self.line_17.setData(self.xdata, self.ydata[4])
-                elif self.channel == 6:
-                    self.line_17.setData(self.xdata, self.ydata[5])
-                elif self.channel == 7:
-                    self.line_17.setData(self.xdata, self.ydata[6])
-                elif self.channel == 8:
-                    self.line_17.setData(self.xdata, self.ydata[7])
-                self.line_18_1.setOpts(height = self.yBarGraph[[0,1,2,3,4]])
-                self.line_18_2.setOpts(height = self.yBarGraph[[5]])
-                self.line_18_3.setOpts(height = self.yBarGraph[[6]])
-        if self.ui.mainPages.currentIndex() == 0:  # testing mode
-            self.line_9.setData(self.xdata, self.ydata[0])
-            self.line_10.setData(self.xdata, self.ydata[1])
-            self.line_11.setData(self.xdata, self.ydata[2])
-            self.line_12.setData(self.xdata, self.ydata[3])
-            self.line_13.setData(self.xdata, self.ydata[4])
-            self.line_14.setData(self.xdata, self.ydata[5])
-            self.line_15.setData(self.xdata, self.ydata[6])
-            self.line_16.setData(self.xdata, self.ydata[7])
-            if self.startFFT and not self.done_recording:
-                if self.channel == 1:
-                    self.line_19.setData(self.xdata, self.ydata[0])
-                elif self.channel == 2:
-                    self.line_19.setData(self.xdata, self.ydata[1])
-                elif self.channel == 3:
-                    self.line_19.setData(self.xdata, self.ydata[2])
-                elif self.channel == 4:
-                    self.line_19.setData(self.xdata, self.ydata[3])
-                elif self.channel == 5:
-                    self.line_19.setData(self.xdata, self.ydata[4])
-                elif self.channel == 6:
-                    self.line_19.setData(self.xdata, self.ydata[5])
-                elif self.channel == 7:
-                    self.line_19.setData(self.xdata, self.ydata[6])
-                elif self.channel == 8:
-                    self.line_19.setData(self.xdata, self.ydata[7])
-                self.line_20_1.setOpts(height = self.yBarGraph[[0,1,2,3,4]])
-                self.line_20_2.setOpts(height = self.yBarGraph[[5]])
-                self.line_20_3.setOpts(height = self.yBarGraph[[6]])
+            if self.startFFT:
+                self.FFT_plot.setData(self.xdata, self.ydata[self.channel - 1])
+                self.FFT_plot.setPen(pg.mkPen(self.pastel_colors[self.channel - 1], width = 2))
+
+            # change the power band plots from channel
+            self.yBarGraph = np.array(
+                [sum(self.ydata[self.channel - 1][i:i + self.av_height]) // self.av_height for i in
+                 range(0, len(self.ydata[self.channel - 1]), self.av_height)])
 
         self.i += 1
+        #print(self.i)
 
+        if self.i == 1000:
+            print(time.time() - self.start_time)
+
+
+
+        if self.i == 1000:
+            print(time.time() - self.start_time)
     # for testing purposes
     def generate_random_sample(self):
         # Simulate random data generation
         return random.sample(range(0, 100), 15) + [time.time()], 0
+    
+    def setUserWindow(self, userWindow):
+        self.userWindow = userWindow
 
-    def setTrainWindow(self, trainWindow):
-        self.trainWindow = trainWindow
+    def setERDSWindow(self, ERDSWindow):
+        self.ERDSWindow = ERDSWindow
 
     #Call the training window
-    def openTrainWindow(self):
-        global recProcess
-        recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
+    def openERDSWindow(self):
+        #global recProcess
+        #recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
         
-        self.trainWindow.show()
+        self.ERDSWindow.show()
+
+    def openUserWindow(self):
+        global recProcess
+        if self.userWindow.isVisible():
+            pass
+        else:
+            recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
+            self.userWindow.show()
+
+    def setLavaGameWindow(self, LavaGame):
+        self.LavaGame = LavaGame
+
+    #Call the training window
+    def openLavaGame(self):
+        self.LavaGame.showMaximized()
+        self.userWindow.hide()
+
+    def setAsteroidWindow(self, Asteroid):
+        self.Asteroid = Asteroid
+
+    #Call the training window
+    def openAsteroid(self):
+        self.Asteroid.showMaximized()
+        self.userWindow.hide()
 
     def exitApp(self):
         QApplication.quit()
-
+    
+    '''
     @Slot()
     def handle_signal_trainData(self):  # will start training the ML model on the new data
         # TODO sent signal and data to ML part to actually start the training
@@ -466,12 +596,11 @@ class MainWindow(QMainWindow):
         self.loss_data = np.append(self.loss_data, random.sample(range(0, self.loss_data[-1] + 1), 1))
         self.loss_data_iter = np.append(self.loss_data_iter, self.loss_data_iter[-1] + 1)
         self.update_ML_plots()
-
+    '''
     #Function that handles the user based interface
     def ChooseUser(self, item):
         if type(item) is str:
             self.ui.userID_test.setText(item)
-            self.ui.userID_train.setText(item)
             self.current_id = None
             with open('users.csv', newline='') as file:
                 reader = csv.DictReader(file)
@@ -483,7 +612,6 @@ class MainWindow(QMainWindow):
 
         else:
             self.ui.userID_test.setText(item.text())
-            self.ui.userID_train.setText(item.text())
             self.current_id = None
             with open('users.csv', newline='') as file:
                 reader = csv.DictReader(file)
@@ -495,23 +623,20 @@ class MainWindow(QMainWindow):
         print(self.current_id)
 
     #Functions for the buttons on the user page
-    def changeTrainBtn(self):
-        if self.ui.mainPages.currentIndex() == 2:
-            self.ui.trainBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
-            self.ui.testBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
-            self.ui.usersBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
-
-    def changeTestBtn(self):
+    def changeOverviewBtn(self):
         if self.ui.mainPages.currentIndex() == 0:
-            self.ui.testBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
-            self.ui.trainBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+            self.ui.overviewBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
             self.ui.usersBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+            self.ui.demosBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
 
     def changeUsersBtn(self):
         if self.ui.mainPages.currentIndex() == 1:
             self.ui.usersBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
-            self.ui.trainBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
-            self.ui.testBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+            self.ui.overviewBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+            self.ui.demosBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+
+    def changeDemosBtn(self):
+        self.ui.demosBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
 
     def addUser(self):
         currentIndex = self.ui.usersList.currentRow()
@@ -624,49 +749,31 @@ class MainWindow(QMainWindow):
     # for test controlling the "mouse"
     # TODO make the ML output prediction do this
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key_W:
-            if self.ui.mouseCursor.y() - self.stepsize > 0:
-                self.ui.mouseCursor.move(self.ui.mouseCursor.x(), self.ui.mouseCursor.y() - self.stepsize)
-                self.ui.lineEdit_3.setText("Up")
-        elif event.key() == Qt.Key_A:
-            if self.ui.mouseCursor.x() - self.stepsize > 0:
-                self.ui.mouseCursor.move(self.ui.mouseCursor.x() - self.stepsize, self.ui.mouseCursor.y())
-                self.ui.lineEdit_3.setText("Left")
-        elif event.key() == Qt.Key_S:
-            if self.ui.mouseCursor.y() + self.stepsize < (self.ui.frame_9.height() - self.ui.mouseCursor.height()):
-                self.ui.mouseCursor.move(self.ui.mouseCursor.x(), self.ui.mouseCursor.y() + self.stepsize)
-                self.ui.lineEdit_3.setText("Down")
-        elif event.key() == Qt.Key_D:
-            if self.ui.mouseCursor.x() + self.stepsize < (self.ui.frame_9.width() - self.ui.mouseCursor.width()):
-                self.ui.mouseCursor.move(self.ui.mouseCursor.x() + self.stepsize, self.ui.mouseCursor.y())
-                self.ui.lineEdit_3.setText("Right")
-        elif event.key() == Qt.Key_1:
+        if event.key() == Qt.Key.Key_1:
             self.yBarGraph = np.array([sum(self.ydata[0][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[0]),self.av_height)])
             self.channel = 1
-        elif event.key() == Qt.Key_2:
+        elif event.key() == Qt.Key.Key_2:
             self.yBarGraph = np.array([sum(self.ydata[1][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[1]),self.av_height)])
             self.channel = 2
-        elif event.key() == Qt.Key_3:
+        elif event.key() == Qt.Key.Key_3:
             self.yBarGraph = np.array([sum(self.ydata[2][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[2]),self.av_height)])
             self.channel = 3
-        elif event.key() == Qt.Key_4:
+        elif event.key() == Qt.Key.Key_4:
             self.yBarGraph = np.array([sum(self.ydata[3][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[3]),self.av_height)])
             self.channel = 4
-        elif event.key() == Qt.Key_5:
+        elif event.key() == Qt.Key.Key_5:
             self.yBarGraph = np.array([sum(self.ydata[4][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[4]),self.av_height)])
             self.channel = 5
-        elif event.key() == Qt.Key_6:
+        elif event.key() == Qt.Key.Key_6:
             self.yBarGraph = np.array([sum(self.ydata[5][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[5]),self.av_height)])
             self.channel = 6
-        elif event.key() == Qt.Key_7:
+        elif event.key() == Qt.Key.Key_7:
             self.yBarGraph = np.array([sum(self.ydata[6][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[6]),self.av_height)])
             self.channel = 7
-        elif event.key() == Qt.Key_8:
+        elif event.key() == Qt.Key.Key_8:
             self.yBarGraph = np.array([sum(self.ydata[7][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[7]),self.av_height)])
             self.channel = 8
-
-        self.ui.lineEdit_5.setText(str(self.ui.mouseCursor.x()))
-        self.ui.lineEdit_6.setText(str(self.ui.mouseCursor.y()))
+        '''
 
         # to simulate the accuracy plot
         if event.key() == Qt.Key_P:
@@ -733,74 +840,315 @@ class MainWindow(QMainWindow):
         self.line_18.setData(self.loss_data_iter, self.loss_data)
         self.line_19.setData(self.accuracy_data_iter, self.accuracy_data)
         self.line_20.setData(self.loss_data_iter, self.loss_data)
+    '''
 
-
-#Training window class
-class TrainWindow(QMainWindow):
+#User window class
+class UserWindow(QMainWindow):
     signal_to_trainData = Signal()
 
     def __init__(self):
-        super(TrainWindow, self).__init__()
-        self.ui = Ui_TrainWindow()
+        super(UserWindow, self).__init__()
+        self.ui = Ui_UserWindow()
         self.ui.setupUi(self)
 
-        self.setWindowTitle("Training Window")
-
+        self.setWindowTitle("User Window")
+        
         #Timer
         self.timer = QTimer()
+        self.promptTimer = QTimer()
 
+        self.stepsize = 10
         #Check clicked buttons and call their respective functions
-        self.ui.startRecordingBtn.clicked.connect(self.startRecording)
-        self.ui.stopRecordingBtn.clicked.connect(self.stopRecording)
-        self.ui.helpBtn.clicked.connect(self.help)
         self.timer.timeout.connect(lambda: self.changePages())
+        self.promptTimer.timeout.connect(lambda: self.changePrompt())
 
-        self.ui.dataTrainingBtn.clicked.connect(self.trainingData)
+        #cap
+        self.streams = resolve_stream()
+        self.inlet = StreamInlet(self.streams[0])
+        recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
 
-    def trainingData(self):
-        self.signal_to_trainData.emit()
-        self.close()
-
-
+    @Slot()
     def startRecording(self):
-        recProcess.stdout.read1(1)
-        recProcess.stdin.write(b"G\n") # G for go
-        recProcess.stdin.flush()
-        self.timer.start(6000)
         global count
         global pageArray
         global i
         i = 0
         count = 0
         pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0]
+        recProcess.stdout.read1(1)
+        recProcess.stdin.write(b"G\n") # G for go
+        recProcess.stdin.flush()
+        self.timer.start(6000)
 
-        # 1. Right hand, 2. Left hand, 3. Tongue, 4. Feet, 0. Rest
+    @Slot()
+    def startPromptTimer(self):
+            self.promptTimer.start(5000)
+
+    def changePrompt(self):
+            self.ui.promptTestWidget.setCurrentWidget(self.ui.promptPromptPage)
+            self.promptTimer.stop()
 
     def changePages(self):
-        global count
-        global pageArray
-        global i
+        if self.ui.demosPages.currentWidget() == self.ui.trainingPage:
+            global count
+            global pageArray
+            global i
 
-        pageNumber = pageArray[i]
+            pageNumber = pageArray[i]
 
-        if count % 2 != 0:
-            self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
-        else:
-            self.ui.promptsWidgets.setCurrentIndex(pageNumber)
-            i = i + 1
-        if count == 47:
-            self.timer.stop()
-        count = count + 1
+            recProcess.stdin.write(b"Prompt\n") # G for go
+            recProcess.stdin.flush()
 
+            if count % 2 != 0:
+                self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
+            else:
+                self.ui.promptsWidgets.setCurrentIndex(pageNumber)
+                i = i + 1
+            if count == 47:
+                recProcess.stdin.write(b"Done\n") # G for go
+                recProcess.stdin.flush()
+                self.timer.stop()
+
+            count = count + 1
+
+    @Slot()
     def stopRecording(self):
-        recProcess.kill()
+        recProcess.stdin.write(b"Stop\n") # G for go
+        recProcess.stdin.flush()
         self.timer.stop()
         self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
-    
+
     def help(self):
         QMessageBox.information(None,"Help",
         "Instructions and their respective outputs:\nleft hand -> left\nright hand -> right\nfeet -> down\ntongue -> up",
         QMessageBox.StandardButton.Ok)
+
+    @Slot()
+    def handle_signal_cursorPage(self):
+        self.ui.demosPages.setCurrentWidget(self.ui.cursorPage)
+    @Slot()
+    def handle_signal_trainingPage(self):
+        self.ui.demosPages.setCurrentWidget(self.ui.trainingPage)
+    @Slot()
+    def handle_signal_promptPage(self):
+        self.ui.demosPages.setCurrentWidget(self.ui.promptPage)
+        self.ui.promptTestWidget.setCurrentWidget(self.ui.calibrationPromptPage)
+        self.promptTimer.stop()
+    @Slot()
+    def handle_signal_game1Page(self):
+        self.ui.demosPages.setCurrentWidget(self.ui.game1Page)
+    @Slot()
+    def handle_signal_game2Page(self):
+        self.ui.demosPages.setCurrentWidget(self.ui.game2Page)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_W:
+            if self.ui.mouseCursor.y() - self.stepsize > 0:
+                self.ui.mouseCursor.move(self.ui.mouseCursor.x(), self.ui.mouseCursor.y() - self.stepsize)
+        elif event.key() == Qt.Key.Key_A:
+            if self.ui.mouseCursor.x() - self.stepsize > 0:
+                self.ui.mouseCursor.move(self.ui.mouseCursor.x() - self.stepsize, self.ui.mouseCursor.y())
+        elif event.key() == Qt.Key.Key_S:
+            if self.ui.mouseCursor.y() + self.stepsize < (self.ui.cursorFrame.height() - self.ui.mouseCursor.height()):
+                self.ui.mouseCursor.move(self.ui.mouseCursor.x(), self.ui.mouseCursor.y() + self.stepsize)
+        elif event.key() == Qt.Key.Key_D:
+            if self.ui.mouseCursor.x() + self.stepsize < (self.ui.cursorFrame.width() - self.ui.mouseCursor.width()):
+                self.ui.mouseCursor.move(self.ui.mouseCursor.x() + self.stepsize, self.ui.mouseCursor.y())
+
+
+#ERDS window class
+class ERDSWindow(QMainWindow):
+
+    def __init__(self):
+        super(ERDSWindow, self).__init__()
+        self.ui = Ui_ERDSWindow()
+        self.ui.setupUi(self)
+
+        self.setWindowTitle("ERDS Window")
+
+
+class LavaGame(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("The Floor is Lava")
+        self.central_widget = QWidget(self)
+        self.setCentralWidget(self.central_widget)
+
+        self.grid_layout = QGridLayout(self.central_widget)
+        self.central_widget.setLayout(self.grid_layout)
+
+        self.create_grid()
+        self.create_player()
+
+        self.warning_timer = QTimer(self)
+        self.warning_timer.timeout.connect(self.generate_warning)
+
+        self.check_collision_timer = QTimer(self)
+        self.check_collision_timer.timeout.connect(self.check_collision)
+
+        self.game_over = False
+
+        # Countdown setup
+        self.countdown_label = QLabel(self.central_widget)
+        self.countdown_label.setAlignment(Qt.AlignCenter)
+        self.countdown_label.setStyleSheet("font-size: 100px; color: red;")
+        self.countdown_label.setGeometry(0, 0, self.width(), self.height())
+        self.countdown_timer = QTimer(self)
+        self.countdown_timer.timeout.connect(self.update_countdown)
+        self.countdown_value = 5  # Increased countdown value to 5 seconds
+
+        # Start the game with countdown
+        self.start_countdown()
+
+    def start_countdown(self):
+        self.countdown_value = 5  # Start countdown from 5
+        self.countdown_label.setText(str(self.countdown_value))
+        self.countdown_label.show()
+        self.countdown_timer.start(1000)
+
+    def update_countdown(self):
+        self.countdown_value -= 1
+        if self.countdown_value > 0:
+            self.countdown_label.setText(str(self.countdown_value))
+        else:
+            self.countdown_timer.stop()
+            self.countdown_label.hide()
+            self.start_game()
+
+    def start_game(self):
+        self.warning_timer.start(7000)  # Start the warning timer with an initial delay
+        self.check_collision_timer.start(50)  # Check collision every 50 milliseconds
+
+    def create_grid(self):
+        grid_size = 8
+        self.red_tiles = set()
+        self.empty_cells = set()  # Store the empty cells separately
+
+        # Add empty cells to the left
+        for row in range(grid_size):
+            empty_cell_widget = QWidget()
+            empty_cell_widget.setStyleSheet("border: none;")  # No border or background color
+            self.grid_layout.addWidget(empty_cell_widget, row, 0)
+            self.empty_cells.add(empty_cell_widget)  # Add empty cells to the set
+
+        for row in range(grid_size):
+            empty_cell_widget = QWidget()
+            empty_cell_widget.setStyleSheet("border: none;")  # No border or background color
+            self.grid_layout.addWidget(empty_cell_widget, row, 1)
+            self.empty_cells.add(empty_cell_widget)  # Add empty cells to the set
+
+        # Add empty cells to the right
+        for row in range(grid_size):
+            empty_cell_widget = QWidget()
+            empty_cell_widget.setStyleSheet("border: none;")  # No border or background color
+            self.grid_layout.addWidget(empty_cell_widget, row, grid_size + 1)
+            self.empty_cells.add(empty_cell_widget)  # Add empty cells to the set
+
+        for row in range(grid_size):
+            empty_cell_widget = QWidget()
+            empty_cell_widget.setStyleSheet("border: none;")  # No border or background color
+            self.grid_layout.addWidget(empty_cell_widget, row, grid_size + 2)
+            self.empty_cells.add(empty_cell_widget)  # Add empty cells to the set
+
+        for row in range(grid_size):
+            empty_cell_widget = QWidget()
+            empty_cell_widget.setStyleSheet("border: none;")  # No border or background color
+            self.grid_layout.addWidget(empty_cell_widget, row, grid_size + 3)
+            self.empty_cells.add(empty_cell_widget)  # Add empty cells to the set
+
+        # Add game cells
+        for row in range(grid_size):
+            for col in range(grid_size):
+                cell_widget = QWidget()
+                cell_widget.setStyleSheet("background-color: white; border: 1px solid black;")
+                self.grid_layout.addWidget(cell_widget, row, col + 2)  # Offset by 2 to skip the empty columns
+
+    def create_player(self):
+        self.player = QWidget(self.central_widget)
+        self.player.setFixedSize(120, 120)
+        self.player.setStyleSheet("background-color: blue; border: 1px solid black;")
+        self.player.move(1220, 640)  # Position the player initially
+
+    def generate_warning(self):
+        if self.game_over:
+            return
+        for tile in self.red_tiles:
+            tile.setStyleSheet("background-color: white; border: 1px solid black;")
+        self.red_tiles.clear()
+
+        num_warning_tiles = random.randint(4, 6)
+        available_cells = [self.grid_layout.itemAt(i).widget() for i in range(self.grid_layout.count()) if self.grid_layout.itemAt(i).widget() not in self.empty_cells]
+        warning_tiles = random.sample(available_cells, num_warning_tiles)
+        for tile in warning_tiles:
+            tile.setStyleSheet("background-color: yellow; border: 1px solid black;")
+            self.red_tiles.add(tile)
+
+        QTimer.singleShot(3000, self.generate_lava)  # Schedule turning warning tiles to lava after 3 seconds
+
+    def generate_lava(self):
+        for tile in self.red_tiles:
+            tile.setStyleSheet("background-color: red; border: 1px solid black;")
+        QTimer.singleShot(3000, self.revert_lava)  # Schedule reverting lava tiles to white after 3 seconds
+
+    def revert_lava(self):
+        for tile in self.red_tiles:
+            tile.setStyleSheet("background-color: white; border: 1px solid black;")
+        self.start_game()  # Start a new cycle of the game
+
+    def check_collision(self):
+        if not self.game_over:
+            player_rect = self.player.geometry()
+            for tile in self.red_tiles:
+                if tile.styleSheet() == "background-color: red; border: 1px solid black;" and player_rect.intersects(tile.geometry()):
+                    self.game_over = True
+                    #self.player.setFixedSize(1000, 100)
+                    #self.player.move(self.width() / 2 - self.player.width() / 2, self.height() / 2 - self.player.height() / 2)  # Move player to center
+                    #self.player.setStyleSheet("background-color: black;")
+                    self.game_over_label = QLabel("Game Over", self.central_widget)  # Set the parent to the central widget
+                    self.game_over_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                    self.game_over_label.setGeometry(0, 0, self.width(), self.height())  # Position the QLabel to cover the entire window
+                    self.game_over_label.setStyleSheet("font-size: 100px; color: red;")
+                    self.game_over_label.raise_()  # Raise the QLabel to the top of the z-order
+                    self.game_over_label.show()  # Ensure the QLabel is visible
+    def keyPressEvent(self, event):
+        if not self.game_over:
+            self.step = 40  # Define step size for movement
+            if event.key() == Qt.Key.Key_W:
+                if self.player.y() - self.step + 10 > 0:
+                    self.player.move(self.player.x(), self.player.y() - self.step)
+            elif event.key() == Qt.Key.Key_A:
+                if self.player.x() - self.step > 420:
+                    self.player.move(self.player.x() - self.step, self.player.y())
+            elif event.key() == Qt.Key.Key_S:
+                if self.player.y() + self.step < (self.height() - self.player.height()):
+                    self.player.move(self.player.x(), self.player.y() + self.step)
+            elif event.key() == Qt.Key.Key_D:
+                if self.player.x() + self.step < (self.width() - self.player.width())-420:
+                    self.player.move(self.player.x() + self.step, self.player.y())
+
+    def closeEvent(self, event):
+        # Stop all game timers and reset game state
+        self.warning_timer.stop()
+        self.check_collision_timer.stop()
+        self.countdown_timer.stop()
+        self.game_over = False  # Reset game over flag
+        self.countdown_label.hide()
+        if hasattr(self, 'game_over_label'):
+            self.game_over_label.hide()
+        event.accept()  # Accept the close event
+
+    def showEvent(self, event):
+        # Restart the game when the window is shown
+        self.start_countdown()
+        event.accept()  # Accept the show event
+
+
+
+def show_main_window():
+    window1.showMaximized()
+    window1.show()
+
+    splash.finish(window1)
 
 #Creates the app and runs the Mainwindow
 if __name__ == "__main__":
@@ -813,12 +1161,29 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
 
-    window1 = MainWindow()
-    window2 = TrainWindow()
-
-    window1.setTrainWindow(window2)
     
-    window2.signal_to_trainData.connect(window1.handle_signal_trainData)
-    window1.showMaximized()
-    window1.show()
+    splash = SplashScreen()
+    splash.show()
+
+    window1 = MainWindow()
+    window2 = UserWindow()
+    window3 = ERDSWindow()
+    window4 = LavaGame()
+
+    window1.setUserWindow(window2)
+    window1.setERDSWindow(window3)
+    window1.setLavaGameWindow(window4)
+    
+    #window2.signal_to_trainData.connect(window1.handle_signal_trainData)
+    window1.userWindow_to_cursorPage.connect(window2.handle_signal_cursorPage)
+    window1.userWindow_to_promptPage.connect(window2.handle_signal_promptPage)
+    window1.userWindow_to_trainingPage.connect(window2.handle_signal_trainingPage)
+    window1.userWindow_to_game1Page.connect(window2.handle_signal_game1Page)
+    window1.userWindow_to_game2Page.connect(window2.handle_signal_game2Page)
+    window1.userWindow_startRecording.connect(window2.startRecording)
+    window1.userWindow_stopRecording.connect(window2.stopRecording)
+    window1.userWindow_startPromptTimer.connect(window2.startPromptTimer)
+
+    QTimer.singleShot(3000, show_main_window)
+    
     sys.exit(app.exec_())
