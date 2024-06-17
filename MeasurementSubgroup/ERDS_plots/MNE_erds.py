@@ -252,6 +252,8 @@ df["channel"] = df["channel"].cat.reorder_categories(('Fz', 'C3', 'Cz', 'C4', 'P
 
 df = df.drop(df.index[df['time'].isin([-1.004])], axis=0)
 
+df.to_csv('MeasurementSubgroup/ERDS_plots/MNE_erds.csv')
+
 g = sns.FacetGrid(df, row="band", col="channel", margin_titles=True)
 g.map(sns.lineplot, "time", "value", "condition", n_boot=10, errorbar=("pi", 100))
 axline_kw = dict(color="black", linestyle="dashed", linewidth=0.5, alpha=0.5)

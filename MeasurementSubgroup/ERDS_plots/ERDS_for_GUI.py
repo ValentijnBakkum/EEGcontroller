@@ -49,39 +49,32 @@ from mne.stats import permutation_cluster_1samp_test as pcluster_test
 # config
 mne.set_log_level('WARNING')
 
-def multifile(string_array):
-    output = np.empty((0, 11), dtype=int)
-    events = np.empty((0,  3), dtype=int)
-    i = 0
-    for file in string_array:
-        output = np.concatenate((output, np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/' + file, delimiter=',')[1:, :]), axis=0)
-        temp_events = np.array([[ 1500, 0, 1],
-                                [ 4500, 0, 2],
-                                [ 7500, 0, 3],
-                                [10500, 0, 4],
-                                [13500, 0, 4],
-                                [16500, 0, 3],
-                                [19500, 0, 2],
-                                [22500, 0, 1],
-                                [25500, 0, 2],
-                                [28500, 0, 3],
-                                [31500, 0, 4],
-                                [34500, 0, 1],
-                                [37500, 0, 1],
-                                [40500, 0, 3],
-                                [43500, 0, 4],
-                                [46500, 0, 2],
-                                [49500, 0, 3],
-                                [52500, 0, 2],
-                                [55500, 0, 4],
-                                [58500, 0, 1],
-                                [61500, 0, 4],
-                                [64500, 0, 1],
-                                [67500, 0, 2],
-                                [70500, 0, 3]])
-        temp_events[:, 0] = temp_events[:, 0] + (i * 72005)
-        events = np.concatenate((events, temp_events), axis=0)
-        i = i + 1
+def singlefile(filename):
+    output = np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/' + filename, delimiter=',')[1:, :]
+    events = np.array([[ 1500, 0, 1],
+                        [ 4500, 0, 2],
+                        [ 7500, 0, 3],
+                        [10500, 0, 4],
+                        [13500, 0, 4],
+                        [16500, 0, 3],
+                        [19500, 0, 2],
+                        [22500, 0, 1],
+                        [25500, 0, 2],
+                        [28500, 0, 3],
+                        [31500, 0, 4],
+                        [34500, 0, 1],
+                        [37500, 0, 1],
+                        [40500, 0, 3],
+                        [43500, 0, 4],
+                        [46500, 0, 2],
+                        [49500, 0, 3],
+                        [52500, 0, 2],
+                        [55500, 0, 4],
+                        [58500, 0, 1],
+                        [61500, 0, 4],
+                        [64500, 0, 1],
+                        [67500, 0, 2],
+                        [70500, 0, 3]])
 
     return (output, events)
     
@@ -90,7 +83,7 @@ def multifile(string_array):
 #(allOutputs, events) = multifile(["EEGdata-2024-149--16-41-44.csv"])
 #———————————————————————————————————————————————————————————————————————
 recordings_list = os.listdir('MeasurementSubgroup/Our_measurements/Measurement_prompt')
-(allOutputs, events) = multifile([recordings_list[-1]])
+(allOutputs, events) = singlefile(recordings_list[-2])
 #———————————————————————————————————————————————————————————————————————
 
 channels = allOutputs[:, 0:8].transpose()

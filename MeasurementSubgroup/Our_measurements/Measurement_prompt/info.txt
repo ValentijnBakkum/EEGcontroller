@@ -1,2 +1,50 @@
-All recordings on days 149 and earlier are of Jack except for 149--16-41-44 which was of Martin
-All recordings on day 150 are of Martin
+Jack session 1: (rest)
+	EEGdata-2024-137—16-06-51.csv
+
+Jack session 2: (various locations)
+	EEGdata-2024-144--14-24-41.csv	
+	EEGdata-2024-144--14-47-17.csv	
+	EEGdata-2024-144--14-56-37.csv
+	EEGdata-2024-144--15-28-30.csv
+	EEGdata-2024-144--15-54-35.csv	
+
+Jack session 3: (done in meeting. room lower performance)
+	EEGdata-2024-148--14-42-07.csv
+	EEGdata-2024-148--14-55-39.csv
+	EEGdata-2024-148--14-48-17.csv
+
+Jack session 4: (good performance. can be grouped together)
+	EEGdata-2024-149--15-20-21.csv
+	EEGdata-2024-149--15-35-40.csv
+	EEGdata-2024-149--15-45-38.csv
+	EEGdata-2024-149--15-57-42.csv
+
+Martin session 1: (first attempt. Low performance)
+	EEGdata-2024-149--16-41-44.csv
+
+Martin session 2: (good performance. Can be grouped together)
+	EEGdata-2024-150--14-48-32.csv
+	EEGdata-2024-150--14-55-28.csv
+	EEGdata-2024-150--15-07-57.csv
+	EEGdata-2024-150--15-14-53.csv
+	EEGdata-2024-150--15-30-23.csv
+	EEGdata-2024-150--15-36-40.csv
+	EEGdata-2024-150--15-42-38.csv
+	EEGdata-2024-150--15-01-30.csv
+
+Davii session 1: (can be grouped together)
+	EEGdata-2024-156--14-35-07.csv
+	EEGdata-2024-156--14-42-54.csv
+	EEGdata-2024-156--14-51-06.csv
+	EEGdata-2024-156--14-58-57.csv
+	EEGdata-2024-156--15-06-57.csv
+
+Davii session 2: (can be grouped together)
+	EEGdata-2024-156--15-21-50.csv
+	EEGdata-2024-156--15-27-22.csv
+	
+Mack session 1: (can be grouped together)
+	EEGdata-2024-162--11-15-01.csv
+	EEGdata-2024-162--11-20-53.csv
+	EEGdata-2024-162--11-28-38.csv
+	EEGdata-2024-162--11-35-23.csv
