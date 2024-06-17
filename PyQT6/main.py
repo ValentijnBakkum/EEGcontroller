@@ -18,15 +18,18 @@ import time
 import pyqtgraph as pg
 from pylsl import StreamInlet, resolve_stream
 
+#=======================================================================
+# Initialization Splashscreen
+#=======================================================================
 class SplashScreen(QSplashScreen):
     def __init__(self):
         super(SplashScreen, self).__init__()
         self.ui = Ui_SplashScreen()
-        self.ui.setupUi(self)
+        self.ui.setupUi(self) # Load UI from ui_splashscreen.py
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint)
-        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground) # Make window frameless and without background
 
-        # Initialize progress bar
+        # Initialize progress bar for duration of splashscreen
         self.ui.progressBar.setMinimum(0)
         self.ui.progressBar.setMaximum(100)
 
@@ -47,11 +50,12 @@ class SplashScreen(QSplashScreen):
         if self.progress_value >= 100:
             self.progress_timer.stop()
 
-    
+    # Show screen until closed
     def showEvent(self, event):
         super().showEvent(event)
         self.centerSplash()
 
+    # Center the splashscreen to the monitor screen
     def centerSplash(self):
         screen = self.screen()
         screen_geometry = screen.geometry()
@@ -62,11 +66,12 @@ class SplashScreen(QSplashScreen):
 
         self.move(x, y)
 
-#Mainwindow from which everything can be called
+#=======================================================================
+# Main Window from which everything can be called
+#=======================================================================
 class MainWindow(QMainWindow):
+    #Signals to send to the Users Window to change the page
     userWindow_to_cursorPage = Signal()
-    userWindow_to_game1Page = Signal()
-    userWindow_to_game2Page = Signal()
     userWindow_to_trainingPage = Signal()
     userWindow_to_promptPage = Signal()
     userWindow_startRecording = Signal()
@@ -79,31 +84,24 @@ class MainWindow(QMainWindow):
         self.startFFT = False
         self.done_recording = False
 
-        # for EEG cap data
+        # For EEG cap connection and data
         self.simulate_data = False
         self.streams = resolve_stream()
         try:
             self.inlet = StreamInlet(self.streams[0])
-            #Counter init
-            #sample, timestamp = self.inlet.pull_sample()
-            #self.counter_init = sample[15] 
         except:
             self.show_eeg_error("The EEG cap is not connected. Please connect the cap.")
 
         self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
-        self.df = pd.read_csv("C:/Users/davbe/OneDrive/Documenten/Y3/BAP/PyQT6/EEGdata-2024-149--15-57-42.csv", sep=",")
-        # Get the control panel
+        self.ui.setupUi(self) # Import UI from ui_interface.py
+
+        # Set the control panel
         self.controlPanel = self.findChild(QWidget, "buttonsBox")
-        # Install event filter for double click
-        if self.controlPanel:
-            self.controlPanel.installEventFilter(self)
-        else:
-            print("Error: buttonsBox not found in the UI")
+        self.controlPanel.installEventFilter(self)
 
         self.setWindowTitle("EEG-based BCI")
 
-        #Apply style from the file style.json
+        # Apply style from the file style.json
         loadJsonStyle(self, self.ui, jsonFiles = {
                         "logs/style.json"
                             }) 
@@ -202,16 +200,8 @@ class MainWindow(QMainWindow):
             self.lines.append(p.plot(pen=pg.mkPen(self.pastel_colors[i], width = 2)))
             #p.hideAxis('bottom')
             #p.hideAxis('left')
-        #self.subplots[0].setYRange(240500, 241300)
-        #self.subplots[1].setYRange(249400, 249900)
-        #self.subplots[2].setYRange(278700, 331200)
-        #self.subplots[3].setYRange(259500, 296400)
-        #self.subplots[4].setYRange(217000, 218000)
-        #self.subplots[5].setYRange(239200, 240050)
-        #self.subplots[6].setYRange(233100, 234300)
-        #self.subplots[7].setYRange(222050, 223100)
 
-        # Bar graph power band
+        # Bar graph band power
         self.xBarGraph = np.array([2,6,10,14,18,25,40]) #Center points of the columns with according width /<--
         self.power_band_1= pg.BarGraphItem(x=self.xBarGraph[[0,1,2,3,4]], height = self.yBarGraph[[0,1,2,3,4]], width = 4, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
         self.power_band_2 = pg.BarGraphItem(x=self.xBarGraph[[5]], height = self.yBarGraph[[5]], width = 10, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
@@ -232,7 +222,7 @@ class MainWindow(QMainWindow):
         self.timer.timeout.connect(self.update_plot)
         self.timer.start(0.04)
 
-        #Stopwatch variables
+        # Stopwatch variables
         self.count = 0
         self.flag = False
         self.ui.stopwatch.setText(str(self.count))
@@ -244,20 +234,20 @@ class MainWindow(QMainWindow):
         self.min_width = 1000
         self.original_geometry = self.geometry()
 
+    # Check if double clicked on control panel, if true minimze window around the control panel
     def eventFilter(self, obj, event):
         if obj == self.controlPanel and event.type() == QEvent.MouseButtonDblClick:
             self.minimizeWindow()
             return True
         return super().eventFilter(obj, event)
-
+    
     def minimizeWindow(self):
-        if self.width() > self.min_width:
-            # Remove other components
+        if self.width() > self.min_width: # Check state of window
+            # Hide other components
             self.ui.leftMenuContainer.hide()
             self.ui.frame_2.hide()
             self.ui.frame_3.hide()
             self.ui.leftSubMenu.expandMenu()
-            #self.ui.leftSubMenu.hide()
             self.ui.UserIDBox.hide()
             self.ui.infoWidgetContainer.hide()
             self.ui.leftBodyFrameOverview.hide()
@@ -281,7 +271,7 @@ class MainWindow(QMainWindow):
             self.setWindowFlags(Qt.Widget)
             self.setAttribute(Qt.WA_TranslucentBackground, False)
             self.setGeometry(self.original_geometry)
-
+            #Show other components
             self.ui.leftMenuContainer.show()
             self.ui.frame_2.show()
             self.ui.frame_3.show()
@@ -294,38 +284,8 @@ class MainWindow(QMainWindow):
             self.ui.powerBandFrame.show()
 
             self.showMaximized()
-        '''
-        if self.width() < self.min_width:
-            self.ui.leftMenuContainer.hide()
-            self.ui.leftMenuContainer.setContentsMargins(0, 0, 0, 0)
-            self.ui.mainBodyContainerGUI.setContentsMargins(0, 0, 0, 0)
-            self.ui.frame_2.hide()
-            self.ui.frame_2.setContentsMargins(0, 0, 0, 0)
-            self.ui.frame_3.hide()
-            self.ui.frame_3.setContentsMargins(0, 0, 0, 0)
-            self.ui.leftSubMenu.hide()
-            self.ui.leftSubMenu.setContentsMargins(0, 0, 0, 0)
-            self.ui.UserIDBox.hide()
-            self.ui.UserIDBox.setContentsMargins(0, 0, 0, 0)
-            self.ui.infoWidgetContainer.hide()
-            self.ui.infoWidgetContainer.setContentsMargins(0, 0, 0, 0)
-            self.ui.leftBodyFrameOverview.hide()
-            self.ui.leftBodyFrameOverview.setContentsMargins(0, 0, 0, 0)
-            self.ui.FFTFrame.hide()
-            self.ui.FFTFrame.setContentsMargins(0, 0, 0, 0)
-            self.ui.powerBandFrame.hide()
-            self.ui.powerBandFrame.setContentsMargins(0, 0, 0, 0)
-            self.resize(690,0)
-        else:
-            self.ui.leftMenuContainer.show()
-            self.ui.leftSubMenu.show()
-            self.ui.UserIDBox.show()
-            self.ui.infoWidgetContainer.show()
-            self.ui.leftBodyFrameOverview.show()
-            self.ui.FFTFrame.show()
-            self.ui.powerBandFrame.show()
-        '''
-    
+
+    # Make plot colors pastel
     def make_pastel(self, color, factor=0.3):
         white = QColor(255, 255, 255)
         color = QColor(color)
@@ -336,39 +296,31 @@ class MainWindow(QMainWindow):
         )
 
     def showTime(self):
- 
         # checking if flag is true
         if self.flag:
- 
-            # incrementing the counter
-            self.count+= 1
+            self.count += 1
         else:
-            self.count=0
- 
-        # getting text from count
+            self.count = 0
+
+        # Getting text from count
         if self.count < 47:
             text = "0.0"
         else:
             text = str(float("{:.1f}".format(self.count / 10 - 4.7)))
  
-        # showing text
+        # Show text
         self.ui.stopwatch.setText(text)
 
+    # Emit the signals to the User Window to change page
     def setCursorPage(self):
             self.userWindow_to_cursorPage.emit()
-
-    def setGame1Page(self):
-            self.userWindow_to_game1Page.emit()
-    
-    def setGame2Page(self):
-            self.userWindow_to_game2Page.emit()
     
     def setTrainPage(self):
             self.userWindow_to_trainingPage.emit()
 
     def setPromptPage(self):
             self.userWindow_to_promptPage.emit()
-            self.ui.stopwatch.setText("0.0")
+            self.ui.stopwatch.setText("0.0") # Reset timer
             self.flag = False
     
     def startRecording(self):
@@ -382,54 +334,7 @@ class MainWindow(QMainWindow):
             self.flag = True
             self.userWindow_startPromptTimer.emit()
 
-    def showTime(self):
- 
-        # checking if flag is true
-        if self.flag:
- 
-            # incrementing the counter
-            self.count+= 1
-        else:
-            self.count=0
- 
-        # getting text from count
-        if self.count < 47:
-            text = "0.0"
-        else:
-            text = str(float("{:.1f}".format(self.count / 10 - 4.7)))
- 
-        # showing text
-        self.ui.stopwatch.setText(text)
-
-    def setCursorPage(self):
-            self.userWindow_to_cursorPage.emit()
-
-    def setGame1Page(self):
-            self.userWindow_to_game1Page.emit()
-    
-    def setGame2Page(self):
-            self.userWindow_to_game2Page.emit()
-    
-    def setTrainPage(self):
-            self.userWindow_to_trainingPage.emit()
-
-    def setPromptPage(self):
-            self.userWindow_to_promptPage.emit()
-            self.ui.stopwatch.setText("0.0")
-            self.flag = False
-    
-    def startRecording(self):
-            self.userWindow_startRecording.emit()
-
-    def stopRecording(self):
-            self.userWindow_stopRecording.emit()
-            self.flag = False
-
-    def startPromptTimer(self):
-            self.flag = True
-            self.userWindow_startPromptTimer.emit()
-
-    
+    # Try to reconnect with cap again
     def reconnect_cap(self):
         try:
             self.inlet = StreamInlet(self.streams[0], max_buflen=0)
@@ -444,6 +349,7 @@ class MainWindow(QMainWindow):
         except:
             self.show_eeg_error("The EEG cap could not connect. Please try again.")
     
+    # Show error if no cap connected
     def show_eeg_error(self, error_text):
         dlg = QMessageBox()
         dlg.setWindowTitle("ERROR")
@@ -455,7 +361,7 @@ class MainWindow(QMainWindow):
         splash_geometry = self.geometry()
 
         x = (screen_geometry.width() - splash_geometry.width()) // 2
-        y = 0#(screen_geometry.height() - 1.5*splash_geometry.height()) // 2
+        y = 0
 
         dlg.move(x, y)
         button = dlg.exec()
@@ -479,12 +385,12 @@ class MainWindow(QMainWindow):
     # Update graphs
     def update_plot(self):
         pen = pg.mkPen(self.pastel_colors[self.channel - 1], width = 2)
-        #gathering the data from the EEG cap
+        # Gathering the data from the EEG cap
         if not self.simulate_data:
             sample, timestamp = self.inlet.pull_sample()
             sample_timestamp = (self.i) / 250
         else:
-            sample, timestamp = self.generate_random_sample()  # for testing purposes when not connected to cap
+            sample, timestamp = self.generate_random_sample()  # For testing purposes when not connected to cap
             sample_timestamp = self.i / 250
 
         if self.i <= self.max_graph_width:
@@ -502,14 +408,14 @@ class MainWindow(QMainWindow):
                     symbolSize=5,
                     symbolBrush="b",
                 )
-                self.ui.FFTPlot.setXRange(5, 35)
-                self.ui.FFTPlot.setYRange(0, 50)
+                #self.ui.FFTPlot.setXRange(5, 35)
+                #self.ui.FFTPlot.setYRange(0, 50)
                 self.ui.FFTPlot.setMouseEnabled(x=False, y=False)
                 self.ui.FFTPlot.setMenuEnabled(False)
                 self.ui.FFTPlot.hideButtons()
                 self.FFT_plot.setFftMode(True)
 
-        # only update the plot everytime it has collected plot update data sized data
+        # Only update the plot everytime it has collected plot update data sized data
         if self.i % 50 == 0:
             self.xdata = np.roll(self.xdata, -1)
             self.xdata[-1] = sample_timestamp
@@ -527,38 +433,25 @@ class MainWindow(QMainWindow):
                 self.FFT_plot.setData(self.xdata, self.ydata[self.channel - 1])
                 self.FFT_plot.setPen(pg.mkPen(self.pastel_colors[self.channel - 1], width = 2))
 
-            # change the power band plots from channel
+            # Change the power band plots from channel
             self.yBarGraph = np.array(
                 [sum(self.ydata[self.channel - 1][i:i + self.av_height]) // self.av_height for i in
                  range(0, len(self.ydata[self.channel - 1]), self.av_height)])
 
         self.i += 1
-        #print(self.i)
 
         if self.i == 1000:
             print(time.time() - self.start_time)
 
 
-
-        if self.i == 1000:
-            print(time.time() - self.start_time)
-    # for testing purposes
+    # For testing purposes
     def generate_random_sample(self):
         # Simulate random data generation
         return random.sample(range(0, 100), 15) + [time.time()], 0
     
+    # Set and open User Window functions
     def setUserWindow(self, userWindow):
         self.userWindow = userWindow
-
-    def setERDSWindow(self, ERDSWindow):
-        self.ERDSWindow = ERDSWindow
-
-    #Call the training window
-    def openERDSWindow(self):
-        #global recProcess
-        #recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
-        
-        self.ERDSWindow.show()
 
     def openUserWindow(self):
         global recProcess
@@ -568,36 +461,81 @@ class MainWindow(QMainWindow):
             recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
             self.userWindow.show()
 
+    # Set and open ERDS Window functions
+    def setERDSWindow(self, ERDSWindow):
+        self.ERDSWindow = ERDSWindow
+
+    def openERDSWindow(self):
+        self.ERDSWindow.show()
+
+    # Set and open Lava Game Window functions
     def setLavaGameWindow(self, LavaGame):
         self.LavaGame = LavaGame
 
-    #Call the training window
     def openLavaGame(self):
         self.LavaGame.showMaximized()
         self.userWindow.hide()
 
+    # Set and open Asteroid Widnow functions
     def setAsteroidWindow(self, Asteroid):
         self.Asteroid = Asteroid
 
-    #Call the training window
     def openAsteroid(self):
         self.Asteroid.showMaximized()
         self.userWindow.hide()
 
+    # Exit the app
     def exitApp(self):
         QApplication.quit()
-    
-    '''
-    @Slot()
-    def handle_signal_trainData(self):  # will start training the ML model on the new data
-        # TODO sent signal and data to ML part to actually start the training
+
+    # Will start training the ML model on the new data
+    def start_training(self):
         self.accuracy_data = np.append(self.accuracy_data, random.sample(range(int(self.accuracy_data[-1]), 100), 1))
         self.accuracy_data_iter = np.append(self.accuracy_data_iter, self.accuracy_data_iter[-1] + 1)
         self.loss_data = np.append(self.loss_data, random.sample(range(0, self.loss_data[-1] + 1), 1))
         self.loss_data_iter = np.append(self.loss_data_iter, self.loss_data_iter[-1] + 1)
         self.update_ML_plots()
-    '''
-    #Function that handles the user based interface
+
+    # updating the Machine Learning plots while training
+    def update_ML_plots(self):
+        # when it's the first time after recording we want to clear the previous plots
+        if self.done_recording == False:
+            pen = pg.mkPen(self.pastel_colors[self.channel - 1], width=2)
+            # if the FFT and frequency band plots were used, clear them
+            if self.startFFT:
+                self.FFT_plot.clear()
+                self.ui.powerBandPlot.clear()
+            symbol_sign = None
+            self.loss_plot = self.ui.powerBandPlot.plot(
+                self.loss_data_iter,
+                self.loss_data,
+                name="Power Sensor",
+                pen=pen,
+                symbol=symbol_sign,
+                symbolSize=5,
+                symbolBrush="b",
+            )
+            self.ui.powerBandPlot.setYRange(0, 100)
+            self.ui.powerBandPlot.setXRange(0, int(self.ui.maxIterationLine.text()))
+            self.accuracy_plot = self.ui.FFTPlot.plot(
+                self.accuracy_data_iter,
+                self.accuracy_data,
+                name="Power Sensor",
+                pen=pen,
+                symbol=symbol_sign,
+                symbolSize=5,
+                symbolBrush="b",
+            )
+            self.ui.FFTPlot.setYRange(0, 100)
+            self.ui.FFTPlot.setXRange(0, int(self.ui.maxIterationLine.text()))
+            self.done_recording = True
+
+        # update the plots with the new data
+        self.accuracy_plot.setData(self.accuracy_data_iter, self.accuracy_data)
+        self.loss_plot.setData(self.loss_data_iter, self.loss_data)
+
+
+    #Functions that handles the user based interface
     def ChooseUser(self, item):
         if type(item) is str:
             self.ui.userID_test.setText(item)
@@ -622,22 +560,7 @@ class MainWindow(QMainWindow):
                 print("ERROR: USER " + item.text() + " HAS NO CORRESPONDING ID.")
         print(self.current_id)
 
-    #Functions for the buttons on the user page
-    def changeOverviewBtn(self):
-        if self.ui.mainPages.currentIndex() == 0:
-            self.ui.overviewBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
-            self.ui.usersBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
-            self.ui.demosBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
-
-    def changeUsersBtn(self):
-        if self.ui.mainPages.currentIndex() == 1:
-            self.ui.usersBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
-            self.ui.overviewBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
-            self.ui.demosBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
-
-    def changeDemosBtn(self):
-        self.ui.demosBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
-
+    # Add user name
     def addUser(self):
         currentIndex = self.ui.usersList.currentRow()
         error = ""
@@ -668,7 +591,7 @@ class MainWindow(QMainWindow):
             else:
                 return
             
-
+    # Edit user name
     def editUser(self):
         currentIndex = self.ui.usersList.currentRow()
         item = self.ui.usersList.item(currentIndex)
@@ -703,7 +626,8 @@ class MainWindow(QMainWindow):
                         return
                 else:
                     return
-            
+
+    # Remove user        
     def removeUser(self):
         currentIndex = self.ui.usersList.currentRow()
         item = self.ui.usersList.item(currentIndex)
@@ -729,6 +653,7 @@ class MainWindow(QMainWindow):
             del item
             del item
 
+    # Move user up
     def upUser(self):
         index = self.ui.usersList.currentRow()
         if index >= 1:
@@ -736,6 +661,7 @@ class MainWindow(QMainWindow):
             self.ui.usersList.insertItem(index-1,item)
             self.ui.usersList.setCurrentItem(item)
 
+    # Move user down
     def downUser(self):
         index = self.ui.usersList.currentRow()
         if index < self.ui.usersList.count()-1:
@@ -743,12 +669,29 @@ class MainWindow(QMainWindow):
             self.ui.usersList.insertItem(index + 1, item)
             self.ui.usersList.setCurrentItem(item)
 
+    # Sort user names
     def sortUser(self):
         self.ui.usersList.sortItems()
+
+    # Change color of menu buttons according to the page
+    def changeOverviewBtn(self):
+        if self.ui.mainPages.currentIndex() == 0:
+            self.ui.overviewBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
+            self.ui.usersBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+            self.ui.demosBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+
+    def changeUsersBtn(self):
+        if self.ui.mainPages.currentIndex() == 1:
+            self.ui.usersBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
+            self.ui.overviewBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+            self.ui.demosBtn.setStyleSheet("background-color: rgb(0, 166, 214);")
+
+    def changeDemosBtn(self):
+        self.ui.demosBtn.setStyleSheet("background-color: rgb(0, 118, 194);")
     
-    # for test controlling the "mouse"
-    # TODO make the ML output prediction do this
+    # Functions when clicking on keys
     def keyPressEvent(self, event):
+        # Functions to change FFT and band power when clicking on 1-8
         if event.key() == Qt.Key.Key_1:
             self.yBarGraph = np.array([sum(self.ydata[0][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[0]),self.av_height)])
             self.channel = 1
@@ -773,7 +716,7 @@ class MainWindow(QMainWindow):
         elif event.key() == Qt.Key.Key_8:
             self.yBarGraph = np.array([sum(self.ydata[7][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[7]),self.av_height)])
             self.channel = 8
-        '''
+        
 
         # to simulate the accuracy plot
         if event.key() == Qt.Key_P:
@@ -785,84 +728,27 @@ class MainWindow(QMainWindow):
 
         self.update()
 
-    # updating the Machine Learning plots while training
-    def update_ML_plots(self):
-        # when it's the first time after recording we want to clear the previous plots
-        if self.done_recording == False:
-            # if the FFT and frequency band plots were used, clear them
-            if self.startFFT:
-                self.line_17.clear()
-                self.ui.graphicsView_18.clear()
-                self.line_19.clear()
-                self.ui.graphicsView_20.clear()
-            self.done_recording = True
-            pen = pg.mkPen(color=(255, 0, 0))
-            symbol_sign = None
-            self.line_17 = self.ui.graphicsView_17.plot(
-                self.accuracy_data_iter,
-                self.accuracy_data,
-                name="Power Sensor",
-                pen=pen,
-                symbol=symbol_sign,
-                symbolSize=5,
-                symbolBrush="b",
-            )
-            self.line_18 = self.ui.graphicsView_18.plot(
-                self.loss_data_iter,
-                self.loss_data,
-                name="Power Sensor",
-                pen=pen,
-                symbol=symbol_sign,
-                symbolSize=5,
-                symbolBrush="b",
-            )
-            self.line_19 = self.ui.graphicsView_19.plot(
-                self.accuracy_data_iter,
-                self.accuracy_data,
-                name="Power Sensor",
-                pen=pen,
-                symbol=symbol_sign,
-                symbolSize=5,
-                symbolBrush="b",
-            )
-            self.line_20 = self.ui.graphicsView_20.plot(
-                self.loss_data_iter,
-                self.loss_data,
-                name="Power Sensor",
-                pen=pen,
-                symbol=symbol_sign,
-                symbolSize=5,
-                symbolBrush="b",
-            )
-
-        # update the plots with the new data
-        self.line_17.setData(self.accuracy_data_iter, self.accuracy_data)
-        self.line_18.setData(self.loss_data_iter, self.loss_data)
-        self.line_19.setData(self.accuracy_data_iter, self.accuracy_data)
-        self.line_20.setData(self.loss_data_iter, self.loss_data)
-    '''
-
-#User window class
+#=======================================================================
+# User Window class
+#=======================================================================
 class UserWindow(QMainWindow):
-    signal_to_trainData = Signal()
-
     def __init__(self):
         super(UserWindow, self).__init__()
         self.ui = Ui_UserWindow()
-        self.ui.setupUi(self)
+        self.ui.setupUi(self) # Import UI from ui_userWindow.py
 
         self.setWindowTitle("User Window")
         
-        #Timer
+        # Timer
         self.timer = QTimer()
         self.promptTimer = QTimer()
 
         self.stepsize = 10
-        #Check clicked buttons and call their respective functions
+        # Check clicked buttons and call their respective functions
         self.timer.timeout.connect(lambda: self.changePages())
         self.promptTimer.timeout.connect(lambda: self.changePrompt())
 
-        #cap
+        # Cap connection
         self.streams = resolve_stream()
         self.inlet = StreamInlet(self.streams[0])
         recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
@@ -874,19 +760,11 @@ class UserWindow(QMainWindow):
         global i
         i = 0
         count = 0
-        pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0]
+        pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0] # Fixed prompts for labeling
         recProcess.stdout.read1(1)
         recProcess.stdin.write(b"G\n") # G for go
         recProcess.stdin.flush()
         self.timer.start(6000)
-
-    @Slot()
-    def startPromptTimer(self):
-            self.promptTimer.start(5000)
-
-    def changePrompt(self):
-            self.ui.promptTestWidget.setCurrentWidget(self.ui.promptPromptPage)
-            self.promptTimer.stop()
 
     def changePages(self):
         if self.ui.demosPages.currentWidget() == self.ui.trainingPage:
@@ -918,11 +796,15 @@ class UserWindow(QMainWindow):
         self.timer.stop()
         self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
 
-    def help(self):
-        QMessageBox.information(None,"Help",
-        "Instructions and their respective outputs:\nleft hand -> left\nright hand -> right\nfeet -> down\ntongue -> up",
-        QMessageBox.StandardButton.Ok)
+    @Slot()
+    def startPromptTimer(self):
+            self.promptTimer.start(5000) # Countdown to show prompt
 
+    def changePrompt(self):
+            self.ui.promptTestWidget.setCurrentWidget(self.ui.promptPromptPage)
+            self.promptTimer.stop()
+
+    # Change pages according to signal received from MainWindow
     @Slot()
     def handle_signal_cursorPage(self):
         self.ui.demosPages.setCurrentWidget(self.ui.cursorPage)
@@ -934,13 +816,8 @@ class UserWindow(QMainWindow):
         self.ui.demosPages.setCurrentWidget(self.ui.promptPage)
         self.ui.promptTestWidget.setCurrentWidget(self.ui.calibrationPromptPage)
         self.promptTimer.stop()
-    @Slot()
-    def handle_signal_game1Page(self):
-        self.ui.demosPages.setCurrentWidget(self.ui.game1Page)
-    @Slot()
-    def handle_signal_game2Page(self):
-        self.ui.demosPages.setCurrentWidget(self.ui.game2Page)
 
+    # Simulate cursor movements with WASD keys
     def keyPressEvent(self, event):
         if event.key() == Qt.Key.Key_W:
             if self.ui.mouseCursor.y() - self.stepsize > 0:
@@ -955,18 +832,21 @@ class UserWindow(QMainWindow):
             if self.ui.mouseCursor.x() + self.stepsize < (self.ui.cursorFrame.width() - self.ui.mouseCursor.width()):
                 self.ui.mouseCursor.move(self.ui.mouseCursor.x() + self.stepsize, self.ui.mouseCursor.y())
 
-
-#ERDS window class
+#=======================================================================
+# ERDS window class
+#=======================================================================
 class ERDSWindow(QMainWindow):
 
     def __init__(self):
         super(ERDSWindow, self).__init__()
         self.ui = Ui_ERDSWindow()
-        self.ui.setupUi(self)
+        self.ui.setupUi(self) # Import UI from ui_ERDSWindow.py
 
         self.setWindowTitle("ERDS Window")
 
-
+#=======================================================================
+# Lava Game window class
+#=======================================================================
 class LavaGame(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -979,10 +859,7 @@ class LavaGame(QMainWindow):
 
         self.create_grid()
         self.create_player()
-
-        self.warning_timer = QTimer(self)
-        self.warning_timer.timeout.connect(self.generate_warning)
-
+        # Timer to check collision with red tiles
         self.check_collision_timer = QTimer(self)
         self.check_collision_timer.timeout.connect(self.check_collision)
 
@@ -995,16 +872,19 @@ class LavaGame(QMainWindow):
         self.countdown_label.setGeometry(0, 0, self.width(), self.height())
         self.countdown_timer = QTimer(self)
         self.countdown_timer.timeout.connect(self.update_countdown)
-        self.countdown_value = 5  # Increased countdown value to 5 seconds
+        self.countdown_value = 5        
 
         # Start the game with countdown
         self.start_countdown()
 
     def start_countdown(self):
-        self.countdown_value = 5  # Start countdown from 5
-        self.countdown_label.setText(str(self.countdown_value))
-        self.countdown_label.show()
-        self.countdown_timer.start(1000)
+        if self.isHidden():
+            pass
+        else:
+            self.countdown_value = 5  # Start countdown from 5
+            self.countdown_label.setText(str(self.countdown_value))
+            self.countdown_label.show()
+            self.countdown_timer.start(1000)
 
     def update_countdown(self):
         self.countdown_value -= 1
@@ -1013,11 +893,13 @@ class LavaGame(QMainWindow):
         else:
             self.countdown_timer.stop()
             self.countdown_label.hide()
-            self.start_game()
+            self.generate_warning()
 
     def start_game(self):
-        self.warning_timer.start(7000)  # Start the warning timer with an initial delay
-        self.check_collision_timer.start(50)  # Check collision every 50 milliseconds
+        if self.isHidden():
+            pass
+        else:
+            QTimer.singleShot(3000, self.generate_warning)  # Schedule turning new warning tiles after 3 seconds
 
     def create_grid(self):
         grid_size = 8
@@ -1070,46 +952,52 @@ class LavaGame(QMainWindow):
         self.player.move(1220, 640)  # Position the player initially
 
     def generate_warning(self):
-        if self.game_over:
-            return
-        for tile in self.red_tiles:
-            tile.setStyleSheet("background-color: white; border: 1px solid black;")
-        self.red_tiles.clear()
+        if self.isHidden():
+            pass
+        else:
+            self.check_collision_timer.start(50)  # Check collision every 50 milliseconds
+            if self.game_over:
+                return
+            for tile in self.red_tiles:
+                tile.setStyleSheet("background-color: white; border: 1px solid black;")
+            self.red_tiles.clear()
 
-        num_warning_tiles = random.randint(4, 6)
-        available_cells = [self.grid_layout.itemAt(i).widget() for i in range(self.grid_layout.count()) if self.grid_layout.itemAt(i).widget() not in self.empty_cells]
-        warning_tiles = random.sample(available_cells, num_warning_tiles)
-        for tile in warning_tiles:
-            tile.setStyleSheet("background-color: yellow; border: 1px solid black;")
-            self.red_tiles.add(tile)
+            num_warning_tiles = random.randint(4, 6)
+            available_cells = [self.grid_layout.itemAt(i).widget() for i in range(self.grid_layout.count()) if self.grid_layout.itemAt(i).widget() not in self.empty_cells]
+            warning_tiles = random.sample(available_cells, num_warning_tiles)
+            for tile in warning_tiles:
+                tile.setStyleSheet("background-color: yellow; border: 1px solid black;")
+                self.red_tiles.add(tile)
 
-        QTimer.singleShot(3000, self.generate_lava)  # Schedule turning warning tiles to lava after 3 seconds
+            QTimer.singleShot(6000, self.generate_lava)  # Schedule turning warning tiles to lava after 6 seconds
 
     def generate_lava(self):
-        for tile in self.red_tiles:
-            tile.setStyleSheet("background-color: red; border: 1px solid black;")
-        QTimer.singleShot(3000, self.revert_lava)  # Schedule reverting lava tiles to white after 3 seconds
+        if self.isHidden():
+            pass
+        else:
+            for tile in self.red_tiles:
+                tile.setStyleSheet("background-color: red; border: 1px solid black;")
+            QTimer.singleShot(3000, self.revert_lava)  # Schedule reverting lava tiles to white after 3 seconds
 
     def revert_lava(self):
         for tile in self.red_tiles:
             tile.setStyleSheet("background-color: white; border: 1px solid black;")
         self.start_game()  # Start a new cycle of the game
 
+    # Check if there is a collision between player and lava tile
     def check_collision(self):
         if not self.game_over:
             player_rect = self.player.geometry()
             for tile in self.red_tiles:
                 if tile.styleSheet() == "background-color: red; border: 1px solid black;" and player_rect.intersects(tile.geometry()):
                     self.game_over = True
-                    #self.player.setFixedSize(1000, 100)
-                    #self.player.move(self.width() / 2 - self.player.width() / 2, self.height() / 2 - self.player.height() / 2)  # Move player to center
-                    #self.player.setStyleSheet("background-color: black;")
-                    self.game_over_label = QLabel("Game Over", self.central_widget)  # Set the parent to the central widget
+                    self.game_over_label = QLabel("Game Over", self.central_widget) 
                     self.game_over_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-                    self.game_over_label.setGeometry(0, 0, self.width(), self.height())  # Position the QLabel to cover the entire window
+                    self.game_over_label.setGeometry(0, 0, self.width(), self.height())
                     self.game_over_label.setStyleSheet("font-size: 100px; color: red;")
-                    self.game_over_label.raise_()  # Raise the QLabel to the top of the z-order
-                    self.game_over_label.show()  # Ensure the QLabel is visible
+                    self.game_over_label.raise_()
+                    self.game_over_label.show()
+
     def keyPressEvent(self, event):
         if not self.game_over:
             self.step = 40  # Define step size for movement
@@ -1117,18 +1005,17 @@ class LavaGame(QMainWindow):
                 if self.player.y() - self.step + 10 > 0:
                     self.player.move(self.player.x(), self.player.y() - self.step)
             elif event.key() == Qt.Key.Key_A:
-                if self.player.x() - self.step > 420:
+                if self.player.x() - self.step > self.width()/6:
                     self.player.move(self.player.x() - self.step, self.player.y())
             elif event.key() == Qt.Key.Key_S:
                 if self.player.y() + self.step < (self.height() - self.player.height()):
                     self.player.move(self.player.x(), self.player.y() + self.step)
             elif event.key() == Qt.Key.Key_D:
-                if self.player.x() + self.step < (self.width() - self.player.width())-420:
+                if self.player.x() + self.step < (self.width() - self.player.width())-self.width()/6:
                     self.player.move(self.player.x() + self.step, self.player.y())
 
     def closeEvent(self, event):
         # Stop all game timers and reset game state
-        self.warning_timer.stop()
         self.check_collision_timer.stop()
         self.countdown_timer.stop()
         self.game_over = False  # Reset game over flag
@@ -1142,7 +1029,242 @@ class LavaGame(QMainWindow):
         self.start_countdown()
         event.accept()  # Accept the show event
 
+#=======================================================================
+# Asteroid Game window classes
+#=======================================================================
+class Asteroid(QMainWindow):
+    def __init__(self):
+        super(Asteroid, self).__init__()
 
+        # creating a board object
+        self.game = Game(self)
+
+        # adding board as a central widget
+        self.setCentralWidget(self.game)
+
+        # setting title to the window
+        self.setWindowTitle('Asteroid Shooter')
+
+        # setting geometry to the window
+        self.setGeometry(100, 100, 600, 400)
+
+        # starting the board object
+        self.game.start()
+
+#=======================================================================
+# Asteroid Game Frame classes
+#=======================================================================
+class Game(QFrame):
+    # timer countdown time
+    SPEED = 80
+
+    # meteor settings
+    MAXMETEORS = 3
+    METEOR_SPEED = 3
+
+    # constructor
+    def __init__(self, parent):
+        super(Game, self).__init__(parent)
+
+        # creating a timer
+        self.timer = QBasicTimer()
+
+        # player location
+        self.playerloc = 750
+
+        # meteor list
+        self.meteor = []
+        # bullet list
+        self.bullet = []
+
+        self.spawn_bullet = False
+
+        # keeps track of score
+        self.score = 0
+        self.lives = 3
+
+        # sizes of objects
+        self.playerSize = 70
+        self.cometSize = 70
+        self.border_size = 470
+
+        # direction of player
+        self.direction = -1
+
+        self.game_active = True
+
+        # setting focus
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+
+    # start method
+    def start(self):
+        # starting timer
+        self.timer.start(Game.SPEED, self)
+
+    # paint event
+    def paintEvent(self, event):
+        painter = QPainter(self)
+
+        # draw side panels
+        self.draw_side_panels(painter)
+
+        # draw the meteors
+        for pos in self.meteor:
+            self.draw_square(painter, pos[0], pos[1], self.cometSize, self.cometSize, QColor(0xFF0000))
+
+        # draw the bullets
+        for pos in self.bullet:
+            self.draw_square(painter, pos[0], pos[1], 5, 10, QColor(0xFF0000))
+
+        # draw the score (if the game is active, not active when player is gameOver)
+        if self.game_active:
+            self.draw_score(painter)
+
+            # drawing player
+            self.draw_square(painter, self.playerloc, self.height() - self.playerSize,
+                             self.playerSize, self.playerSize, QColor(0x228B22))
+        else:
+            self.draw_game_over(painter)
+
+    # drawing side panels
+    def draw_side_panels(self, painter):
+        # left panel
+        painter.fillRect(0, 0, self.border_size, self.height(), QColor(0x404040))
+        # right panel
+        painter.fillRect(self.width() - self.border_size, 0, self.border_size, self.height(), QColor(0x404040))
+
+    # drawing score
+    def draw_score(self, painter):
+        painter.setPen(QColor(0xFFFFFF))
+        painter.setFont(QFont('Arial', 50))
+        score_text = f"Score: {self.score}"
+        painter.drawText(10, 70, score_text)
+        painter.setFont(QFont('Arial', 40))
+        lives_text = f"Lives: {self.lives}"
+        painter.drawText(10, 120, lives_text)
+
+    # drawing square
+    def draw_square(self, painter, x, y, width, height, color):
+        painter.fillRect(x, y, width, height, color)
+
+    # draw Game Over text with score
+    def draw_game_over(self, painter):
+        painter.setPen(QColor(0xFF0000))
+        painter.setFont(QFont('Arial', 50))
+        game_over_text = f"GAME OVER"
+        text_width = painter.fontMetrics().horizontalAdvance(game_over_text)
+        painter.drawText((self.width() - text_width) // 2, self.height() // 2, game_over_text)
+        painter.setPen(QColor(0x000000))
+        painter.setFont(QFont('Arial', 30))
+        score_text = f"Score: {self.score}"
+        text_width = painter.fontMetrics().horizontalAdvance(score_text)
+        painter.drawText((self.width() - text_width) // 2, self.height() // 2 + 50, score_text)
+
+    # key press event
+    def keyPressEvent(self, event):
+        key = event.key()
+        # if left key is pressed
+        if key == Qt.Key.Key_A:
+            # if direction is not right
+            self.direction = 0
+
+        # if right key is pressed
+        elif key == Qt.Key.Key_D:
+            # if direction is not left
+            self.direction = 1
+
+        # if space key is pressed
+        elif key == Qt.Key.Key_Space:
+            self.spawn_bullet = True
+
+    # method to move the player
+    def move_player(self):
+        # if direction is left
+        if self.direction == 0:
+            if self.playerloc > self.border_size + self.playerSize // 2:
+                self.playerloc -= self.playerSize
+            # reset direction until new move button is pressed
+            self.direction = -1
+        # if direction is right
+        elif self.direction == 1:
+            if self.playerloc < self.width() - self.border_size - self.playerSize * 2:
+                self.playerloc += self.playerSize
+            # reset direction until new move button is pressed
+            self.direction = -1
+
+
+    # time event method
+    def timerEvent(self, event):
+        if self.width() < 500:
+            pass
+        else:
+            # checking timer id
+            if event.timerId() == self.timer.timerId():
+                # if the player is not gameover
+                if self.game_active:
+                    # move the player and spawn meteors and bullets if needed
+                    self.move_player()
+                    self.spawn_meteor()
+                    if self.spawn_bullet:
+                        self.bullet.append([self.playerloc + self.playerSize // 2, self.height() - self.playerSize])
+                        self.spawn_bullet = False
+                    # call update meteor and bullet methods
+                    self.update_meteor()
+                    self.update_bullet()
+                    # update the window
+                    self.update()
+
+    # spawns a meteor
+    def spawn_meteor(self):
+        # if there are less than the max amount of meteors, spawn one
+        if len(self.meteor) < self.MAXMETEORS:
+            # getting new random x location until its not the same as an already existing meteor's location
+            while True:
+                # creating random x coord for the meteor within vertical field
+                x = random.randint(self.border_size, self.width() - self.border_size - self.cometSize)
+                # extract x-coordinates of existing meteors and check for overlap
+                overlapping = False
+                for pos in self.meteor:
+                    if abs(x - pos[0]) < self.cometSize:
+                        overlapping = True
+                        break
+                if not overlapping:
+                    break
+            self.meteor.append([x, 0])
+
+    # move the meteors down
+    def update_meteor(self):
+        for index, pos in enumerate(self.meteor[:]):
+            pos[1] += Game.METEOR_SPEED
+            # if it hits the ground, remove a life and the meteor
+            if pos[1] > self.height() - self.playerSize:
+                self.lives -= 1
+                self.meteor.remove(pos)
+                # call Game over method when no lives are left
+                if self.lives <= 0:
+                    self.game_over()
+
+    # when no lives are left, destroy all bullets and meteors
+    def game_over(self):
+        self.game_active = False
+        for index, pos in enumerate(self.meteor[:]):
+            self.meteor.remove(pos)
+        for index, pos in enumerate(self.meteor[:]):
+            self.bullet.remove(pos)
+
+    # move all bullets up and check for collision
+    def update_bullet(self):
+        for pos in self.bullet[:]:
+            pos[1] -= self.playerSize
+            # if bullet is too high, destroy it
+            if pos[1] < 0:
+                self.bullet.remove(pos)
+            # if bullet collides with meteor, remove the bullet and meteor and add a point to the players score
+            for pos_meteor in self.meteor[:]:
+                if pos[0] > pos_meteor[0] and pos[0] < pos_meteor[0] + self.cometSize and pos[1] < pos_meteor[1] + self.cometSize:
+                    self.bullet.remove(pos)
+                    self.meteor.remove(pos_meteor)
+                    self.score += 1
 
 def show_main_window():
     window1.showMaximized()
@@ -1169,17 +1291,16 @@ if __name__ == "__main__":
     window2 = UserWindow()
     window3 = ERDSWindow()
     window4 = LavaGame()
+    window5 = Asteroid()
 
     window1.setUserWindow(window2)
     window1.setERDSWindow(window3)
     window1.setLavaGameWindow(window4)
+    window1.setAsteroidWindow(window5)
     
-    #window2.signal_to_trainData.connect(window1.handle_signal_trainData)
     window1.userWindow_to_cursorPage.connect(window2.handle_signal_cursorPage)
     window1.userWindow_to_promptPage.connect(window2.handle_signal_promptPage)
     window1.userWindow_to_trainingPage.connect(window2.handle_signal_trainingPage)
-    window1.userWindow_to_game1Page.connect(window2.handle_signal_game1Page)
-    window1.userWindow_to_game2Page.connect(window2.handle_signal_game2Page)
     window1.userWindow_startRecording.connect(window2.startRecording)
     window1.userWindow_stopRecording.connect(window2.stopRecording)
     window1.userWindow_startPromptTimer.connect(window2.startPromptTimer)
