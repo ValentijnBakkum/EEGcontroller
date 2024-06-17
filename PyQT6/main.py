@@ -92,7 +92,7 @@ class MainWindow(QMainWindow):
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.df = pd.read_csv("C:/Users/davbe/OneDrive/Documenten/Y3/BAP/PyQT6/EEGdata-2024-149--15-57-42.csv", sep=",")
+
         # Get the control panel
         self.controlPanel = self.findChild(QWidget, "buttonsBox")
         # Install event filter for double click
@@ -502,7 +502,7 @@ class MainWindow(QMainWindow):
                     symbolSize=5,
                     symbolBrush="b",
                 )
-                self.ui.FFTPlot.setXRange(5, 35)
+                self.ui.FFTPlot.setXRange(0, 40)
                 self.ui.FFTPlot.setYRange(0, 50)
                 self.ui.FFTPlot.setMouseEnabled(x=False, y=False)
                 self.ui.FFTPlot.setMenuEnabled(False)
@@ -533,12 +533,6 @@ class MainWindow(QMainWindow):
                  range(0, len(self.ydata[self.channel - 1]), self.av_height)])
 
         self.i += 1
-        #print(self.i)
-
-        if self.i == 1000:
-            print(time.time() - self.start_time)
-
-
 
         if self.i == 1000:
             print(time.time() - self.start_time)
