@@ -6,7 +6,6 @@ from attentionmod import blockblock,multihead
 from bspline import spline_activation
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #device = "cpu"
-from kan import KAN
 
 #convnet decleration/architecture
 
@@ -94,24 +93,6 @@ class lstmmodule1(nn.Module):
         cell_states = torch.zeros(self.num_layers, x.size(0),self.hidden_size).to(device)
         out, (hn,cn) = self.lstm(x,(hidden_states.detach(),cell_states.detach()))
         return self.attention(hn)
-    
-class kan(nn.Module):
-    def __init__(self):
-        super(kan, self).__init__()
-        self.kan = KAN([529,40,20])
-        self.flatten = nn.Flatten()
-    def forward(self,x ):
-        N,C,H,W = x.shape
-        xa = torch.squeeze(x)
-        list = []
-        xa = xa.permute((2,0,1))
-        for _ in range(W):
-            int2 = self.kan(xa[_])
-            list.append(int2)
-        output = torch.stack(list)
-        output = output.permute((1,2,0))
-        output = self.flatten(output)
-        return output
 
 #model
 class escargot(nn.Module):
