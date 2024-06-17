@@ -16,6 +16,8 @@ import numpy as np
 import pandas as pd
 import time
 import pyqtgraph as pg
+import seaborn as sns
+import matplotlib.pyplot as plt
 from pylsl import StreamInlet, resolve_stream
 
 #=======================================================================
@@ -462,11 +464,8 @@ class MainWindow(QMainWindow):
             self.userWindow.show()
 
     # Set and open ERDS Window functions
-    def setERDSWindow(self, ERDSWindow):
-        self.ERDSWindow = ERDSWindow
-
     def openERDSWindow(self):
-        self.ERDSWindow.show()
+        self.ERDS_process = subprocess.Popen(["python", "-u", "MeasurementSubgroup/ERDS_plots/ERDS_for_GUI.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
 
     # Set and open Lava Game Window functions
     def setLavaGameWindow(self, LavaGame):
@@ -728,6 +727,9 @@ class MainWindow(QMainWindow):
 
         self.update()
 
+    def closeEvent(self, event):
+        self.ERDS_process.kill()
+
 #=======================================================================
 # User Window class
 #=======================================================================
@@ -750,7 +752,7 @@ class UserWindow(QMainWindow):
 
         # Cap connection
         self.streams = resolve_stream()
-        self.inlet = StreamInlet(self.streams[0])
+        #self.inlet = StreamInlet(self.streams[0])
         recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
 
     @Slot()
@@ -832,17 +834,8 @@ class UserWindow(QMainWindow):
             if self.ui.mouseCursor.x() + self.stepsize < (self.ui.cursorFrame.width() - self.ui.mouseCursor.width()):
                 self.ui.mouseCursor.move(self.ui.mouseCursor.x() + self.stepsize, self.ui.mouseCursor.y())
 
-#=======================================================================
-# ERDS window class
-#=======================================================================
-class ERDSWindow(QMainWindow):
-
-    def __init__(self):
-        super(ERDSWindow, self).__init__()
-        self.ui = Ui_ERDSWindow()
-        self.ui.setupUi(self) # Import UI from ui_ERDSWindow.py
-
-        self.setWindowTitle("ERDS Window")
+    def closeEvent(self, event):
+        recProcess.kill()
 
 #=======================================================================
 # Lava Game window class
@@ -1289,12 +1282,10 @@ if __name__ == "__main__":
 
     window1 = MainWindow()
     window2 = UserWindow()
-    window3 = ERDSWindow()
     window4 = LavaGame()
     window5 = Asteroid()
 
     window1.setUserWindow(window2)
-    window1.setERDSWindow(window3)
     window1.setLavaGameWindow(window4)
     window1.setAsteroidWindow(window5)
     
