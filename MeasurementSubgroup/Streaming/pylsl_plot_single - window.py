@@ -29,7 +29,7 @@ from scipy.signal import welch
 
 from pylsl import StreamInlet, resolve_stream
 
-def filter(y):
+def filter(y, low, high):
     from scipy.signal import butter, lfilter, lfiltic
     from scipy import signal
 
@@ -37,40 +37,42 @@ def filter(y):
     y = signal.detrend(y, axis=0)
 
     # Define the filter parameters
-    lowcut = 2
-    highcut = 30
+    lowcut = low
+    highcut = high
     fs = 250  # Sampling frequency
 
     # Calculate the filter coefficients
     nyquist = 0.5 * fs
     low = lowcut / nyquist
     high = highcut / nyquist
-    b, a = butter(8, [low, high], btype='band')
-    zi = lfilter_zi(b,a)*y[0]
+    b, a = butter(4, [low, high], btype='band')
+    #zi = lfilter_zi(b,a)*y[0]
 
     # Apply the filter to each column of the DataFram
-    y_filtered_band, _= lfilter(b, a, np.array(y), zi = zi)
+    y_filtered_band= lfilter(b, a, np.array(y))
 
-    # Define the notch filter parameters
+    # Define the filter parameters
+    lowcut = 49
+    highcut = 51
     fs = 250  # Sampling frequency
-    f0 = 50  # Notch frequency
-    Q = 1 # Quality factor
 
-    # Design the notch filter
-    b, a = signal.iirnotch(f0, Q, fs)
-    zi = lfilter_zi(b,a)*y[0]
+    # Calculate the filter coefficients
+    nyquist = 0.5 * fs
+    low = lowcut / nyquist
+    high = highcut / nyquist
+    #zi = lfilter_zi(b,a)*y[0]
 
-    # Apply the filter to each column of the DataFrame
-    y_filtered, _ = lfilter(b, a, np.array(y), zi = zi)
+    # Apply the filter to each column of the DataFram
+    y_filtered= lfilter(b, a, np.array(y_filtered_band))
 
     return y_filtered
 
 # Window settings
-window = 50
-overlap = 0.9
+window = 100
+overlap = 0.5
 
 # Plot settings
-pause = 0.004
+pause = 0.01
 
 streams = resolve_stream()
 inlet = StreamInlet(streams[0])
@@ -123,108 +125,138 @@ while not aborted:
     #print(t_win)
 
     # When a new block of L is reached
-    if i % window == 0 and i != window and i != 0:
+    if i % overlap_win == 0 and i != overlap_win and i != 0:
+        print(i/250, "sec")
         # apply filter to window
-        y_win_filt = filter(y_win)
+        y_win_filt = filter(y_win, 0.5, 38)
+        y_win_filt2 = filter(y_win, 8, 30)
         #y_win_filt = y_win
 
-        # # Take the samples that are overlapped
-        # y_shift = y_win_filt[0:overlap_win]
-        # t_shift = t_win[0:overlap_win]
-
         # Discard the samples that are overlapped
-        y_shift = y_win_filt[overlap_win:]
-        t_shift = t_win[overlap_win:]
+        # y_shift = y_win_filt[overlap_win:]
+        # t_shift = t_win[overlap_win:]
 
-        # Assign the values to an array
-        y_shift = np.array(y_shift)
-        t_shift = np.array(t_shift)
+        # # Assign the values to an array
+        # y_shift = np.array(y_shift)
+        # t_shift = np.array(t_shift)
 
-        # contatenate to the output signal
-        y_out = np.concatenate((y_out, y_shift))
-        t_out = np.concatenate((t_out, t_shift))
+        # # contatenate to the output signal
+        # y_out = np.concatenate((y_out, y_shift))
+        # t_out = np.concatenate((t_out, t_shift))
 
-        max_samples_displayed = 500 # only display 500 samples of the output signal
-        if len(y_out) > max_samples_displayed:
-            y_out = y_out[-max_samples_displayed:]  # Keep the newest 500 samples
-        if len(t_out) > max_samples_displayed:
-            t_out = t_out[-max_samples_displayed:]  # Keep the newest 500 samples
+        # max_samples_displayed = 500 # only display 500 samples of the output signal
+        # if len(y_out) > max_samples_displayed:
+        #     y_out = y_out[-max_samples_displayed:]  # Keep the newest 500 samples
+        # if len(t_out) > max_samples_displayed:
+        #     t_out = t_out[-max_samples_displayed:]  # Keep the newest 500 samples
 
-        # possibly downsample for better visualization
-        y_out_down = y_out[::]
-        t_out_down = t_out[::]
+        # # possibly downsample for better visualization
+        # y_out_down = y_out[::]
+        # t_out_down = t_out[::]
 
-        # Define a function to compute moving average
-        def moving_average(y, window_size):
-            # Pad the signal at the boundaries to avoid boundary effects
-            padded_y = np.pad(y, (window_size//2, window_size-1-window_size//2), mode='edge')
-            # Compute the moving average
-            weights = np.ones(window_size) / window_size
-            smoothed = np.convolve(weights, padded_y, mode='valid')
-            return smoothed
+        # # Define a function to compute moving average
+        # def moving_average(y, window_size):
+        #     # Pad the signal at the boundaries to avoid boundary effects
+        #     padded_y = np.pad(y, (window_size//2, window_size-1-window_size//2), mode='edge')
+        #     # Compute the moving average
+        #     weights = np.ones(window_size) / window_size
+        #     smoothed = np.convolve(weights, padded_y, mode='valid')
+        #     return smoothed
 
-        # Smooth the signal using a moving average with window size 5
-        y_out_down = moving_average(y_out_down, window_size=5)
+        # # Smooth the signal using a moving average with window size 5
+        # y_out_down = moving_average(y_out_down, window_size=5)
 
-        plt.plot(t_out_down, y_out_down, 'o-')
-        # Set y-axis limits
-        plt.ylim(-50, 50)
+        # plt.plot(t_out_down, y_out_down, 'o-')
+        # # Set y-axis limits
+        # plt.ylim(-50, 50)
+        # plt.pause(pause)
+
+        # # remove the old plots after 500 samples
+        # if max_samples_displayed == 500:
+        #     plt.cla() 
+
+        #FFT
+        #Apply Hanning window
+        # hanning_window = np.hanning(len(y_win_filt))
+        # y_win_hann = y_win_filt * hanning_window
+
+        y_win_pad = np.pad(y_win_filt, int(0.5*window), 'constant')
+        y_win_pad2 = np.pad(y_win_filt2, int(0.5*window), 'constant')
+        # print(y_win_pad.shape)
+
+        # xf = rfftfreq(y_win_pad.shape[0], 1/250)
+        # y_fft = np.abs(rfft(y_win_pad))
+        # y_fft2 = np.abs(rfft(y_win_pad2))
+
+        # print(y_fft.shape)
+        # print(y_fft)
+
+        # plt.plot(xf, y_fft, label='0.5 - 38 Hz: ML')
+        # plt.plot(xf, y_fft2, label='8- 30 Hz: MI')
+        # plt.axvline(4, color='k', linestyle='--', linewidth=1)
+        # plt.axvline(8, color='k', linestyle='--', linewidth=1)
+        # plt.axvline(12, color='k', linestyle='--', linewidth=1)
+        # plt.axvline(30, color='k', linestyle='--', linewidth=1)
+        # plt.xlim([0, 50]) 
+        # plt.ylim([0, 400]) 
+
+        # # Add a title
+        # plt.title('FFT plot of Channel X')
+
+        # # Add X and Y axis labels
+        # plt.xlabel('Frequency (Hz)')
+        # plt.ylabel('Amplitude')
+
+        # # Add a legend with customizations
+        # plt.legend(loc='upper right', fontsize='medium', title='Legend')
+
+        # plt.pause(pause)
+
+        # if i % overlap_win == 0:
+        #     plt.cla() 
+
+        # #  PSD
+        # # Compute the power spectral density using Welch's method
+        frequencies, psd = welch(y_win_pad2, 250)
+        # # plt.plot(frequencies,psd)
+        # # plt.xlim([0, 50]) 
+        # # plt.pause(pause)
+
+        # # Powerbands
+        # Define frequency bands
+        delta_band = (0.5, 4)
+        theta_band = (4, 8)
+        alpha_band = (8, 12)
+        beta_band = (12, 30)
+        gamma_band = (30, 50)
+
+        # Function to calculate power in a specific frequency band
+        def bandpower(frequencies, psd, band):
+            band_freq_indices = np.logical_and(frequencies >= band[0], frequencies <= band[1])
+            band_power = np.sum(psd[band_freq_indices])
+            return band_power
+        
+        # Calculate power for each band
+        delta_power = bandpower(frequencies, psd, delta_band)
+        theta_power = bandpower(frequencies, psd, theta_band)
+        alpha_power = bandpower(frequencies, psd, alpha_band)
+        beta_power = bandpower(frequencies, psd, beta_band)
+        gamma_power = bandpower(frequencies, psd, gamma_band)
+
+        # Power values
+        powers = [delta_power, theta_power, alpha_power, beta_power, gamma_power]
+
+        bands = ['Delta (0.5-4 Hz)', 'Theta (4-8 Hz)', 'Alpha (8-13 Hz)', 'Beta (13-30 Hz)', 'Gamma (30-50 Hz)']
+
+        plt.bar(bands, powers, color=['blue', 'green', 'red', 'purple', 'orange'])
+        plt.xlabel('Frequency Bands')
+        plt.ylabel('Power')
+        plt.title('EEG Power Band Distribution')
+        plt.ylim([0, 10]) 
         plt.pause(pause)
 
-        # remove the old plots after 500 samples
-        if max_samples_displayed == 500:
+        if i % overlap_win == 0:
             plt.cla() 
-
-        # # Make the overlapped samples 0 in the original array
-        # y_win_filt[0:overlap_win] = np.zeros(overlap_win)
-        # t_win[0:overlap_win] = np.zeros(overlap_win
-        
-    #     # FFT
-    #     xf = rfftfreq(int(window*overlap), 1/250)
-    #     y_fft = rfft(y_shift)
-
-    #     plt.plot(xf, np.abs(y_fft))
-    #     plt.xlim([0, 50]) 
-    #     plt.pause(pause)
-
-        # # powerbands
-        # # Compute the power spectral density using Welch's method
-        # frequencies, psd = welch(y_shift, 250)
-        # plt.plot(frequencies,psd)
-        # plt.xlim([0, 50]) 
-        # plt.pause(pause)
-
-        # # Define frequency bands
-        # delta_band = (0.5, 4)
-        # theta_band = (4, 8)
-        # alpha_band = (8, 12)
-        # beta_band = (12, 30)
-        # gamma_band = (30, 50)
-
-        # # Function to calculate power in a specific frequency band
-        # def bandpower(frequencies, psd, band):
-        #     band_freq_indices = np.logical_and(frequencies >= band[0], frequencies <= band[1])
-        #     band_power = np.sum(psd[band_freq_indices])
-        #     return band_power
-        
-        # # Calculate power for each band
-        # delta_power = bandpower(frequencies, psd, delta_band)
-        # theta_power = bandpower(frequencies, psd, theta_band)
-        # alpha_power = bandpower(frequencies, psd, alpha_band)
-        # beta_power = bandpower(frequencies, psd, beta_band)
-        # gamma_power = bandpower(frequencies, psd, gamma_band)
-
-        # # Power values
-        # powers = [delta_power, theta_power, alpha_power, beta_power, gamma_power]
-        # print(powers)
-        # bands = ['Delta (0.5-4 Hz)', 'Theta (4-8 Hz)', 'Alpha (8-13 Hz)', 'Beta (13-30 Hz)', 'Gamma (30-50 Hz)']
-
-        # plt.figure(figsize=(10, 6))
-        # plt.bar(bands, powers, color=['blue', 'green', 'red', 'purple', 'orange'])
-        # plt.xlabel('Frequency Bands')
-        # plt.ylabel('Power')
-        # plt.title('EEG Power Band Distribution')
-        # plt.pause(pause)
 
         # # axis settings
         # y_min = np.min(y_shift) - np.std(y_shift) * 5
@@ -240,6 +272,5 @@ while not aborted:
     # increment
     i += 1
     t += 1
-
     if msvcrt.kbhit() and msvcrt.getch()[0] == 27:
         aborted = True
