@@ -1,11 +1,14 @@
 from pylsl import StreamInlet, resolve_stream
 import numpy as np
 import torch
+from escargot3 import escargot
 
 # config:
 #   Window settings
 window = 50
 overlap = 0.9
+
+#   ML settings
 
 # initial values:
 y_win = np.zeros(window, 8)  # window array
@@ -62,6 +65,9 @@ user_id = input()
 
 # step 2: load corresponding model
 # *** up to machine learning group to implement
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = escargot().to(device)
+model.load_state_dict(torch.load("filename")) # filename is temporary use user ID in future
 
 # step 3: synchronise with gui
 print("R") #R for ready
@@ -96,11 +102,12 @@ while True:
         t_out = np.concatenate((t_out, t_shift))
 
         # step 6: Send data to GUI
-        # *** omited for testing ***
+        # *** omited for testing *** Update: not necessary
 
         # step 7: Classify window
         torch_data = torch.from_numpy(y_out).unsqueeze(0).unsqueeze(0)
-        # *** up to machine learning group to implement
+        output_vector = model(torch_data.to(device), dtype=torch.float)
+        classify_result = torch.max(output_vector, dim=1)[1]
 
         # step 8: Output classification
         print(classify_result)
