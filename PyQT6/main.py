@@ -88,6 +88,8 @@ class MainWindow(QMainWindow):
 
         self.startFFT = False
         self.done_recording = False
+        self.current_id = 0 # id 0 is set to be the "new user" without trained  data
+        self.in_training = False
 
         # For EEG cap connection and data
         self.simulate_data = False
@@ -157,6 +159,7 @@ class MainWindow(QMainWindow):
         self.ui.ERDSBtn.clicked.connect(self.openERDSWindow)
         self.ui.openPromptBtn.clicked.connect(self.setPromptPage)
         self.ui.startTimerBtn.clicked.connect(self.startPromptTimer)
+        self.ui.dataTrainingBtn.clicked.connect(self.start_training)
         #Training values
         self.ui.batchSizeLine.textChanged.connect(self.bachtSizeChange)
         self.ui.marginLine.textChanged.connect(self.marginLineChange)
@@ -512,13 +515,36 @@ class MainWindow(QMainWindow):
     def exitApp(self):
         QApplication.quit()
 
+    def show_message(self, window_title: str, message: str):
+        dlg = QMessageBox()
+        dlg.setWindowTitle(window_title)
+        dlg.setText(message)
+        button = dlg.exec()
+
     # Will start training the ML model on the new data
     def start_training(self):
-        self.accuracy_data = np.append(self.accuracy_data, random.sample(range(int(self.accuracy_data[-1]), 100), 1))
-        self.accuracy_data_iter = np.append(self.accuracy_data_iter, self.accuracy_data_iter[-1] + 1)
-        self.loss_data = np.append(self.loss_data, random.sample(range(0, self.loss_data[-1] + 1), 1))
-        self.loss_data_iter = np.append(self.loss_data_iter, self.loss_data_iter[-1] + 1)
-        self.update_ML_plots()
+        if self.in_training:
+            self.show_message("Train Error", "Already in training!")
+            return
+
+        if self.current_id == 0:
+            self.show_message("Train Error", "No user selected!")
+            return
+
+        #parent_directory = os.path.dirname(os.getcwd())
+        new_directory = os.path.join(os.getcwd(), 'MeasurementSubgroup\\Our_measurements')
+        file_name = f"{self.current_id}.csv"
+        file_exists = any(file for file in os.listdir(new_directory) if file == file_name)
+
+        if not file_exists:
+            self.show_message("Train Error", "There are no recordings made for this user!")
+            return
+
+        full_file_path = os.path.join(new_directory, file_name)
+        trainer = train(int(self.ui.batchSizeLine.text()), int(self.ui.learningRateLine.text()),
+                        int(self.ui.maxIterationLine.text()), 10, full_file_path, self.current_id, self)
+        trainer.dataloader()
+        trainer.train("own.pt","owntargets.pt")
 
     # updating the Machine Learning plots while training
     def update_ML_plots(self):
@@ -1434,12 +1460,12 @@ if __name__ == "__main__":
 
     window1 = MainWindow()
     window2 = UserWindow()
-    window4 = LavaGame()
-    window5 = Asteroid()
+    window3 = LavaGame()
+    window4 = Asteroid()
 
     window1.setUserWindow(window2)
-    window1.setLavaGameWindow(window4)
-    window1.setAsteroidWindow(window5)
+    window1.setLavaGameWindow(window3)
+    window1.setAsteroidWindow(window4)
     
     window1.userWindow_to_cursorPage.connect(window2.handle_signal_cursorPage)
     window1.userWindow_to_promptPage.connect(window2.handle_signal_promptPage)
