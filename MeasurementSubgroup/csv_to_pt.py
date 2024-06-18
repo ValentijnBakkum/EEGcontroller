@@ -21,7 +21,7 @@ def filter(df_input):
     from scipy import signal
 
     # Define the filter parameters
-    lowcut = 2
+    lowcut = 8
     highcut = 30
     fs = 250  # Sampling frequency
 
@@ -29,23 +29,24 @@ def filter(df_input):
     nyquist = 0.5 * fs
     low = lowcut / nyquist
     high = highcut / nyquist
-    b, a = butter(8, [low, high], btype='band')
+    b, a = butter(4, [low, high], btype='band')
 
     # Apply the filter to each column of the DataFrame
     df_filt = lfilter(b, a, df_input, axis = 0)
 
-    # import scipy.signal as signal
-
-    # Define the notch filter parameters
+    # Define the filter parameters
+    lowcut = 49
+    highcut = 51
     fs = 250  # Sampling frequency
-    f0 = 50  # Notch frequency
-    Q = 1 # Quality factor
 
-    # Design the notch filter
-    b, a = signal.iirnotch(f0, Q, fs)
+    # Calculate the filter coefficients
+    nyquist = 0.5 * fs
+    low = lowcut / nyquist
+    high = highcut / nyquist
+    b, a = butter(4, [low, high], btype='bandstop')
 
     # Apply the filter to each column of the DataFrame
-    df_filt1 = lfilter(b, a, df_filt)
+    df_filt1 = lfilter(b, a, df_filt, axis = 0)
     return df_filt1
 
 def CAR_filter(logits):
