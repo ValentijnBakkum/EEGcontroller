@@ -5,7 +5,7 @@ from escargot3 import escargot
 
 # config:
 #   Window settings
-window = 50
+window = 529
 overlap = 0.9
 
 #   ML settings
