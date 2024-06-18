@@ -22,6 +22,10 @@ import torch
 from torch.utils.data import DataLoader
 from escargot3 import escargot
 from pylsl import StreamInlet, resolve_stream
+from scipy.fft import rfft, rfftfreq 
+from scipy.signal import welch
+from scipy.signal import butter, lfilter, lfiltic
+from scipy import signal
 
 #=======================================================================
 # Initialization Splashscreen
@@ -197,6 +201,8 @@ class MainWindow(QMainWindow):
         self.t_win = np.zeros(self.window)  # time array
         self.y_out = np.array([])
         self.t_out = np.array([])
+        self.low = 8
+        self.high = 30
 
         # ML plots
         self.accuracy_data = np.zeros(1)
@@ -420,6 +426,43 @@ class MainWindow(QMainWindow):
             dlg.move(x, y)
             button = dlg.exec()
             self.simulate_data = True
+
+    # Filter raw signal
+    def filter(self, y, low, high):
+        # Remove the DC component
+        y = signal.detrend(y, axis=0)
+
+        # Define the filter parameters
+        lowcut = low
+        highcut = high
+        fs = 250  # Sampling frequency
+
+        # Calculate the filter coefficients
+        nyquist = 0.5 * fs
+        low = lowcut / nyquist
+        high = highcut / nyquist
+        b, a = butter(4, [low, high], btype='band')
+        #zi = lfilter_zi(b,a)*y[0]
+
+        # Apply the filter to each column of the DataFram
+        y_filtered_band= lfilter(b, a, np.array(y))
+
+        # Define the filter parameters
+        lowcut = 49
+        highcut = 51
+        fs = 250  # Sampling frequency
+
+        # Calculate the filter coefficients
+        nyquist = 0.5 * fs
+        low = lowcut / nyquist
+        high = highcut / nyquist
+        b, a = butter(4, [low, high], btype='bandstop')
+        #zi = lfilter_zi(b,a)*y[0]
+
+        # Apply the filter to each column of the DataFram
+        y_filtered= lfilter(b, a, np.array(y_filtered_band))
+
+        return y_filtered
         
     # Update graphs
     def update_plot(self):
@@ -431,6 +474,63 @@ class MainWindow(QMainWindow):
         else:
             sample, timestamp = self.generate_random_sample()  # For testing purposes when not connected to cap
             sample_timestamp = self.i / 250
+
+        # Fill window for FFT plots
+        #calculate sample overlap
+        overlap_win = int(self.overlap * self.window)
+
+        # assign EEG data to array
+        self.y_win[0] = sample[self.channel - 1] # EEG data 1
+        self.t_win[0] = (self.i)/250 # Counter from EEG cap in seconds
+
+        # Shift the array with one index
+        self.y_win = np.roll(self.y_win, -1)
+        self.t_win = np.roll(self.t_win, -1)
+
+        # When a new block of L is reached
+        if self.i % overlap_win == 0 and self.i != overlap_win and self.i != 0:
+            #print(self.i/250, "sec")
+            # apply filter to window
+            #y_win_filt = filter(y_win, 0.5, 38)
+            y_win_filt2 = self.filter(self.y_win, self.low, self.high)
+            
+            #y_win_pad = np.pad(y_win_filt, int(0), 'constant')
+            y_win_pad2 = np.pad(y_win_filt2, int(0), 'constant')
+            # print(y_win_pad.shape)
+
+            xf = rfftfreq(y_win_pad2.shape[0], 1/250)
+            #y_fft = np.abs(rfft(y_win_pad))
+            y_fft2 = np.abs(rfft(y_win_pad2)) # Data to be plotted for FFT plot
+            print(y_fft2.shape)
+
+            #  PSD
+            # Compute the power spectral density using Welch's method
+            frequencies, psd = welch(y_win_pad2, 250)
+
+            # Powerbands
+            # Define frequency bands
+            delta_band = (0.5, 4)
+            theta_band = (4, 8)
+            alpha_band = (8, 12)
+            beta_band = (12, 30)
+            gamma_band = (30, 50)
+
+            # Function to calculate power in a specific frequency band
+            def bandpower(frequencies, psd, band):
+                band_freq_indices = np.logical_and(frequencies >= band[0], frequencies <= band[1])
+                band_power = np.sum(psd[band_freq_indices])
+                band_power_norm = band_power / (band[1] - band[0])
+                return band_power_norm
+            
+            # Calculate power for each band
+            delta_power = bandpower(frequencies, psd, delta_band)
+            theta_power = bandpower(frequencies, psd, theta_band)
+            alpha_power = bandpower(frequencies, psd, alpha_band)
+            beta_power = bandpower(frequencies, psd, beta_band)
+            gamma_power = bandpower(frequencies, psd, gamma_band)
+
+            # Power values 
+            powers = [delta_power, theta_power, alpha_power, beta_power, gamma_power] # Data to be plotted for powerbands
 
         if self.i <= self.max_graph_width:
             pass
