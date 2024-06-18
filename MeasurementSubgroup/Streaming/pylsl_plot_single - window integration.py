@@ -167,8 +167,8 @@ while not aborted:
             # hanning_window = np.hanning(len(y_win_filt))
             # y_win_hann = y_win_filt * hanning_window
 
-            y_win_pad = np.pad(y_win_filt, int(0), 'constant')
-            y_win_pad2 = np.pad(y_win_filt2, int(0), 'constant')
+            y_win_pad = np.pad(y_win_filt, int(0.5*window), 'constant')
+            y_win_pad2 = np.pad(y_win_filt2, int(0.5*window), 'constant')
             # print(y_win_pad.shape)
 
             xf = rfftfreq(y_win_pad.shape[0], 1/250)
