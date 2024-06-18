@@ -188,6 +188,16 @@ class MainWindow(QMainWindow):
         self.yBarGraph = np.zeros(self.columns)
         symbol_sign = None
 
+        # FFT and powerbands plots
+        # Window settings
+        self.window = 500
+        self.overlap = 0.25
+        # initial values
+        self.y_win = np.zeros(self.window)  # window array
+        self.t_win = np.zeros(self.window)  # time array
+        self.y_out = np.array([])
+        self.t_out = np.array([])
+
         # ML plots
         self.accuracy_data = np.zeros(1)
         self.accuracy_data_iter = np.zeros(1)
