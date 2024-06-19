@@ -199,12 +199,13 @@ class MainWindow(QMainWindow):
         self.window = 500
         self.overlap = 0.25
         # initial values
-        self.y_win = np.zeros(self.window)  # window array
+        self.y_win = np.zeros((self.window, 8))  # window array
         self.t_win = np.zeros(self.window)  # time array
-        self.y_out = np.array([])
+        self.y_out = np.empty((0,8))
         self.t_out = np.array([])
         self.low = 8
         self.high = 30
+        self.y_win_filt2 = np.zeros((self.window, 8))
 
         # ML plots
         self.accuracy_data = np.zeros(1)
@@ -447,11 +448,11 @@ class MainWindow(QMainWindow):
         #zi = lfilter_zi(b,a)*y[0]
 
         # Apply the filter to each column of the DataFram
-        y_filtered_band= lfilter(b, a, np.array(y))
+        y_filtered_band= lfilter(b, a, np.array(y), axis =0)
 
         # Define the filter parameters
-        lowcut = 49
-        highcut = 51
+        lowcut = 48
+        highcut = 52
         fs = 250  # Sampling frequency
 
         # Calculate the filter coefficients
@@ -462,7 +463,7 @@ class MainWindow(QMainWindow):
         #zi = lfilter_zi(b,a)*y[0]
 
         # Apply the filter to each column of the DataFram
-        y_filtered= lfilter(b, a, np.array(y_filtered_band))
+        y_filtered= lfilter(b, a, np.array(y_filtered_band), axis =0)
 
         return y_filtered
         
@@ -482,22 +483,19 @@ class MainWindow(QMainWindow):
         overlap_win = int(self.overlap * self.window)
 
         # assign EEG data to array
-        self.y_win[0] = sample[self.channel - 1] # EEG data 1
+        self.y_win[0] = sample[:8] # EEG data 1
         self.t_win[0] = (self.i)/250 # Counter from EEG cap in seconds
 
         # Shift the array with one index
-        self.y_win = np.roll(self.y_win, -1)
+        self.y_win = np.roll(self.y_win, -1, axis = 0)
         self.t_win = np.roll(self.t_win, -1)
 
         # When a new block of L is reached
         if self.i % overlap_win == 0 and self.i != overlap_win and self.i != 0:
             #print(self.i/250, "sec")
-            # apply filter to window
-            #y_win_filt = filter(y_win, 0.5, 38)
-            y_win_filt2 = self.filter(self.y_win, self.low, self.high)
-            
+            # apply filter to window            
             #y_win_pad = np.pad(y_win_filt, int(0), 'constant')
-            y_win_pad2 = np.pad(y_win_filt2, int(0), 'constant')
+            y_win_pad2 = np.pad(self.y_win_filt2[:,self.channel - 1], int(100), 'constant') # pick the channel from the number key that is pressed
             # print(y_win_pad.shape)
 
             self.xf = rfftfreq(y_win_pad2.shape[0], 1/250)
@@ -555,13 +553,17 @@ class MainWindow(QMainWindow):
                 self.ui.FFTPlot.hideButtons()
 
         # Only update the plot everytime it has collected plot update data sized data
-        if self.i % 50 == 0:
+        if self.i % 50 == 0 and self.i != 0:
+            # filtered signal
+            self.y_win_filt2 = self.filter(self.y_win, self.low, self.high)
+
             self.xdata = np.roll(self.xdata, -1)
             self.xdata[-1] = sample_timestamp
 
             for k in range(8):
                 self.ydata[k] = np.roll(self.ydata[k], -1)
-                self.ydata[k][-1] = sample[k]
+                #self.ydata[k][-1] = sample[k]
+                self.ydata[k][-1:] = self.y_win_filt2[-1:,k]
                 self.lines[k].setData(self.xdata, self.ydata[k])
 
             self.power_band_1.setOpts(height=self.yBarGraph[0:3], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
