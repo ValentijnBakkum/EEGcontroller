@@ -1,4 +1,4 @@
-from MLsubgroup_OLD.Dataloader import DataReader
+from MLsubgroup.Dataloader import DataReader
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
