@@ -233,10 +233,10 @@ class MainWindow(QMainWindow):
             #p.hideAxis('left')
 
         # Bar graph band power
-        self.xBarGraph = np.array([2,6,10,21,40]) #Center points of the columns with according width /<--
-        self.power_band_1= pg.BarGraphItem(x=self.xBarGraph[[0,1,2]], height = self.yBarGraph[[0,1,2]], width = 4, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.power_band_2 = pg.BarGraphItem(x=self.xBarGraph[[3]], height = self.yBarGraph[[3]], width = 18, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.power_band_3 = pg.BarGraphItem(x=self.xBarGraph[[4]], height = self.yBarGraph[[4]], width = 20, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.xBarGraph = np.array([2,6,10,21,40]) #Center points of the columns with according width
+        self.power_band_1= pg.BarGraphItem(x=self.xBarGraph[0:3], height = self.yBarGraph[0:3], width = 4, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.power_band_2 = pg.BarGraphItem(x=self.xBarGraph[3], height = self.yBarGraph[3], width = 18, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.power_band_3 = pg.BarGraphItem(x=self.xBarGraph[4], height = self.yBarGraph[4], width = 20, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
         self.ui.powerBandPlot.addItem(self.power_band_1)
         self.ui.powerBandPlot.addItem(self.power_band_2)
         self.ui.powerBandPlot.addItem(self.power_band_3)
