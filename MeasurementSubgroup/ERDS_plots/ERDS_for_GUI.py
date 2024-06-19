@@ -238,6 +238,9 @@ g.figure.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.08)
 
 plt.show()
 
+with open("plot_opened.signal", "w") as f:
+    f.write("Plot opened")
+
 # References
 # ==========
 # .. footbibliography::

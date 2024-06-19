@@ -234,10 +234,10 @@ class MainWindow(QMainWindow):
             #p.hideAxis('left')
 
         # Bar graph band power
-        self.xBarGraph = np.array([2,6,10,21,40]) #Center points of the columns with according width /<--
-        self.power_band_1= pg.BarGraphItem(x=self.xBarGraph[[0,1,2]], height = self.yBarGraph[[0,1,2]], width = 4, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.power_band_2 = pg.BarGraphItem(x=self.xBarGraph[[3]], height = self.yBarGraph[[3]], width = 18, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.power_band_3 = pg.BarGraphItem(x=self.xBarGraph[[4]], height = self.yBarGraph[[4]], width = 20, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.xBarGraph = np.array([2,6,10,21,40]) #Center points of the columns with according width
+        self.power_band_1= pg.BarGraphItem(x=self.xBarGraph[0:3], height = self.yBarGraph[0:3], width = 4, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.power_band_2 = pg.BarGraphItem(x=self.xBarGraph[3], height = self.yBarGraph[3], width = 18, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.power_band_3 = pg.BarGraphItem(x=self.xBarGraph[4], height = self.yBarGraph[4], width = 20, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
         self.ui.powerBandPlot.addItem(self.power_band_1)
         self.ui.powerBandPlot.addItem(self.power_band_2)
         self.ui.powerBandPlot.addItem(self.power_band_3)
@@ -248,6 +248,12 @@ class MainWindow(QMainWindow):
         self.ui.powerBandPlot.hideButtons()
 
         self.start_time = time.time()
+
+        # Check ERDS window
+        self.check_timer = QTimer()
+        self.check_timer.timeout.connect(self.check_plot_opened)
+
+        self.signal_file = "plot_opened.signal"
 
         # Add a timer to simulate new temperature measurements
         self.timer = QTimer()
@@ -604,8 +610,18 @@ class MainWindow(QMainWindow):
 
     # Set and open ERDS Window functions
     def openERDSWindow(self):
+        self.ui.ERDSBtn.setText("Loading")
+        self.ui.ERDSBtn.setEnabled(False)
+
+        # Remove any existing signal file
+        if os.path.exists(self.signal_file):
+            os.remove(self.signal_file)
+
         global ERDS_process
         ERDS_process = subprocess.Popen(["python", "-u", "MeasurementSubgroup/ERDS_plots/ERDS_for_GUI.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
+
+        # Start a timer to check for the signal file
+        self.check_timer.start(500)
 
     # Set and open Lava Game Window functions
     def setLavaGameWindow(self, LavaGame):
@@ -626,6 +642,14 @@ class MainWindow(QMainWindow):
     # Exit the app
     def exitApp(self):
         QApplication.quit()
+
+    # Check ERDS window is opened
+    def check_plot_opened(self):
+        if os.path.exists(self.signal_file):
+            self.ui.ERDSBtn.setText("ERDS")
+            self.ui.ERDSBtn.setEnabled(True)
+            self.check_timer.stop()
+            os.remove(self.signal_file)
 
     def show_message(self, window_title: str, message: str):
         dlg = QMessageBox()

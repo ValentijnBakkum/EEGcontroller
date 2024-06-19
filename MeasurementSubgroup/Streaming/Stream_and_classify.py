@@ -1,7 +1,7 @@
 from pylsl import StreamInlet, resolve_stream
 import numpy as np
 import torch
-from escargot3 import escargot
+from ...MLsubgroup.escargot3 import escargot
 
 # config:
 #   Window settings
