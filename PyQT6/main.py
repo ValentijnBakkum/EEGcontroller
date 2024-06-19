@@ -233,15 +233,26 @@ class MainWindow(QMainWindow):
             #p.hideAxis('left')
 
         # Bar graph band power
-        self.xBarGraph = np.array([2,6,10,21,40]) #Center points of the columns with according width
-        self.power_band_1= pg.BarGraphItem(x=self.xBarGraph[0:3], height = self.yBarGraph[0:3], width = 4, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.power_band_2 = pg.BarGraphItem(x=self.xBarGraph[3], height = self.yBarGraph[3], width = 18, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.power_band_3 = pg.BarGraphItem(x=self.xBarGraph[4], height = self.yBarGraph[4], width = 20, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.ui.powerBandPlot.addItem(self.power_band_1)
-        self.ui.powerBandPlot.addItem(self.power_band_2)
-        self.ui.powerBandPlot.addItem(self.power_band_3)
+        self.xLabels = ['Delta', 'Theta', 'Alpha', 'Beta', 'Gamma']
+        self.xBarGraph = list(range(1,len(self.xLabels)+1))
+
+        ticks=[]
+        for i, item in enumerate(self.xLabels):
+            ticks.append( (self.xBarGraph[i], item) )
+        ticks = [ticks]
+
+        self.power_band = pg.BarGraphItem(x=self.xBarGraph, height = self.yBarGraph, width = 1, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        #self.power_band_1= pg.BarGraphItem(x=self.xBarGraph[0:3], height = self.yBarGraph[0:3], width = 4, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        #self.power_band_2 = pg.BarGraphItem(x=self.xBarGraph[3], height = self.yBarGraph[3], width = 18, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        #self.power_band_3 = pg.BarGraphItem(x=self.xBarGraph[4], height = self.yBarGraph[4], width = 20, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.ui.powerBandPlot.addItem(self.power_band)
+        #self.ui.powerBandPlot.addItem(self.power_band_1)
+        #self.ui.powerBandPlot.addItem(self.power_band_2)
+        #self.ui.powerBandPlot.addItem(self.power_band_3)
         #self.ui.powerBandPlot.setYRange(10, 100)
-        self.ui.powerBandPlot.setXRange(0, 50)
+        ax = self.ui.powerBandPlot.getAxis('bottom')
+        ax.setTicks(ticks)
+        #self.ui.powerBandPlot.setXRange(0, 50)
         self.ui.powerBandPlot.setMouseEnabled(x=False, y=False)
         self.ui.powerBandPlot.setMenuEnabled(False)
         self.ui.powerBandPlot.hideButtons()
@@ -554,7 +565,7 @@ class MainWindow(QMainWindow):
                     symbolSize=5,
                     symbolBrush="b",
                 )
-                #self.ui.FFTPlot.setXRange(5, 35)
+                self.ui.FFTPlot.setXRange(0, 60)
                 #self.ui.FFTPlot.setYRange(0, 50)
                 self.ui.FFTPlot.setMouseEnabled(x=False, y=False)
                 self.ui.FFTPlot.setMenuEnabled(False)
@@ -570,9 +581,10 @@ class MainWindow(QMainWindow):
                 self.ydata[k][-1] = sample[k]
                 self.lines[k].setData(self.xdata, self.ydata[k])
 
-            self.power_band_1.setOpts(height=self.yBarGraph[0:3], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
-            self.power_band_2.setOpts(height=self.yBarGraph[3], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
-            self.power_band_3.setOpts(height=self.yBarGraph[4], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
+            self.power_band.setOpts(height=self.yBarGraph, brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
+            #self.power_band_1.setOpts(height=self.yBarGraph[0:3], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
+            #self.power_band_2.setOpts(height=self.yBarGraph[3], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
+            #self.power_band_3.setOpts(height=self.yBarGraph[4], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
 
             if self.startFFT:
                 self.FFT_plot.setData(self.xf, self.y_fft2)
@@ -665,24 +677,25 @@ class MainWindow(QMainWindow):
             self.show_message("Train Error", "No user selected!")
             return
 
-        #parent_directory = os.path.dirname(os.getcwd())
-        new_directory = os.path.join(os.getcwd(), 'MeasurementSubgroup\\Our_measurements')
-        file_name = f"{self.current_id}.csv"
-        file_exists = any(file for file in os.listdir(new_directory) if file == file_name)
+        new_directory = os.path.join(os.getcwd(), 'Data')
+        new_directory = os.path.join(new_directory, str(self.current_id))
 
-        if not file_exists:
+        if not os.path.exists(new_directory):
             self.show_message("Train Error", "There are no recordings made for this user!")
             return
 
-        full_file_path = os.path.join(new_directory, file_name)
-        trainer = train(int(self.ui.batchSizeLine.text()), int(self.ui.learningRateLine.text()),
-                        int(self.ui.maxIterationLine.text()), 10, full_file_path, self.current_id, self)
+        full_file_path = os.path.join(new_directory, new_directory)
+        trainer = train(int(self.ui.batchSizeLine.text()), float(self.ui.learningRateLine.text()),
+                        int(self.ui.maxIterationLine.text()), 10, full_file_path, str(self.current_id), self)
         trainer.dataloader()
         trainer.train("own.pt","owntargets.pt")
 
     # updating the Machine Learning plots while training
-    def update_ML_plots(self):
+    def update_ML_plots(self, accuracy, avgloss):
         # when it's the first time after recording we want to clear the previous plots
+        accuracy = np.asarray(accuracy).flatten()
+        avgloss = np.asarray(avgloss).flatten()
+
         if self.done_recording == False:
             pen = pg.mkPen(self.pastel_colors[self.channel - 1], width=2)
             # if the FFT and frequency band plots were used, clear them
@@ -691,8 +704,8 @@ class MainWindow(QMainWindow):
                 self.ui.powerBandPlot.clear()
             symbol_sign = None
             self.loss_plot = self.ui.powerBandPlot.plot(
-                self.loss_data_iter,
-                self.loss_data,
+                list(range(len(avgloss))),
+                avgloss,
                 name="Power Sensor",
                 pen=pen,
                 symbol=symbol_sign,
@@ -702,8 +715,8 @@ class MainWindow(QMainWindow):
             self.ui.powerBandPlot.setYRange(0, 100)
             self.ui.powerBandPlot.setXRange(0, int(self.ui.maxIterationLine.text()))
             self.accuracy_plot = self.ui.FFTPlot.plot(
-                self.accuracy_data_iter,
-                self.accuracy_data,
+                list(range(len(accuracy))),
+                accuracy,
                 name="Power Sensor",
                 pen=pen,
                 symbol=symbol_sign,
@@ -715,8 +728,10 @@ class MainWindow(QMainWindow):
             self.done_recording = True
 
         # update the plots with the new data
-        self.accuracy_plot.setData(self.accuracy_data_iter, self.accuracy_data)
-        self.loss_plot.setData(self.loss_data_iter, self.loss_data)
+        self.accuracy_plot.setData(list(range(len(accuracy))), accuracy)
+        self.loss_plot.setData(list(range(len(avgloss))), avgloss)
+
+        print(accuracy, avgloss)
 
 
     #Functions that handles the user based interface
@@ -1448,22 +1463,28 @@ class Game(QFrame):
                     self.score += 1
 
 
+#=======================================================================
+# train model on recorded data
+#=======================================================================
 class train():
-    def __init__(self,batch_size,learning_rate,max_iters,eval_interval,load_cvs):
+    def __init__(self, batch_size: int, learning_rate: float, max_iters: int, eval_interval, load_cvs: str, user_ID: str, main: MainWindow):
         self.batch_size = batch_size
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.learning_rate = learning_rate
         self.max_iters = max_iters
         self.eval_interval = eval_interval
         self.load = load_cvs
-    def train(self,logits_train,targets_train):
+        self.user_ID = user_ID
+        self.main = main
+
+    def train(self, logits_train, targets_train):
         logits_train = torch.load(logits_train)
         targets_train = torch.load(targets_train)
-        logits_train = logits_train[:,None,:,:]
+        logits_train = logits_train[:, None, :, :]
         print(logits_train.shape)
         print(targets_train.shape)
-        dataset = torch.utils.data.TensorDataset(logits_train,targets_train)
-        train = DataLoader(dataset,batch_size = self.batch_size,shuffle = True)
+        dataset = torch.utils.data.TensorDataset(logits_train, targets_train)
+        train = DataLoader(dataset, batch_size=self.batch_size, shuffle=True)
         model = escargot().to(self.device)
         model.train()
         optimizer = torch.optim.Adam(model.parameters(), lr=self.learning_rate, weight_decay=1e-3)
@@ -1473,50 +1494,82 @@ class train():
         tlist = []
         avloss = []
         acc_list = []
-        #-----training loop-----#
+        # -----training loop-----#
         for itere in range(self.max_iters):
-            f_list,t_list = next(iter(train))
+            f_list, t_list = next(iter(train))
             t_list = t_list.type(torch.LongTensor)
             if itere % self.eval_interval == 0 or itere == self.max_iters - 1:
                 with torch.no_grad():
                     model.eval()
-                    out = model(f_list.to(self.device,dtype=torch.float))#tf_list.to(device),tff_list.to(device)
-                    #print(torch.max(out,dim=1))
-                    values,ind = torch.max(out,dim = 1)
+                    out = model(f_list.to(self.device, dtype=torch.float))  # tf_list.to(device),tff_list.to(device)
+                    # print(torch.max(out,dim=1))
+                    values, ind = torch.max(out, dim=1)
                     g = t_list.shape
-                    #print(g)
-                    a = np.sum((torch.eq(ind.to("cpu"),t_list.to("cpu")).numpy()))
-                    #print(a)
-                    accuracy = (a/g)*100
+                    # print(g)
+                    a = np.sum((torch.eq(ind.to("cpu"), t_list.to("cpu")).numpy()))
+                    # print(a)
+                    accuracy = (a / g) * 100
                     tlist.append(accuracy)
-                    avgloss = (np.sum(avloss)/(len(avloss)))
-                    progress = (itere/self.max_iters) * 100
-                    print("accuracy : {}, validation loss : {}, progress : {}%, lr : {}".format(accuracy, avgloss, int(progress), scheduler.get_last_lr()))
+                    avgloss = (np.sum(avloss) / (len(avloss)))
+                    progress = (itere / self.max_iters) * 100
+                    print("accuracy : {}, validation loss : {}, progress : {}%, lr : {}".format(accuracy, avgloss,
+                                                                                                int(progress),
+                                                                                                scheduler.get_last_lr()))
                     avloss = []
                     if itere == 0:
                         print(" ")
                     else:
                         llist.append(avgloss)
                         acc_list.append(accuracy)
+                        self.main.update_ML_plots(acc_list, llist)
             else:
                 model.train()
-                inputs = model(f_list.to(self.device,dtype=torch.float))#,ff_list.to(device)batch_list.to(device)
-                #print(inputs[0])
+                inputs = model(f_list.to(self.device, dtype=torch.float))  # ,ff_list.to(device)batch_list.to(device)
+                # print(inputs[0])
                 with torch.no_grad():
-                    val_input = model(f_list.to(self.device,dtype=torch.float))#test_list.to(device),tff_list.to(device)
+                    val_input = model(
+                        f_list.to(self.device, dtype=torch.float))  # test_list.to(device),tff_list.to(device)
                 lossvalue = loss(inputs, t_list.to(self.device))
-                #print(lossvalue)
-                vallvalue = loss(val_input.to(self.device),t_list.to(self.device))
+                # print(lossvalue)
+                vallvalue = loss(val_input.to(self.device), t_list.to(self.device))
                 avloss.append(vallvalue.data.cpu().numpy())
                 optimizer.zero_grad(set_to_none=True)
                 lossvalue.backward()
                 optimizer.step()
                 scheduler.step()
-        #-----training loop-----#    
-                
-        torch.save(model.state_dict(),'blockblock.pt')
-        #print(acc_list)
-        #print(np.sum(acc_list)/10)
+        # -----training loop-----#
+
+        current_directory =  os.getcwd()
+        models_directory = os.path.join(current_directory, 'models')
+
+        # Check if the 'models' directory exists; if not, create it
+        if not os.path.exists(models_directory):
+            os.makedirs(models_directory)
+
+        file_name = f"{self.user_ID}.pt"
+        # Construct the full file path
+        full_file_path = os.path.join(models_directory, file_name)
+
+        # Check if a file with the same name already exists in the 'models' directory
+        file_exists = os.path.isfile(full_file_path)
+
+        if file_exists:
+            reply = QMessageBox.question(
+                self.main,
+                'File Exists',
+                f"A model already exists for this user. Do you want to overwrite it?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No
+            )
+
+            if reply == QMessageBox.StandardButton.No:
+                self.main.show_message("Save Canceled", "The existing model was not overwritten.")
+                return
+
+        torch.save(model.state_dict(), full_file_path)
+        # print(acc_list)
+        # print(np.sum(acc_list)/10)
+
     def dataloader(self):
         df = pd.read_csv(self.load)
         label_1 = df.loc[df['Label'] == 0]
@@ -1524,30 +1577,30 @@ class train():
         label_3 = df.loc[df['Label'] == 2]
         label_4 = df.loc[df['Label'] == 3]
         label_5 = df.loc[df['Label'] == 4]
-        label_1mod = label_2.drop(columns=["Counter", "Validation","Label"])
-        label_2mod = label_3.drop(columns=["Counter", "Validation","Label"])
-        label_3mod = label_4.drop(columns=["Counter", "Validation","Label"])
-        label_4mod = label_5.drop(columns=["Counter", "Validation","Label"])
+        label_1mod = label_2.drop(columns=["Counter", "Validation", "Label"])
+        label_2mod = label_3.drop(columns=["Counter", "Validation", "Label"])
+        label_3mod = label_4.drop(columns=["Counter", "Validation", "Label"])
+        label_4mod = label_5.drop(columns=["Counter", "Validation", "Label"])
         label_1mod = label_1mod.to_numpy()
         label_2mod = label_2mod.to_numpy()
         label_3mod = label_3mod.to_numpy()
         label_4mod = label_4mod.to_numpy()
-        
-        list_class = [label_1mod,label_2mod,label_3mod,label_4mod]
+
+        list_class = [label_1mod, label_2mod, label_3mod, label_4mod]
         g = 0
         output_list = []
         label_list = []
-        #print(label_1mod)
+        # print(label_1mod)
         for i in list_class:
             for _ in range(6):
-                index = _ *1500
+                index = _ * 1500
                 for waa in range(30):
-                    a = i[index+25*waa:index + 529+25*waa]
+                    a = i[index + 25 * waa:index + 529 + 25 * waa]
                     a = torch.tensor(a)
-                    #print(a.shape)
-                    #a = torch.mul(a,0.00001)
-                    #print(a.shape)
-                    
+                    # print(a.shape)
+                    # a = torch.mul(a,0.00001)
+                    # print(a.shape)
+
                     if g == 0:
                         output_list.append(a)
                         label_list.append(0)
@@ -1563,13 +1616,14 @@ class train():
                         output_list.append(a)
                         label_list.append(1)
             g = g + 1
-        output_label1 = np.stack(output_list)  
-        output_label1 = torch.tensor(output_label1)   
-        targets = torch.tensor(label_list) 
-        print(output_label1.shape)    
-        torch.save(output_label1,"own.pt")
-        torch.save(targets,"owntargets.pt")
+        output_label1 = np.stack(output_list)
+        output_label1 = torch.tensor(output_label1)
+        targets = torch.tensor(label_list)
+        print(output_label1.shape)
+        torch.save(output_label1, "own.pt")
+        torch.save(targets, "owntargets.pt")
         return True
+
 
 def show_main_window():
     window1.showMaximized()
