@@ -248,6 +248,12 @@ class MainWindow(QMainWindow):
 
         self.start_time = time.time()
 
+        # Check ERDS window
+        self.check_timer = QTimer()
+        self.check_timer.timeout.connect(self.check_plot_opened)
+
+        self.signal_file = "plot_opened.signal"
+
         # Add a timer to simulate new temperature measurements
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_plot)
@@ -602,8 +608,18 @@ class MainWindow(QMainWindow):
 
     # Set and open ERDS Window functions
     def openERDSWindow(self):
+        self.ui.ERDSBtn.setText("Loading")
+        self.ui.ERDSBtn.setEnabled(False)
+
+        # Remove any existing signal file
+        if os.path.exists(self.signal_file):
+            os.remove(self.signal_file)
+
         global ERDS_process
         ERDS_process = subprocess.Popen(["python", "-u", "MeasurementSubgroup/ERDS_plots/ERDS_for_GUI.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
+
+        # Start a timer to check for the signal file
+        self.check_timer.start(500)
 
     # Set and open Lava Game Window functions
     def setLavaGameWindow(self, LavaGame):
@@ -624,6 +640,14 @@ class MainWindow(QMainWindow):
     # Exit the app
     def exitApp(self):
         QApplication.quit()
+
+    # Check ERDS window is opened
+    def check_plot_opened(self):
+        if os.path.exists(self.signal_file):
+            self.ui.ERDSBtn.setText("ERDS")
+            self.ui.ERDSBtn.setEnabled(True)
+            self.check_timer.stop()
+            os.remove(self.signal_file)
 
     def show_message(self, window_title: str, message: str):
         dlg = QMessageBox()
