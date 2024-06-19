@@ -49,7 +49,7 @@ def filter(y, low, high):
     #zi = lfilter_zi(b,a)*y[0]
 
     # Apply the filter to each column of the DataFram
-    y_filtered_band= lfilter(b, a, np.array(y))
+    y_filtered_band= lfilter(b, a, np.array(y), axis = 0)
 
     # Define the filter parameters
     lowcut = 49
@@ -64,7 +64,7 @@ def filter(y, low, high):
     #zi = lfilter_zi(b,a)*y[0]
 
     # Apply the filter to each column of the DataFram
-    y_filtered= lfilter(b, a, np.array(y_filtered_band))
+    y_filtered= lfilter(b, a, np.array(y_filtered_band), axis = 0)
 
     return y_filtered
 
@@ -73,7 +73,7 @@ window = 500
 overlap = 0.25
 
 # Plot settings
-pause = 0.01
+pause = 0.5
 
 streams = resolve_stream()
 inlet = StreamInlet(streams[0])
@@ -83,11 +83,11 @@ choosen_electrode = 0 #int(input("Which electrode should be plotted? (0-7)")) # 
 print("Press 'ESC' to stop the plot") # Stop the plot
 
 # initial values
-y_win = np.zeros(window)  # window array
+y_win = np.zeros((window, 8))  # window array
 t_win = np.zeros(window)  # time array
 t = 1
 i = 1
-y_out = np.array([])
+y_out = np.empty((0,8))
 t_out = np.array([])
 aborted = False
 
@@ -97,25 +97,26 @@ mode = input("What to plot? (EEG, FFT, Powerbands)\n")
 while not aborted:
     # Get data from LSL interface
     sample,timestamp = inlet.pull_sample() 
+    #sample = [i,i,i,i,i,i,i,i]
     #print(sample)
 
     #calculate sample overlap
     overlap_win = int(overlap * window)
 
     # assign EEG data to array
-    y_win[0] = sample[choosen_electrode] # EEG data 1
+    y_win[0] = sample[:8] # EEG data 1
     t_win[0] = (i)/250 # Counter from EEG cap in seconds
 
     # Shift the array with one index
-    y_win = np.roll(y_win, -1)
+    y_win = np.roll(y_win, -1, axis = 0)
     t_win = np.roll(t_win, -1)
 
     # When a new block of L is reached
     if i % overlap_win == 0 and i != overlap_win and i != 0:
         print(i/250, "sec")
         # apply filter to window
-        y_win_filt = filter(y_win, 0.5, 38)
-        y_win_filt2 = filter(y_win, 8, 30)
+        #y_win_filt = filter(y_win, 0.5, 38)
+        y_win_filt = filter(y_win, 8, 30)
 
         if mode == "EEG":
             #Discard the samples that are overlapped
@@ -150,11 +151,13 @@ while not aborted:
                 return smoothed
 
             # Smooth the signal using a moving average with window size 5
-            y_out_down = moving_average(y_out_down, window_size=5)
+            j = 0
+            for j in range (8):
+                y_out_down[:,j] = moving_average(y_out_down[:,j], window_size=5)
 
-            plt.plot(t_out_down, y_out_down, 'o-')
+            plt.plot(t_out_down, y_out_down[:,choosen_electrode], 'o-')
             # Set y-axis limits
-            plt.ylim(-500, 500)
+            plt.ylim(-5000, 5000)
             plt.pause(pause)
 
             # remove the old plots after 500 samples
