@@ -22,6 +22,10 @@ import torch
 from torch.utils.data import DataLoader
 from escargot3 import escargot
 from pylsl import StreamInlet, resolve_stream
+from scipy.fft import rfft, rfftfreq 
+from scipy.signal import welch
+from scipy.signal import butter, lfilter, lfiltic
+from scipy import signal
 
 #=======================================================================
 # Initialization Splashscreen
@@ -179,14 +183,28 @@ class MainWindow(QMainWindow):
         self.j = 0
         self.max_graph_width = 50
         self.plot_update_size = 2
-        self.columns = 7
+        self.columns = 5
         self.av_height = int(self.max_graph_width/self.columns)
         self.channel = 1
 
         self.xdata = np.zeros(self.max_graph_width)
         self.ydata = [np.zeros(self.max_graph_width) for _ in range(8)]
+        self.xf = np.zeros(251)
+        self.y_fft2 = np.zeros(251)
         self.yBarGraph = np.zeros(self.columns)
         symbol_sign = None
+
+        # FFT and powerbands plots
+        # Window settings
+        self.window = 500
+        self.overlap = 0.25
+        # initial values
+        self.y_win = np.zeros(self.window)  # window array
+        self.t_win = np.zeros(self.window)  # time array
+        self.y_out = np.array([])
+        self.t_out = np.array([])
+        self.low = 8
+        self.high = 30
 
         # ML plots
         self.accuracy_data = np.zeros(1)
@@ -215,14 +233,14 @@ class MainWindow(QMainWindow):
             #p.hideAxis('left')
 
         # Bar graph band power
-        self.xBarGraph = np.array([2,6,10,14,18,25,40]) #Center points of the columns with according width /<--
-        self.power_band_1= pg.BarGraphItem(x=self.xBarGraph[[0,1,2,3,4]], height = self.yBarGraph[[0,1,2,3,4]], width = 4, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.power_band_2 = pg.BarGraphItem(x=self.xBarGraph[[5]], height = self.yBarGraph[[5]], width = 10, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        self.power_band_3 = pg.BarGraphItem(x=self.xBarGraph[[6]], height = self.yBarGraph[[6]], width = 20, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.xBarGraph = np.array([2,6,10,21,40]) #Center points of the columns with according width
+        self.power_band_1= pg.BarGraphItem(x=self.xBarGraph[0:3], height = self.yBarGraph[0:3], width = 4, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.power_band_2 = pg.BarGraphItem(x=self.xBarGraph[3], height = self.yBarGraph[3], width = 18, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
+        self.power_band_3 = pg.BarGraphItem(x=self.xBarGraph[4], height = self.yBarGraph[4], width = 20, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
         self.ui.powerBandPlot.addItem(self.power_band_1)
         self.ui.powerBandPlot.addItem(self.power_band_2)
         self.ui.powerBandPlot.addItem(self.power_band_3)
-        self.ui.powerBandPlot.setYRange(10, 100)
+        #self.ui.powerBandPlot.setYRange(10, 100)
         self.ui.powerBandPlot.setXRange(0, 50)
         self.ui.powerBandPlot.setMouseEnabled(x=False, y=False)
         self.ui.powerBandPlot.setMenuEnabled(False)
@@ -410,6 +428,43 @@ class MainWindow(QMainWindow):
             dlg.move(x, y)
             button = dlg.exec()
             self.simulate_data = True
+
+    # Filter raw signal
+    def filter(self, y, low, high):
+        # Remove the DC component
+        y = signal.detrend(y, axis=0)
+
+        # Define the filter parameters
+        lowcut = low
+        highcut = high
+        fs = 250  # Sampling frequency
+
+        # Calculate the filter coefficients
+        nyquist = 0.5 * fs
+        low = lowcut / nyquist
+        high = highcut / nyquist
+        b, a = butter(4, [low, high], btype='band')
+        #zi = lfilter_zi(b,a)*y[0]
+
+        # Apply the filter to each column of the DataFram
+        y_filtered_band= lfilter(b, a, np.array(y))
+
+        # Define the filter parameters
+        lowcut = 49
+        highcut = 51
+        fs = 250  # Sampling frequency
+
+        # Calculate the filter coefficients
+        nyquist = 0.5 * fs
+        low = lowcut / nyquist
+        high = highcut / nyquist
+        b, a = butter(4, [low, high], btype='bandstop')
+        #zi = lfilter_zi(b,a)*y[0]
+
+        # Apply the filter to each column of the DataFram
+        y_filtered= lfilter(b, a, np.array(y_filtered_band))
+
+        return y_filtered
         
     # Update graphs
     def update_plot(self):
@@ -422,6 +477,62 @@ class MainWindow(QMainWindow):
             sample, timestamp = self.generate_random_sample()  # For testing purposes when not connected to cap
             sample_timestamp = self.i / 250
 
+        # Fill window for FFT plots
+        #calculate sample overlap
+        overlap_win = int(self.overlap * self.window)
+
+        # assign EEG data to array
+        self.y_win[0] = sample[self.channel - 1] # EEG data 1
+        self.t_win[0] = (self.i)/250 # Counter from EEG cap in seconds
+
+        # Shift the array with one index
+        self.y_win = np.roll(self.y_win, -1)
+        self.t_win = np.roll(self.t_win, -1)
+
+        # When a new block of L is reached
+        if self.i % overlap_win == 0 and self.i != overlap_win and self.i != 0:
+            #print(self.i/250, "sec")
+            # apply filter to window
+            #y_win_filt = filter(y_win, 0.5, 38)
+            y_win_filt2 = self.filter(self.y_win, self.low, self.high)
+            
+            #y_win_pad = np.pad(y_win_filt, int(0), 'constant')
+            y_win_pad2 = np.pad(y_win_filt2, int(0), 'constant')
+            # print(y_win_pad.shape)
+
+            self.xf = rfftfreq(y_win_pad2.shape[0], 1/250)
+            #y_fft = np.abs(rfft(y_win_pad))
+            self.y_fft2 = np.abs(rfft(y_win_pad2)) # Data to be plotted for FFT plot
+
+            #  PSD
+            # Compute the power spectral density using Welch's method
+            frequencies, psd = welch(y_win_pad2, 250)
+
+            # Powerbands
+            # Define frequency bands
+            delta_band = (0.5, 4)
+            theta_band = (4, 8)
+            alpha_band = (8, 12)
+            beta_band = (12, 30)
+            gamma_band = (30, 50)
+
+            # Function to calculate power in a specific frequency band
+            def bandpower(frequencies, psd, band):
+                band_freq_indices = np.logical_and(frequencies >= band[0], frequencies <= band[1])
+                band_power = np.sum(psd[band_freq_indices])
+                band_power_norm = band_power / (band[1] - band[0])
+                return band_power_norm
+            
+            # Calculate power for each band
+            delta_power = bandpower(frequencies, psd, delta_band)
+            theta_power = bandpower(frequencies, psd, theta_band)
+            alpha_power = bandpower(frequencies, psd, alpha_band)
+            beta_power = bandpower(frequencies, psd, beta_band)
+            gamma_power = bandpower(frequencies, psd, gamma_band)
+
+            # Power values 
+            self.yBarGraph = [delta_power, theta_power, alpha_power, beta_power, gamma_power] # Data to be plotted for powerbands
+
         if self.i <= self.max_graph_width:
             pass
         else:
@@ -429,8 +540,8 @@ class MainWindow(QMainWindow):
                 self.startFFT = True
                 symbol_sign = None
                 self.FFT_plot = self.ui.FFTPlot.plot(
-                    self.xdata,
-                    self.ydata[self.channel - 1],
+                    self.xf,
+                    self.y_fft2,
                     name="Power Sensor",
                     pen=pen,
                     symbol=symbol_sign,
@@ -442,7 +553,6 @@ class MainWindow(QMainWindow):
                 self.ui.FFTPlot.setMouseEnabled(x=False, y=False)
                 self.ui.FFTPlot.setMenuEnabled(False)
                 self.ui.FFTPlot.hideButtons()
-                self.FFT_plot.setFftMode(True)
 
         # Only update the plot everytime it has collected plot update data sized data
         if self.i % 50 == 0:
@@ -454,18 +564,18 @@ class MainWindow(QMainWindow):
                 self.ydata[k][-1] = sample[k]
                 self.lines[k].setData(self.xdata, self.ydata[k])
 
-            self.power_band_1.setOpts(height=self.yBarGraph[[0, 1, 2, 3, 4]], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
-            self.power_band_2.setOpts(height=self.yBarGraph[[5]], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
-            self.power_band_3.setOpts(height=self.yBarGraph[[6]], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
+            self.power_band_1.setOpts(height=self.yBarGraph[0:3], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
+            self.power_band_2.setOpts(height=self.yBarGraph[3], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
+            self.power_band_3.setOpts(height=self.yBarGraph[4], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
 
             if self.startFFT:
-                self.FFT_plot.setData(self.xdata, self.ydata[self.channel - 1])
+                self.FFT_plot.setData(self.xf, self.y_fft2)
                 self.FFT_plot.setPen(pg.mkPen(self.pastel_colors[self.channel - 1], width = 2))
 
             # Change the power band plots from channel
-            self.yBarGraph = np.array(
-                [sum(self.ydata[self.channel - 1][i:i + self.av_height]) // self.av_height for i in
-                 range(0, len(self.ydata[self.channel - 1]), self.av_height)])
+            #self.yBarGraph = np.array(
+            #    [sum(self.ydata[self.channel - 1][i:i + self.av_height]) // self.av_height for i in
+            #     range(0, len(self.ydata[self.channel - 1]), self.av_height)])
 
         self.i += 1
 
@@ -743,28 +853,28 @@ class MainWindow(QMainWindow):
     def keyPressEvent(self, event):
         # Functions to change FFT and band power when clicking on 1-8
         if event.key() == Qt.Key.Key_1:
-            self.yBarGraph = np.array([sum(self.ydata[0][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[0]),self.av_height)])
+            #self.yBarGraph = np.array([sum(self.ydata[0][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[0]),self.av_height)])
             self.channel = 1
         elif event.key() == Qt.Key.Key_2:
-            self.yBarGraph = np.array([sum(self.ydata[1][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[1]),self.av_height)])
+            #self.yBarGraph = np.array([sum(self.ydata[1][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[1]),self.av_height)])
             self.channel = 2
         elif event.key() == Qt.Key.Key_3:
-            self.yBarGraph = np.array([sum(self.ydata[2][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[2]),self.av_height)])
+            #self.yBarGraph = np.array([sum(self.ydata[2][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[2]),self.av_height)])
             self.channel = 3
         elif event.key() == Qt.Key.Key_4:
-            self.yBarGraph = np.array([sum(self.ydata[3][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[3]),self.av_height)])
+            #self.yBarGraph = np.array([sum(self.ydata[3][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[3]),self.av_height)])
             self.channel = 4
         elif event.key() == Qt.Key.Key_5:
-            self.yBarGraph = np.array([sum(self.ydata[4][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[4]),self.av_height)])
+            #self.yBarGraph = np.array([sum(self.ydata[4][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[4]),self.av_height)])
             self.channel = 5
         elif event.key() == Qt.Key.Key_6:
-            self.yBarGraph = np.array([sum(self.ydata[5][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[5]),self.av_height)])
+            #self.yBarGraph = np.array([sum(self.ydata[5][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[5]),self.av_height)])
             self.channel = 6
         elif event.key() == Qt.Key.Key_7:
-            self.yBarGraph = np.array([sum(self.ydata[6][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[6]),self.av_height)])
+            #self.yBarGraph = np.array([sum(self.ydata[6][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[6]),self.av_height)])
             self.channel = 7
         elif event.key() == Qt.Key.Key_8:
-            self.yBarGraph = np.array([sum(self.ydata[7][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[7]),self.av_height)])
+            #self.yBarGraph = np.array([sum(self.ydata[7][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[7]),self.av_height)])
             self.channel = 8
         
 
