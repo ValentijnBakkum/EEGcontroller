@@ -679,7 +679,7 @@ class MainWindow(QMainWindow):
             self.show_message("Train Error", "No user selected!")
             return
 
-        new_directory = os.path.join(os.getcwd(), 'Data')
+        new_directory = os.path.join(os.path.dirname(os.getcwd()), 'Data')
         new_directory = os.path.join(new_directory, str(self.current_id))
 
         if not os.path.exists(new_directory):
@@ -791,11 +791,14 @@ class MainWindow(QMainWindow):
                     return
             else:
                 return
-            
-    # Edit user name
+
+    # Edit user name        
     def editUser(self):
         currentIndex = self.ui.usersList.currentRow()
         item = self.ui.usersList.item(currentIndex)
+        if(item.text() == "No user"):
+            self.show_message("Edit Error", "Cannot change the No User account!")
+            return
         if item is not None:
             error = ""
             while True:
@@ -834,7 +837,9 @@ class MainWindow(QMainWindow):
         item = self.ui.usersList.item(currentIndex)
         if item is None:
             return
-
+        if(item.text() == "No user"):
+            self.show_message("Deletion Error", "Cannot delete the No User account!")
+            return
         question = QMessageBox.question(None,"Remove User",
              "Do you want to remove user: " + item.text(),
              QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
