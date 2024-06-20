@@ -3,7 +3,7 @@ import os
 
 def multifile(directory):
 
-    output = np.empty((0, 11), dtype=int)
+    output = np.empty((0, 11))#, dtype=int)
     events = np.empty((0,  3), dtype=int)
     i = 0
     
