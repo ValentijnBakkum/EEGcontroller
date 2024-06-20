@@ -45,8 +45,11 @@ def multifile(directory):
 directory = '/Users/pragun/Technical/BAP/2'
 allOutputs, events = multifile(directory)
 
-output_csv_path = os.path.join(directory, 'combined_output.csv')
-events_csv_path = os.path.join(directory, 'combined_events.csv')
+#output_csv_path = os.path.join(directory, 'combined_output.csv')
+#events_csv_path = os.path.join(directory, 'combined_events.csv')
+
+output_csv_path = os.path.join('/Users/pragun/Technical/BAP/EEGcontroller/MLsubgroup', 'combined_output.csv')
+events_csv_path = os.path.join('/Users/pragun/Technical/BAP/EEGcontroller/MLsubgroup', 'combined_events.csv')
 
 np.savetxt(output_csv_path, allOutputs, delimiter=',', fmt='%d')
 np.savetxt(events_csv_path, events, delimiter=',', fmt='%d')
