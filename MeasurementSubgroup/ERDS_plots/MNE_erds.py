@@ -49,7 +49,7 @@ from mne.stats import permutation_cluster_1samp_test as pcluster_test
 mne.set_log_level('WARNING')
 
 def multifile(string_array):
-    output = np.empty((0, 11), dtype=int)
+    output = np.empty((0, 11), dtype=float)
     events = np.empty((0,  3), dtype=int)
     i = 0
     for file in string_array:
@@ -252,7 +252,7 @@ df["channel"] = df["channel"].cat.reorder_categories(('Fz', 'C3', 'Cz', 'C4', 'P
 
 df = df.drop(df.index[df['time'].isin([-1.004])], axis=0)
 
-df.to_csv('MeasurementSubgroup/ERDS_plots/MNE_erds.csv')
+#df.to_csv('MeasurementSubgroup/ERDS_plots/MNE_erds.csv')
 
 g = sns.FacetGrid(df, row="band", col="channel", margin_titles=True)
 g.map(sns.lineplot, "time", "value", "condition", n_boot=10, errorbar=("pi", 100))

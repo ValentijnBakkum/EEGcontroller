@@ -67,7 +67,7 @@ user_id = input()
 # *** up to machine learning group to implement
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = escargot().to(device)
-model.load_state_dict(torch.load("filename")) # filename is temporary use user ID in future
+model.load_state_dict(torch.load("blockblock.pt")) # filename is temporary use user ID in future
 
 # step 3: synchronise with gui
 print("R") #R for ready
