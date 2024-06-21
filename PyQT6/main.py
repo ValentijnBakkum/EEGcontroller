@@ -966,6 +966,10 @@ class UserWindow(QMainWindow):
         self.timer = QTimer()
         self.promptTimer = QTimer()
 
+        # creating a timer
+        self.timerupdate = QBasicTimer()
+        self.timerupdate.start(80, self)
+
         self.stepsize = 10
         # Check clicked buttons and call their respective functions
         self.timer.timeout.connect(lambda: self.changePages())
@@ -1045,6 +1049,29 @@ class UserWindow(QMainWindow):
         self.promptTimer.stop()
         classifyProcess.kill()
 
+    def timerEvent(self, event):
+        if event.timerId() == self.timerupdate.timerId():
+            prediction = classifyProcess.stdout.read1(1).decode("utf-8")
+            if prediction == '':
+                return
+
+            prediction = int(prediction)
+
+            self.step = 40  # Define step size for movement
+
+            if prediction == 3:
+                if self.ui.mouseCursor.y() - self.stepsize > 0:
+                    self.ui.mouseCursor.move(self.ui.mouseCursor.x(), self.ui.mouseCursor.y() - self.stepsize)
+            elif prediction == 0:
+                if self.ui.mouseCursor.x() - self.stepsize > 0:
+                    self.ui.mouseCursor.move(self.ui.mouseCursor.x() - self.stepsize, self.ui.mouseCursor.y())
+            elif prediction == 2:
+                if self.ui.mouseCursor.y() + self.stepsize < (self.ui.cursorFrame.height() - self.ui.mouseCursor.height()):
+                    self.ui.mouseCursor.move(self.ui.mouseCursor.x(), self.ui.mouseCursor.y() + self.stepsize)
+            elif prediction == 1:
+                if self.ui.mouseCursor.x() + self.stepsize < (self.ui.cursorFrame.width() - self.ui.mouseCursor.width()):
+                    self.ui.mouseCursor.move(self.ui.mouseCursor.x() + self.stepsize, self.ui.mouseCursor.y())
+
     # Simulate cursor movements with WASD keys
     def keyPressEvent(self, event):
         if event.key() == Qt.Key.Key_W:
@@ -1059,6 +1086,8 @@ class UserWindow(QMainWindow):
         elif event.key() == Qt.Key.Key_D:
             if self.ui.mouseCursor.x() + self.stepsize < (self.ui.cursorFrame.width() - self.ui.mouseCursor.width()):
                 self.ui.mouseCursor.move(self.ui.mouseCursor.x() + self.stepsize, self.ui.mouseCursor.y())
+
+
 
     def closeEvent(self, event):
         recProcess.kill()
@@ -1097,6 +1126,7 @@ class LavaGame(QMainWindow):
 
         # creating a timer
         self.timer = QBasicTimer()
+        self.timer.start(80, self)
 
         # Start the game with countdown
         self.start_countdown()
@@ -1174,6 +1204,30 @@ class LavaGame(QMainWindow):
                 cell_widget.setStyleSheet("background-color: white; border: 1px solid black;")
                 self.grid_layout.addWidget(cell_widget, row, col + 2)  # Offset by 2 to skip the empty columns
 
+    def timerEvent(self, event):
+        if not self.game_over and event.timerId() == self.timer.timerId():
+            prediction = classifyProcess.stdout.read1(1).decode("utf-8")
+            if prediction == '':
+                return
+
+            prediction = int(prediction)
+
+            self.step = 40  # Define step size for movement
+
+            if prediction == 3:
+                if self.player.y() - self.step + 10 > 0:
+                    self.player.move(self.player.x(), self.player.y() - self.step)
+            elif prediction == 0:
+                if self.player.x() - self.step > self.width()/6:
+                    self.player.move(self.player.x() - self.step, self.player.y())
+            elif prediction == 2:
+                if self.player.y() + self.step < (self.height() - self.player.height()):
+                    self.player.move(self.player.x(), self.player.y() + self.step)
+            elif prediction == 1:
+                if self.player.x() + self.step < (self.width() - self.player.width())-self.width()/6:
+                    self.player.move(self.player.x() + self.step, self.player.y())
+
+
     def create_player(self):
         self.player = QWidget(self.central_widget)
         self.player.setFixedSize(120, 120)
@@ -1227,21 +1281,24 @@ class LavaGame(QMainWindow):
                     self.game_over_label.raise_()
                     self.game_over_label.show()
 
-    def keyPressEvent(self, event):
-        if not self.game_over:
-            self.step = 40  # Define step size for movement
-            if event.key() == Qt.Key.Key_W:
-                if self.player.y() - self.step + 10 > 0:
-                    self.player.move(self.player.x(), self.player.y() - self.step)
-            elif event.key() == Qt.Key.Key_A:
-                if self.player.x() - self.step > self.width()/6:
-                    self.player.move(self.player.x() - self.step, self.player.y())
-            elif event.key() == Qt.Key.Key_S:
-                if self.player.y() + self.step < (self.height() - self.player.height()):
-                    self.player.move(self.player.x(), self.player.y() + self.step)
-            elif event.key() == Qt.Key.Key_D:
-                if self.player.x() + self.step < (self.width() - self.player.width())-self.width()/6:
-                    self.player.move(self.player.x() + self.step, self.player.y())
+    # def keyPressEvent(self, event):
+    #     if not self.game_over:
+    #         prediction = int(classifyProcess.stdout.read1(1))
+    #
+    #         self.step = 40  # Define step size for movement
+    #
+    #         if prediction == 3:
+    #             if self.player.y() - self.step + 10 > 0:
+    #                 self.player.move(self.player.x(), self.player.y() - self.step)
+    #         elif prediction == 0:
+    #             if self.player.x() - self.step > self.width()/6:
+    #                 self.player.move(self.player.x() - self.step, self.player.y())
+    #         elif prediction == 2:
+    #             if self.player.y() + self.step < (self.height() - self.player.height()):
+    #                 self.player.move(self.player.x(), self.player.y() + self.step)
+    #         elif prediction == 1:
+    #             if self.player.x() + self.step < (self.width() - self.player.width())-self.width()/6:
+    #                 self.player.move(self.player.x() + self.step, self.player.y())
 
     def closeEvent(self, event):
         classifyProcess.kill()
@@ -1432,7 +1489,13 @@ class Game(QFrame):
             self.direction = -1
 
     def read_prediction(self):
-        prediction = int(classifyProcess.stdout.read1(1))
+        prediction = classifyProcess.stdout.read1(1).decode("utf-8")
+        if prediction == '':
+            self.direction = -1
+            return
+
+        prediction = int(prediction)
+
         if prediction == 0:
             self.direction = 0
         elif prediction == 1:
