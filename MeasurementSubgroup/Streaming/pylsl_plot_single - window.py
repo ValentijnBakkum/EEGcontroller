@@ -69,8 +69,8 @@ def filter(y, low, high):
     return y_filtered
 
 # Window settings
-window = 500
-overlap = 0.25
+window = 250
+overlap = 0.5
 
 # Plot settings
 pause = 0.01
@@ -114,8 +114,8 @@ while not aborted:
     if i % overlap_win == 0 and i != overlap_win and i != 0:
         print(i/250, "sec")
         # apply filter to window
-        y_win_filt = filter(y_win, 0.5, 38)
-        y_win_filt2 = filter(y_win, 8, 30)
+        y_win_filt2 = filter(y_win, 0.5, 38)
+        y_win_filt = filter(y_win, 8, 30)
 
         if mode == "EEG":
             #Discard the samples that are overlapped
@@ -167,8 +167,8 @@ while not aborted:
             # hanning_window = np.hanning(len(y_win_filt))
             # y_win_hann = y_win_filt * hanning_window
 
-            y_win_pad = np.pad(y_win_filt, int(0), 'constant')
-            y_win_pad2 = np.pad(y_win_filt2, int(0), 'constant')
+            y_win_pad = np.pad(y_win_filt, int(100), 'constant')
+            y_win_pad2 = np.pad(y_win_filt2, int(100), 'constant')
             # print(y_win_pad.shape)
 
             xf = rfftfreq(y_win_pad.shape[0], 1/250)
@@ -178,14 +178,14 @@ while not aborted:
             print(y_fft.shape)
             print(y_fft)
 
-            plt.plot(xf, y_fft, label='0.5 - 38 Hz: ML')
-            plt.plot(xf, y_fft2, label='8- 30 Hz: MI')
+            plt.plot(xf, y_fft2, label='0.5 - 38 Hz: ML')
+            plt.plot(xf, y_fft, label='8- 30 Hz: MI')
             plt.axvline(4, color='k', linestyle='--', linewidth=1)
             plt.axvline(8, color='k', linestyle='--', linewidth=1)
             plt.axvline(12, color='k', linestyle='--', linewidth=1)
             plt.axvline(30, color='k', linestyle='--', linewidth=1)
             plt.xlim([0, 50]) 
-            plt.ylim([0, 10000]) 
+            plt.ylim([0, 1000]) 
 
             # Add a title
             plt.title('FFT plot of Channel X')

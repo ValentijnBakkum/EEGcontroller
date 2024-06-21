@@ -192,7 +192,7 @@ class MainWindow(QMainWindow):
 
         # FFT and band power plots
         # Window settings
-        self.window = 500
+        self.window = 1000
         self.overlap = 0.25
         # calculate sample overlap
         self.overlap_win = int(self.overlap * self.window)
@@ -519,10 +519,13 @@ class MainWindow(QMainWindow):
 
         # When a new block of L is reached
         if self.i % self.overlap_win == 0 and self.i != self.overlap_win and self.i != 0:
-            #print(self.i/250, "sec")
-            # apply filter to window            
+            # # Apply a window function (Hamming window)
+            window = np.hanning(len(self.y_win_filt2[:,self.channel - 1]))
+            windowed_signal = self.y_win_filt2[:,self.channel - 1] * window      
+
+            # zero pad the signal      
             #y_win_pad = np.pad(y_win_filt, int(0), 'constant')
-            y_win_pad2 = np.pad(self.y_win_filt2[:,self.channel - 1], int(100), 'constant') # pick the channel from the number key that is pressed
+            y_win_pad2 = np.pad(windowed_signal, int(100), 'constant') # pick the channel from the number key that is pressed
             # print(y_win_pad.shape)
 
             self.xf = rfftfreq(y_win_pad2.shape[0], 1/250)
@@ -568,8 +571,8 @@ class MainWindow(QMainWindow):
         # Only update the plot everytime it has collected plot update data sized data
         if self.i % plot_samples == 0 and self.i != 0:
             # filtered signal
-            #self.y_win_filt2 = self.filter(self.y_win, self.low, self.high)
-            self.y_win_filt2 = self.y_win
+            self.y_win_filt2 = self.filter(self.y_win, self.low, self.high)
+            #self.y_win_filt2 = self.y_win
 
             self.xdata = np.roll(self.xdata, -plot_samples)
             self.xdata[-plot_samples:] = self.t_win[-plot_samples:]
