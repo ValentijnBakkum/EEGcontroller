@@ -3,8 +3,10 @@ from torch.utils.data import DataLoader
 from escargot3 import escargot
 import numpy as np
 import pandas as pd
+import os 
 
 class train():
+
     def __init__(self,batch_size,learning_rate,max_iters,eval_interval,load_cvs):
         self.batch_size = batch_size
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -12,6 +14,7 @@ class train():
         self.max_iters = max_iters
         self.eval_interval = eval_interval
         self.load = load_cvs
+
     def train(self,logits_train,targets_train):
         logits_train = torch.load(logits_train)
         targets_train = torch.load(targets_train)
@@ -71,62 +74,72 @@ class train():
         #-----training loop-----#    
                 
         torch.save(model.state_dict(),'blockblock.pt')
-        #print(acc_list)
-        #print(np.sum(acc_list)/10)
-    def dataloader(self):
-        df = pd.read_csv(self.load)
-        label_1 = df.loc[df['Label'] == 0]
-        label_2 = df.loc[df['Label'] == 1]
-        label_3 = df.loc[df['Label'] == 2]
-        label_4 = df.loc[df['Label'] == 3]
-        label_5 = df.loc[df['Label'] == 4]
-        label_1mod = label_2.drop(columns=["Counter", "Validation","Label"])
-        label_2mod = label_3.drop(columns=["Counter", "Validation","Label"])
-        label_3mod = label_4.drop(columns=["Counter", "Validation","Label"])
-        label_4mod = label_5.drop(columns=["Counter", "Validation","Label"])
-        label_1mod = label_1mod.to_numpy()
-        label_2mod = label_2mod.to_numpy()
-        label_3mod = label_3mod.to_numpy()
-        label_4mod = label_4mod.to_numpy()
+
+def dataloader(directory):
+
+    output_list = []
+    label_list = []
+
+    for filename in os.listdir(directory):
+        if filename.endswith(".csv"):
+            filepath = os.path.join(directory, filename)
+            df = pd.read_csv(filepath)
+
+            label_1 = df.loc[df['Label'] == 0]
+            label_2 = df.loc[df['Label'] == 1]
+            label_3 = df.loc[df['Label'] == 2]
+            label_4 = df.loc[df['Label'] == 3]
+            label_5 = df.loc[df['Label'] == 4]
+
+            label_1mod = label_2.drop(columns=["Counter", "Validation", "Label"]).to_numpy()
+            label_2mod = label_3.drop(columns=["Counter", "Validation", "Label"]).to_numpy()
+            label_3mod = label_4.drop(columns=["Counter", "Validation", "Label"]).to_numpy()
+            label_4mod = label_5.drop(columns=["Counter", "Validation", "Label"]).to_numpy()
+
         
-        list_class = [label_1mod,label_2mod,label_3mod,label_4mod]
-        g = 0
-        output_list = []
-        label_list = []
-        #print(label_1mod)
-        for i in list_class:
-            for _ in range(6):
-                index = _ *1500
-                for waa in range(30):
-                    a = i[index+25*waa:index + 529+25*waa]
-                    a = torch.tensor(a)
-                    #print(a.shape)
-                    #a = torch.mul(a,0.00001)
-                    #print(a.shape)
+            list_class = [label_1mod,label_2mod,label_3mod,label_4mod]
+            g = 0
+
+            for i in list_class:
+
+                for _ in range(6):
+
+                    index = _ * 1500
+                    for waa in range(30):
+
+                        a = i[index+25*waa:index + 529+25*waa]
+                        a = torch.tensor(a)
                     
-                    if g == 0:
-                        output_list.append(a)
-                        label_list.append(0)
-                    elif g == 1:
-                        output_list.append(a)
-                        label_list.append(1)
-                        pass
-                    elif g == 2:
-                        output_list.append(a)
-                        label_list.append(2)
-                        pass
-                    elif g == 3:
-                        output_list.append(a)
-                        label_list.append(1)
-            g = g + 1
-        output_label1 = np.stack(output_list)  
-        output_label1 = torch.tensor(output_label1)   
-        targets = torch.tensor(label_list) 
-        print(output_label1.shape)    
-        torch.save(output_label1,"own.pt")
-        torch.save(targets,"owntargets.pt")
-        return True
-    
-a = train(64,1e-1,1000,10,"C:\\Users\\Gebruiker\\Downloads\\EEGdata-2024-150--15-01-30.csv")
-a.dataloader()
-a.train("own.pt","owntargets.pt")
+                        if g == 0:
+                            output_list.append(a)
+                            label_list.append(0)
+                        elif g == 1:
+                            output_list.append(a)
+                            label_list.append(1)
+                            pass
+                        elif g == 2:
+                            output_list.append(a)
+                            label_list.append(2)
+                            pass
+                        elif g == 3:
+                            output_list.append(a)
+                            label_list.append(1)
+
+                g = g + 1
+        
+    output_label1 = np.stack(output_list)
+    output_label1 = torch.tensor(output_label1)
+    targets = torch.tensor(label_list)
+
+    print(output_label1.shape)    
+
+    torch.save(output_label1,"own.pt")
+    torch.save(targets,"owntargets.pt")
+
+    return True
+
+dataloader("/Users/pragun/Technical/BAP/2")
+
+#a = train(64,1e-1,1000,10,"C:\\Users\\Gebruiker\\Downloads\\EEGdata-2024-150--15-01-30.csv")
+#a.dataloader()
+#a.train("own.pt","owntargets.pt")
