@@ -46,7 +46,7 @@ def filter(y):
 
     b, a = signal.iirnotch(f0, Q, fs)
 
-    y_filtered, _ = lfilter(b, a, np.array(y_filtered_band), axis=0)
+    y_filtered = lfilter(b, a, y_filtered_band, axis=0)
 
     return y_filtered
 
