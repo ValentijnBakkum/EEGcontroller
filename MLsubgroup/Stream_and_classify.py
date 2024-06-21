@@ -1,7 +1,7 @@
 from pylsl import StreamInlet, resolve_stream
 import numpy as np
 import torch
-from ...MLsubgroup.escargot3 import escargot
+from escargot3 import escargot
 
 # config:
 #   Window settings
@@ -11,7 +11,7 @@ overlap = 0.9
 #   ML settings
 
 # initial values:
-y_win = np.zeros(window, 8)  # window array
+y_win = np.zeros((window, 8))  # window array
 t_win = np.zeros(window)  # time array
 t = 1
 i = 1
@@ -106,8 +106,8 @@ while True:
         # step 7: Classify window
         torch_data = torch.from_numpy(y_win_filt).unsqueeze(0).unsqueeze(0)
         model.eval()
-        output_vector = model(torch_data.to(device), dtype=torch.float)
-        classify_result = torch.max(output_vector, dim=1)[1]
+        output_vector = model(torch_data.to(device, dtype=torch.float))
+        classify_result = torch.max(output_vector, dim=1)[1][0].item()
 
         # step 8: Output classification
         print(classify_result)
