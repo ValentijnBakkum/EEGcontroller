@@ -250,11 +250,11 @@ class MainWindow(QMainWindow):
         #self.ui.powerBandPlot.addItem(self.power_band_1)
         #self.ui.powerBandPlot.addItem(self.power_band_2)
         #self.ui.powerBandPlot.addItem(self.power_band_3)
-        #self.ui.powerBandPlot.setYRange(10, 100)
+        self.ui.powerBandPlot.setYRange(0, 100)
         ax = self.ui.powerBandPlot.getAxis('bottom')
         ax.setTicks(ticks)
         #self.ui.powerBandPlot.setXRange(0, 50)
-        self.ui.powerBandPlot.setMouseEnabled(x=False, y=False)
+        self.ui.powerBandPlot.setMouseEnabled(x=False, y=True)
         self.ui.powerBandPlot.setMenuEnabled(False)
         self.ui.powerBandPlot.hideButtons()
 
