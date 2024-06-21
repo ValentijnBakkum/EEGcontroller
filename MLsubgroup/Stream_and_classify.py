@@ -104,10 +104,11 @@ while True:
         # *** omited for testing *** Update: not necessary
 
         # step 7: Classify window
-        torch_data = torch.from_numpy(y_win_filt).unsqueeze(0).unsqueeze(0)
-        model.eval()
-        output_vector = model(torch_data.to(device, dtype=torch.float))
-        classify_result = torch.max(output_vector, dim=1)[1][0].item()
+        with torch.nograd():
+            torch_data = torch.from_numpy(y_win_filt).unsqueeze(0).unsqueeze(0)
+            model.eval()
+            output_vector = model(torch_data.to(device, dtype=torch.float))
+            classify_result = torch.max(output_vector, dim=1)[1][0].item()
 
         # step 8: Output classification
         print(classify_result)
