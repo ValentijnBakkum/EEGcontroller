@@ -181,7 +181,7 @@ class MainWindow(QMainWindow):
         #Data live plotting
         self.i = 0
         self.j = 0
-        self.max_graph_width = 50
+        self.max_graph_width = 500
         self.plot_update_size = 2
         self.columns = 5
         self.av_height = int(self.max_graph_width/self.columns)
@@ -572,15 +572,18 @@ class MainWindow(QMainWindow):
         # Only update the plot everytime it has collected plot update data sized data
         if self.i % 50 == 0 and self.i != 0:
             # filtered signal
-            self.y_win_filt2 = self.filter(self.y_win, self.low, self.high)
+            #self.y_win_filt2 = self.filter(self.y_win, self.low, self.high)
+            self.y_win_filt2 = self.y_win
 
-            self.xdata = np.roll(self.xdata, -1)
-            self.xdata[-1] = sample_timestamp
+            self.xdata = np.roll(self.xdata, -50)
+            self.xdata[-50:] = self.t_win[-50:]
+            print(sample_timestamp)
+            print(self.xdata)
 
             for k in range(8):
-                self.ydata[k] = np.roll(self.ydata[k], -1)
+                self.ydata[k] = np.roll(self.ydata[k], -50)
                 #self.ydata[k][-1] = sample[k]
-                self.ydata[k][-1:] = self.y_win_filt2[-1:,k]
+                self.ydata[k][-50:] = self.y_win_filt2[-50:,k]
                 self.lines[k].setData(self.xdata, self.ydata[k])
 
             self.power_band.setOpts(height=self.yBarGraph, brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
