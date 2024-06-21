@@ -118,10 +118,10 @@ class escargot(nn.Module):
         intermediate = self.flatten(intermediate)
         #concatenating in one output layer
         xlstmi = torch.squeeze(x)
-        #xlstmi = xlstmi[None,:,:]
+        xlstmi = xlstmi[None,:,:]
         xlstm = self.lstm(xlstmi)
         xlstm = torch.squeeze(xlstm)
-        #xlstm = xlstm[None,:]
+        xlstm = xlstm[None,:]
         intermediate = torch.cat((intermediate,xlstm),dim=1)
         return self.nn(intermediate)
     
