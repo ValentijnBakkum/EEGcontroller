@@ -107,7 +107,7 @@ class MainWindow(QMainWindow):
             self.show_eeg_error("The EEG cap is not connected. Please connect the cap.")
 
         self.ui = Ui_MainWindow()
-        self.ui.setupUi(self) # Import UI from ui_interface.py
+        self.ui.setupUi(self)  # Import UI from ui_interface.py
 
         # Set the control panel
         self.controlPanel = self.findChild(QWidget, "buttonsBox")
@@ -116,31 +116,29 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("EEG-based BCI")
 
         # Apply style from the file style.json
-        loadJsonStyle(self, self.ui, jsonFiles = {
-                        "logs/style.json"
-                            }) 
+        loadJsonStyle(self, self.ui, jsonFiles={"logs/style.json"})
         
         # Predefined colors
         colors = [
-            QColor(255, 0, 0),    # Red
-            QColor(255, 165, 0),  # Orange
-            QColor(144, 238, 144), #  Light Green
-            QColor(0, 128, 0),    # Green
-            QColor(0, 128, 128),  # Blue-Green
-            QColor(0, 255, 255),  # Cyan
-            QColor(0, 0, 139),    # Dark Blue
-            QColor(128, 0, 128),  # Purple
-            QColor(255, 0, 255),  # Magenta
-            QColor(255, 255, 0),  # Yellow
-            QColor(0, 255, 0),    # Green
-            QColor(0, 0, 255)     # Blue
+            QColor(255, 0, 0),      # Red
+            QColor(255, 165, 0),    # Orange
+            QColor(144, 238, 144),  # Light Green
+            QColor(0, 128, 0),      # Green
+            QColor(0, 128, 128),    # Blue-Green
+            QColor(0, 255, 255),    # Cyan
+            QColor(0, 0, 139),      # Dark Blue
+            QColor(128, 0, 128),    # Purple
+            QColor(255, 0, 255),    # Magenta
+            QColor(255, 255, 0),    # Yellow
+            QColor(0, 255, 0),      # Green
+            QColor(0, 0, 255)       # Blue
         ]
 
         # Convert to pastel colors
         self.pastel_colors = [self.make_pastel(color) for color in colors]
         
-        #Check if the buttons are clicked and evoke their function
-        #User page:
+        # Connect a function for if the buttons are clicked
+        # User page:
         self.ui.addBtn.clicked.connect(self.addUser)
         self.ui.editBtn.clicked.connect(self.editUser)
         self.ui.removeBtn.clicked.connect(self.removeUser)
@@ -148,18 +146,18 @@ class MainWindow(QMainWindow):
         self.ui.downBtn.clicked.connect(self.downUser)
         self.ui.sortBtn.clicked.connect(self.sortUser)
         self.ui.usersList.itemClicked.connect(self.ChooseUser)
-        #Menu
+        # Menu
         self.ui.reconnectBtn.clicked.connect(self.reconnect_cap)
         self.ui.overviewBtn.clicked.connect(self.changeOverviewBtn)
         self.ui.usersBtn.clicked.connect(self.changeUsersBtn)
         self.ui.demosBtn.clicked.connect(self.changeDemosBtn)
         self.ui.exitBtn.clicked.connect(self.exitApp)
-        #Demos submenu
+        # Demos submenu
         self.ui.cursorBtn.clicked.connect(self.setCursorPage)
         self.ui.trainBtn.clicked.connect(self.setTrainPage)
         self.ui.game1Btn.clicked.connect(self.openLavaGame)
         self.ui.game2Btn.clicked.connect(self.openAsteroid)
-        #Button panel
+        # Button panel
         self.ui.startRecordingBtn.clicked.connect(self.startRecording)
         self.ui.stopRecordingBtn.clicked.connect(self.stopRecording)
         self.ui.openUserWindowBtn.clicked.connect(self.openUserWindow)
@@ -167,7 +165,7 @@ class MainWindow(QMainWindow):
         self.ui.openPromptBtn.clicked.connect(self.setPromptPage)
         self.ui.startTimerBtn.clicked.connect(self.startPromptTimer)
         self.ui.dataTrainingBtn.clicked.connect(self.start_training)
-        #Training values
+        # Training values
         self.ui.batchSizeLine.textChanged.connect(self.bachtSizeChange)
         self.ui.marginLine.textChanged.connect(self.marginLineChange)
         self.ui.maxIterationLine.textChanged.connect(self.maxIterationLineChange)
@@ -177,15 +175,11 @@ class MainWindow(QMainWindow):
         with open('users.csv', newline='') as user_file:
             user_reader = csv.DictReader(user_file)
             for row in user_reader:
-                currentIndex = self.ui.usersList.currentRow()
-                self.ui.usersList.insertItem(currentIndex, row["Name"])
+                self.ui.usersList.insertItem(self.ui.usersList.currentRow(), row["Name"])
 
-        
-        #Data live plotting
+        # Data live plotting
         self.i = 0
-        self.j = 0
         self.max_graph_width = 1000
-        self.plot_update_size = 2
         self.columns = 5
         self.av_height = int(self.max_graph_width/self.columns)
         self.channel = 1
@@ -195,13 +189,12 @@ class MainWindow(QMainWindow):
         self.xf = np.zeros(251)
         self.y_fft2 = np.zeros(251)
         self.yBarGraph = np.zeros(self.columns)
-        symbol_sign = None
 
-        # FFT and powerbands plots
+        # FFT and band power plots
         # Window settings
         self.window = 500
         self.overlap = 0.25
-        #calculate sample overlap
+        # calculate sample overlap
         self.overlap_win = int(self.overlap * self.window)
         # initial values
         self.y_win = np.zeros((self.window, 8))  # window array
@@ -228,8 +221,6 @@ class MainWindow(QMainWindow):
         # Create subplots and lines
         self.subplots = []
         self.lines = []
-
-        self.j = 0
 
         self.ui.channelsPlot.setBackground(QColor(255, 255, 255))
 
@@ -960,10 +951,11 @@ class MainWindow(QMainWindow):
 # User Window class
 #=======================================================================
 class UserWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, main_window):
         super(UserWindow, self).__init__()
         self.ui = Ui_UserWindow()
         self.ui.setupUi(self) # Import UI from ui_userWindow.py
+        self.main = main_window
 
         self.setWindowTitle("User Window")
         
@@ -1011,7 +1003,7 @@ class UserWindow(QMainWindow):
                 self.ui.promptsWidgets.setCurrentIndex(pageNumber)
                 i = i + 1
             if count == 47:
-                recProcess.stdin.write(b"Done\n") # G for go
+                recProcess.stdin.write(b"Done\n")  # G for go
                 recProcess.stdin.flush()
                 self.timer.stop()
 
@@ -1036,14 +1028,20 @@ class UserWindow(QMainWindow):
     @Slot()
     def handle_signal_cursorPage(self):
         self.ui.demosPages.setCurrentWidget(self.ui.cursorPage)
+        global classifyProcess
+        classifyProcess = subprocess.Popen(["python3", "-u", "MLsubgroup/Stream_and_classify.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, )
+        classifyProcess.stdin.write(str(self.main.current_id).encode('utf-8'))
+        classifyProcess.stdin.flush()
     @Slot()
     def handle_signal_trainingPage(self):
         self.ui.demosPages.setCurrentWidget(self.ui.trainingPage)
+        classifyProcess.kill()
     @Slot()
     def handle_signal_promptPage(self):
         self.ui.demosPages.setCurrentWidget(self.ui.promptPage)
         self.ui.promptTestWidget.setCurrentWidget(self.ui.calibrationPromptPage)
         self.promptTimer.stop()
+        classifyProcess.kill()
 
     # Simulate cursor movements with WASD keys
     def keyPressEvent(self, event):
@@ -1067,11 +1065,13 @@ class UserWindow(QMainWindow):
 # Lava Game window class
 #=======================================================================
 class LavaGame(QMainWindow):
-    def __init__(self):
+    def __init__(self, main):
         super().__init__()
         self.setWindowTitle("The Floor is Lava")
         self.central_widget = QWidget(self)
         self.setCentralWidget(self.central_widget)
+
+        self.main = main
 
         self.grid_layout = QGridLayout(self.central_widget)
         self.central_widget.setLayout(self.grid_layout)
@@ -1095,6 +1095,11 @@ class LavaGame(QMainWindow):
 
         # Start the game with countdown
         self.start_countdown()
+
+        global classifyProcess
+        classifyProcess = subprocess.Popen(["python3", "-u", "MLsubgroup/Stream_and_classify.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, )
+        classifyProcess.stdin.write(str(self.main.current_id).encode('utf-8'))
+        classifyProcess.stdin.flush()
 
     def start_countdown(self):
         if self.isHidden():
@@ -1234,6 +1239,7 @@ class LavaGame(QMainWindow):
                     self.player.move(self.player.x() + self.step, self.player.y())
 
     def closeEvent(self, event):
+        classifyProcess.kill()
         # Stop all game timers and reset game state
         self.check_collision_timer.stop()
         self.countdown_timer.stop()
@@ -1253,11 +1259,11 @@ class LavaGame(QMainWindow):
 # Asteroid Game window classes
 # =======================================================================
 class Asteroid(QMainWindow):
-    def __init__(self):
+    def __init__(self, main):
         super(Asteroid, self).__init__()
 
         # creating a board object
-        self.game = Game(self)
+        self.game = Game(self, main)
 
         # adding board as a central widget
         self.setCentralWidget(self.game)
@@ -1284,7 +1290,7 @@ class Game(QFrame):
     METEOR_SPEED = 3
 
     # constructor
-    def __init__(self, parent):
+    def __init__(self, parent, main):
         super(Game, self).__init__(parent)
 
         # creating a timer
@@ -1292,6 +1298,8 @@ class Game(QFrame):
 
         # player location
         self.playerloc = 750
+
+        self.main = main
 
         # meteor list
         self.meteor = []
@@ -1316,6 +1324,11 @@ class Game(QFrame):
 
         # setting focus
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+
+        global classifyProcess
+        classifyProcess = subprocess.Popen(["python3", "-u", "MLsubgroup/Stream_and_classify.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, )
+        classifyProcess.stdin.write(str(self.main.current_id).encode('utf-8'))
+        classifyProcess.stdin.flush()
 
     # start method
     def start(self):
@@ -1487,6 +1500,8 @@ class Game(QFrame):
                     self.meteor.remove(pos_meteor)
                     self.score += 1
 
+    def closeEvent(self, event):
+        classifyProcess.kill()
 
 #=======================================================================
 # train model on recorded data
@@ -1672,9 +1687,9 @@ if __name__ == "__main__":
     splash.show()
 
     window1 = MainWindow()
-    window2 = UserWindow()
-    window3 = LavaGame()
-    window4 = Asteroid()
+    window2 = UserWindow(window1)
+    window3 = LavaGame(window1)
+    window4 = Asteroid(window1)
 
     window1.setUserWindow(window2)
     window1.setLavaGameWindow(window3)
