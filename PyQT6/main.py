@@ -360,7 +360,7 @@ class MainWindow(QMainWindow):
             self.showMaximized()
 
     # Make plot colors pastel
-    def make_pastel(self, color, factor=0.3):
+    def make_pastel(self, color, factor=0.5):
         white = QColor(255, 255, 255)
         color = QColor(color)
         return QColor(
