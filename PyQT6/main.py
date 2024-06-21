@@ -27,16 +27,17 @@ from scipy.signal import welch
 from scipy.signal import butter, lfilter, lfiltic
 from scipy import signal
 
-#=======================================================================
+
+# =======================================================================
 # Initialization Splashscreen
-#=======================================================================
+# =======================================================================
 class SplashScreen(QSplashScreen):
     def __init__(self):
         super(SplashScreen, self).__init__()
         self.ui = Ui_SplashScreen()
-        self.ui.setupUi(self) # Load UI from ui_splashscreen.py
+        self.ui.setupUi(self)  # Load UI from ui_splashscreen.py
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint)
-        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground) # Make window frameless and without background
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)  # Make window frameless and without background
 
         # Initialize progress bar for duration of splashscreen
         self.ui.progressBar.setMinimum(0)
@@ -75,11 +76,12 @@ class SplashScreen(QSplashScreen):
 
         self.move(x, y)
 
-#=======================================================================
+
+# =======================================================================
 # Main Window from which everything can be called
-#=======================================================================
+# =======================================================================
 class MainWindow(QMainWindow):
-    #Signals to send to the Users Window to change the page
+    # Signals to send to the Users Window to change the page
     userWindow_to_cursorPage = Signal()
     userWindow_to_trainingPage = Signal()
     userWindow_to_promptPage = Signal()
@@ -91,7 +93,7 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
 
         self.startFFT = False
-        self.done_recording = False
+        self.done_recording = False  # used to check if program is ready for training on data
         self.current_id = 0  # id 0 is set to be the "new user" without trained  data
         self.has_model = False
         self.in_training = False
@@ -122,7 +124,7 @@ class MainWindow(QMainWindow):
         colors = [
             QColor(255, 0, 0),    # Red
             QColor(255, 165, 0),  # Orange
-            QColor(144, 238, 144),# Light Green
+            QColor(144, 238, 144), #  Light Green
             QColor(0, 128, 0),    # Green
             QColor(0, 128, 128),  # Blue-Green
             QColor(0, 255, 255),  # Cyan
@@ -740,50 +742,42 @@ class MainWindow(QMainWindow):
 
         print(accuracy, avgloss)
 
-    #Functions that handles the user based interface
+    # Functions that handles the user based interface
     def ChooseUser(self, item):
-        if type(item) is str:
-            self.ui.userID_test.setText(item)
-            self.current_id = None
-            with open('users.csv', newline='') as file:
-                reader = csv.DictReader(file)
-                for row in reader:
-                    if row['Name'] == item:
-                        self.current_id = row['ID']
-            if not self.current_id:
-                print("ERROR: USER " + item + " HAS NO CORRESPONDING ID.")
+        self.ui.userID_test.setText(item.text())
+        self.current_id = None
+        with open('users.csv', newline='') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                if row['Name'] == item.text():
+                    self.current_id = int(row['ID'])
+        if not self.current_id:
+            print("ERROR: USER " + item.text() + " HAS NO CORRESPONDING ID.")
 
-        else:
-            self.ui.userID_test.setText(item.text())
-            self.current_id = None
-            with open('users.csv', newline='') as file:
-                reader = csv.DictReader(file)
-                for row in reader:
-                    if row['Name'] == item.text():
-                        self.current_id = row['ID']
-            if not self.current_id:
-                print("ERROR: USER " + item.text() + " HAS NO CORRESPONDING ID.")
-        print(self.current_id)
+        print("Current ID: ", self.current_id)
 
-        models_directory = os.path.join(os.path.dirname(os.getcwd()), 'Models')
-
-        # if models folder does not exists, create it
-        if not os.path.exists(models_directory):
-            os.makedirs(models_directory)
-
-        file_name = f"{self.current_id}.pt"
-        # Construct the full file path
-        full_file_path = os.path.join(models_directory, file_name)
-
-        # Check if a file with the same name already exists in the 'models' directory
-        file_exists = os.path.isfile(full_file_path)
-
-        if not file_exists:
-            self.show_message("No Model Error", "There currently is no model trained for this user. It is recommended" +
-                                                " to record and train on your own data for better accuracy.")
+        if self.current_id == 0:
             self.has_model = False
-        else:
-            self.has_model = True
+        else:  # This checks if the selected user has a model trained.
+            models_directory = os.path.join(os.path.dirname(os.getcwd()), 'Models')
+
+            # if models folder does not exists, create it
+            if not os.path.exists(models_directory):
+                os.makedirs(models_directory)
+
+            file_name = f"{self.current_id}.pt"
+            # Construct the full file path
+            full_file_path = os.path.join(models_directory, file_name)
+
+            # Check if a file with the name exists in the 'models' directory
+            file_exists = os.path.isfile(full_file_path)
+
+            if not file_exists:
+                self.show_message("No Model Error", "There currently is no model trained for this user. It is recommended" +
+                                                    " to record and train on your own data for better accuracy.")
+                self.has_model = False
+            else:
+                self.has_model = True
 
     # Add user name
     def addUser(self):
@@ -879,8 +873,6 @@ class MainWindow(QMainWindow):
                 writer = csv.DictWriter(file, fieldnames=['Name', 'ID'])
                 writer.writeheader()
                 writer.writerows(rows)
-            item = self.ui.usersList.takeItem(currentIndex)
-            del item
             del item
 
     # Move user up
@@ -1256,9 +1248,10 @@ class LavaGame(QMainWindow):
         self.start_countdown()
         event.accept()  # Accept the show event
 
-#=======================================================================
+
+# =======================================================================
 # Asteroid Game window classes
-#=======================================================================
+# =======================================================================
 class Asteroid(QMainWindow):
     def __init__(self):
         super(Asteroid, self).__init__()
@@ -1278,9 +1271,10 @@ class Asteroid(QMainWindow):
         # starting the board object
         self.game.start()
 
-#=======================================================================
+
+# =======================================================================
 # Asteroid Game Frame classes
-#=======================================================================
+# =======================================================================
 class Game(QFrame):
     # timer countdown time
     SPEED = 80
