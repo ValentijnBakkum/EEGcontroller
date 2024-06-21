@@ -179,7 +179,7 @@ class MainWindow(QMainWindow):
 
         # Data live plotting
         self.i = 0
-        self.max_graph_width = 500
+        self.max_graph_width = 1000
         self.columns = 5
         self.av_height = int(self.max_graph_width/self.columns)
         self.channel = 1
