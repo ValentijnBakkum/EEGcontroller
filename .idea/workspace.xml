@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1482ec48-b179-4276-b173-fe1b7c049fb1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/PyQT6/logs/custom_widgets.log" beforeDir="false" afterPath="$PROJECT_DIR$/PyQT6/logs/custom_widgets.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PyQT6/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/PyQT6/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PyQT6/users.csv" beforeDir="false" afterPath="$PROJECT_DIR$/PyQT6/users.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

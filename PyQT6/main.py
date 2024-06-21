@@ -694,6 +694,8 @@ class MainWindow(QMainWindow):
                         int(self.ui.maxIterationLine.text()), 10, full_file_path, str(self.current_id), self)
         trainer.dataloader()
         trainer.train("own.pt","owntargets.pt")
+        self.in_training = True
+
 
     # updating the Machine Learning plots while training
     def update_ML_plots(self, accuracy, avgloss):
@@ -800,7 +802,7 @@ class MainWindow(QMainWindow):
         currentIndex = self.ui.usersList.currentRow()
         item = self.ui.usersList.item(currentIndex)
         if(item.text() == "No user"):
-            self.show_message("Edit Error", "Cannot change the No User account!")
+            self.show_message("Edit Error", "Cannot change the No user account!")
             return
         if item is not None:
             error = ""
@@ -841,7 +843,7 @@ class MainWindow(QMainWindow):
         if item is None:
             return
         if(item.text() == "No user"):
-            self.show_message("Deletion Error", "Cannot delete the No User account!")
+            self.show_message("Deletion Error", "Cannot delete the No user account!")
             return
         question = QMessageBox.question(None,"Remove User",
              "Do you want to remove user: " + item.text(),

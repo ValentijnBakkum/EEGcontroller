@@ -9145,3 +9145,7 @@
 2024-06-03 10:03:49,302 - DEBUG - findfont: score(FontEntry(fname='C:\\Windows\\Fonts\\BAUHS93.TTF', name='Bauhaus 93', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.05
 2024-06-03 10:03:49,302 - DEBUG - findfont: score(FontEntry(fname='C:\\Windows\\Fonts\\DUBAI-REGULAR.TTF', name='Dubai', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.05
 2024-06-03 10:03:49,302 - DEBUG - findfont: Matching sans\-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('C:\\Users\\davbe\\AppData\\Local\\Programs\\Python\\Python39\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2024-06-21 11:01:45,092 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 11:01:45,102 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 11:05:19,402 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 11:05:19,402 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
