@@ -92,7 +92,8 @@ class MainWindow(QMainWindow):
 
         self.startFFT = False
         self.done_recording = False
-        self.current_id = 0 # id 0 is set to be the "new user" without trained  data
+        self.current_id = 0  # id 0 is set to be the "new user" without trained  data
+        self.has_model = False
         self.in_training = False
 
         # For EEG cap connection and data
@@ -693,9 +694,8 @@ class MainWindow(QMainWindow):
         trainer = train(int(self.ui.batchSizeLine.text()), float(self.ui.learningRateLine.text()),
                         int(self.ui.maxIterationLine.text()), 10, full_file_path, str(self.current_id), self)
         trainer.dataloader()
-        trainer.train("own.pt","owntargets.pt")
+        trainer.train("own.pt", "owntargets.pt")
         self.in_training = True
-
 
     # updating the Machine Learning plots while training
     def update_ML_plots(self, accuracy, avgloss):
@@ -740,7 +740,6 @@ class MainWindow(QMainWindow):
 
         print(accuracy, avgloss)
 
-
     #Functions that handles the user based interface
     def ChooseUser(self, item):
         if type(item) is str:
@@ -765,6 +764,26 @@ class MainWindow(QMainWindow):
             if not self.current_id:
                 print("ERROR: USER " + item.text() + " HAS NO CORRESPONDING ID.")
         print(self.current_id)
+
+        models_directory = os.path.join(os.path.dirname(os.getcwd()), 'Models')
+
+        # if models folder does not exists, create it
+        if not os.path.exists(models_directory):
+            os.makedirs(models_directory)
+
+        file_name = f"{self.current_id}.pt"
+        # Construct the full file path
+        full_file_path = os.path.join(models_directory, file_name)
+
+        # Check if a file with the same name already exists in the 'models' directory
+        file_exists = os.path.isfile(full_file_path)
+
+        if not file_exists:
+            self.show_message("No Model Error", "There currently is no model trained for this user. It is recommended" +
+                                                " to record and train on your own data for better accuracy.")
+            self.has_model = False
+        else:
+            self.has_model = True
 
     # Add user name
     def addUser(self):
@@ -1578,6 +1597,7 @@ class train():
                 return
 
         torch.save(model.state_dict(), full_file_path)
+        self.main.has_model = True
         # print(acc_list)
         # print(np.sum(acc_list)/10)
 
