@@ -198,6 +198,8 @@ class MainWindow(QMainWindow):
         # Window settings
         self.window = 500
         self.overlap = 0.25
+        #calculate sample overlap
+        self.overlap_win = int(self.overlap * self.window)
         # initial values
         self.y_win = np.zeros((self.window, 8))  # window array
         self.t_win = np.zeros(self.window)  # time array
@@ -206,6 +208,13 @@ class MainWindow(QMainWindow):
         self.low = 8
         self.high = 30
         self.y_win_filt2 = np.zeros((self.window, 8))
+
+        # Define frequency bands
+        self.delta_band = (0.5, 4)
+        self.theta_band = (4, 8)
+        self.alpha_band = (8, 12)
+        self.beta_band = (12, 30)
+        self.gamma_band = (30, 50)
 
         # ML plots
         self.accuracy_data = np.zeros(1)
@@ -483,10 +492,19 @@ class MainWindow(QMainWindow):
         y_filtered= lfilter(b, a, np.array(y_filtered_band), axis =0)
 
         return y_filtered
+    
+    
+    # Function to calculate power in a specific frequency band
+    def bandpower(self, frequencies, psd, band):
+        band_freq_indices = np.logical_and(frequencies >= band[0], frequencies <= band[1])
+        band_power = np.sum(psd[band_freq_indices])
+        band_power_norm = band_power / (band[1] - band[0])
+        return band_power_norm
         
     # Update graphs
     def update_plot(self):
         pen = pg.mkPen(self.pastel_colors[self.channel - 1], width = 2)
+        plot_samples = 50
         # Gathering the data from the EEG cap
         if not self.simulate_data:
             sample, timestamp = self.inlet.pull_sample()
@@ -496,8 +514,6 @@ class MainWindow(QMainWindow):
             sample_timestamp = self.i / 250
 
         # Fill window for FFT plots
-        #calculate sample overlap
-        overlap_win = int(self.overlap * self.window)
 
         # assign EEG data to array
         self.y_win[0] = sample[:8] # EEG data 1
@@ -508,7 +524,7 @@ class MainWindow(QMainWindow):
         self.t_win = np.roll(self.t_win, -1)
 
         # When a new block of L is reached
-        if self.i % overlap_win == 0 and self.i != overlap_win and self.i != 0:
+        if self.i % self.overlap_win == 0 and self.i != self.overlap_win and self.i != 0:
             #print(self.i/250, "sec")
             # apply filter to window            
             #y_win_pad = np.pad(y_win_filt, int(0), 'constant')
@@ -523,27 +539,13 @@ class MainWindow(QMainWindow):
             # Compute the power spectral density using Welch's method
             frequencies, psd = welch(y_win_pad2, 250)
 
-            # Powerbands
-            # Define frequency bands
-            delta_band = (0.5, 4)
-            theta_band = (4, 8)
-            alpha_band = (8, 12)
-            beta_band = (12, 30)
-            gamma_band = (30, 50)
-
-            # Function to calculate power in a specific frequency band
-            def bandpower(frequencies, psd, band):
-                band_freq_indices = np.logical_and(frequencies >= band[0], frequencies <= band[1])
-                band_power = np.sum(psd[band_freq_indices])
-                band_power_norm = band_power / (band[1] - band[0])
-                return band_power_norm
-            
+            # Powerbands            
             # Calculate power for each band
-            delta_power = bandpower(frequencies, psd, delta_band)
-            theta_power = bandpower(frequencies, psd, theta_band)
-            alpha_power = bandpower(frequencies, psd, alpha_band)
-            beta_power = bandpower(frequencies, psd, beta_band)
-            gamma_power = bandpower(frequencies, psd, gamma_band)
+            delta_power = self.bandpower(frequencies, psd, self.delta_band)
+            theta_power = self.bandpower(frequencies, psd, self.theta_band)
+            alpha_power = self.bandpower(frequencies, psd, self.alpha_band)
+            beta_power = self.bandpower(frequencies, psd, self.beta_band)
+            gamma_power = self.bandpower(frequencies, psd, self.gamma_band)
 
             # Power values 
             self.yBarGraph = [delta_power, theta_power, alpha_power, beta_power, gamma_power] # Data to be plotted for powerbands
@@ -570,20 +572,18 @@ class MainWindow(QMainWindow):
                 self.ui.FFTPlot.hideButtons()
 
         # Only update the plot everytime it has collected plot update data sized data
-        if self.i % 50 == 0 and self.i != 0:
+        if self.i % plot_samples == 0 and self.i != 0:
             # filtered signal
             #self.y_win_filt2 = self.filter(self.y_win, self.low, self.high)
             self.y_win_filt2 = self.y_win
 
-            self.xdata = np.roll(self.xdata, -50)
-            self.xdata[-50:] = self.t_win[-50:]
-            print(sample_timestamp)
-            print(self.xdata)
+            self.xdata = np.roll(self.xdata, -plot_samples)
+            self.xdata[-plot_samples:] = self.t_win[-plot_samples:]
 
             for k in range(8):
-                self.ydata[k] = np.roll(self.ydata[k], -50)
+                self.ydata[k] = np.roll(self.ydata[k], -plot_samples)
                 #self.ydata[k][-1] = sample[k]
-                self.ydata[k][-50:] = self.y_win_filt2[-50:,k]
+                self.ydata[k][-plot_samples:] = self.y_win_filt2[-plot_samples:,k]
                 self.lines[k].setData(self.xdata, self.ydata[k])
 
             self.power_band.setOpts(height=self.yBarGraph, brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
