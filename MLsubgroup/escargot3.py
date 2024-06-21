@@ -144,7 +144,7 @@ class escargot(nn.Module):
                                 L2NormalizationLayer(),
                                 spline_activation(device = device,grid = 5, input_dim = 50),
                                 nn.Dropout(p=0.2),
-                                nn.Linear(50,2),                         
+                                nn.Linear(50,4),                         
         )
     
 
