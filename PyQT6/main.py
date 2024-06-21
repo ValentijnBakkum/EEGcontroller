@@ -1546,10 +1546,9 @@ class train():
                 scheduler.step()
         # -----training loop-----#
 
-        current_directory =  os.getcwd()
-        models_directory = os.path.join(current_directory, 'models')
+        models_directory = os.path.join(os.path.dirname(os.getcwd()), 'Models')
 
-        # Check if the 'models' directory exists; if not, create it
+        # if models folder does not exists, create it
         if not os.path.exists(models_directory):
             os.makedirs(models_directory)
 
