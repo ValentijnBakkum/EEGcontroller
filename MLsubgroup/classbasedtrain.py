@@ -116,11 +116,10 @@ class trainer():
         torch.save(combolabels, user_labels_path)
 
 
-input_directory = "/Users/pragun/Technical/BAP/2"
-output_directory = "/Users/pragun/Technical/BAP/funtime"
-
-a = trainer(64, 1e-2, 1000, 10)
+#input_directory = "Data/3"
+#output_directory = "Data"
+#
+#a = trainer(64, 1e-2, 1000, 10)
 #a.dataloader(input_directory, output_directory)
-a.train('/Users/pragun/Technical/BAP/funtime/logits.pt', '/Users/pragun/Technical/BAP/funtime/labels.pt')
-
+#a.train('Data\logits.pt', 'Data\labels.pt')
 #a = train(64,1e-1,1000,10,"C:\\Users\\Gebruiker\\Downloads\\EEGdata-2024-150--15-01-30.csv")
