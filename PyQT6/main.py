@@ -969,8 +969,7 @@ class UserWindow(QMainWindow):
         self.promptTimer.timeout.connect(lambda: self.changePrompt())
 
         # Cap connection
-        self.streams = resolve_stream()
-        #self.inlet = StreamInlet(self.streams[0])
+        global recProcess
         recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
 
     @Slot()
@@ -1091,7 +1090,10 @@ class LavaGame(QMainWindow):
         self.countdown_label.setGeometry(0, 0, self.width(), self.height())
         self.countdown_timer = QTimer(self)
         self.countdown_timer.timeout.connect(self.update_countdown)
-        self.countdown_value = 5        
+        self.countdown_value = 5
+
+        # creating a timer
+        self.timer = QBasicTimer()
 
         # Start the game with countdown
         self.start_countdown()
@@ -1426,6 +1428,14 @@ class Game(QFrame):
             # reset direction until new move button is pressed
             self.direction = -1
 
+    def read_prediction(self):
+        prediction = int(classifyProcess.stdout.read1(1))
+        if prediction == 0:
+            self.direction = 0
+        elif prediction == 1:
+            self.direction = 1
+        else:
+            self.spawn_bullet = True
 
     # time event method
     def timerEvent(self, event):
@@ -1434,6 +1444,7 @@ class Game(QFrame):
         else:
             # checking timer id
             if event.timerId() == self.timer.timerId():
+                read_prediction()
                 # if the player is not gameover
                 if self.game_active:
                     # move the player and spawn meteors and bullets if needed

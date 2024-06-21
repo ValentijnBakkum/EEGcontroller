@@ -74,12 +74,6 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = escargot().to(device)
 #model.load_state_dict(torch.load("blockblock.pt")) # filename is temporary use user ID in future
 
-# step 3: synchronise with gui
-print("R") #R for ready
-recieved = input()
-if "G" != recieved:
-    raise Exception(f"Expected \"G\" during synchrnisation step. Got \"{recieved}\" instead.")
-
 # loop
 while True:
     # step 4: windowing
