@@ -40,13 +40,20 @@ def filter(y):
 
     y_filtered_band = lfilter(b, a, y, axis=0)
 
+    # Define the filter parameters
+    lowcut = 49
+    highcut = 51
     fs = 250  # Sampling frequency
-    f0 = 50  # Notch frequency
-    Q = 1 # Quality factor
 
-    b, a = signal.iirnotch(f0, Q, fs)
+    # Calculate the filter coefficients
+    nyquist = 0.5 * fs
+    low = lowcut / nyquist
+    high = highcut / nyquist
+    b, a = butter(4, [low, high], btype='bandstop')
+    #zi = lfilter_zi(b,a)*y[0]
 
-    y_filtered = lfilter(b, a, y_filtered_band, axis=0)
+    # Apply the filter to each column of the DataFram
+    y_filtered= lfilter(b, a, np.array(y_filtered_band), axis=0)
 
     return y_filtered
 
