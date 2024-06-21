@@ -1510,7 +1510,7 @@ class Game(QFrame):
         else:
             # checking timer id
             if event.timerId() == self.timer.timerId():
-                read_prediction()
+                self.read_prediction()
                 # if the player is not gameover
                 if self.game_active:
                     # move the player and spawn meteors and bullets if needed
