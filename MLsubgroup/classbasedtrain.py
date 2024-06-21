@@ -1,24 +1,27 @@
 import torch
-from torch.utils.data import DataLoader
-from escargot3 import escargot
 import numpy as np
 import pandas as pd
+from scipy import signal
 import os 
 
-class train():
+from torch.utils.data import DataLoader
+from escargot3 import escargot
+from csv_to_tensor import cleaner
 
-    def __init__(self,batch_size,learning_rate,max_iters,eval_interval,load_cvs):
+class trainer():
+
+    def __init__(self,batch_size,learning_rate,max_iters,eval_interval):
         self.batch_size = batch_size
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.learning_rate = learning_rate
         self.max_iters = max_iters
         self.eval_interval = eval_interval
-        self.load = load_cvs
 
     def train(self,logits_train,targets_train):
         logits_train = torch.load(logits_train)
         targets_train = torch.load(targets_train)
-        logits_train = logits_train[:,None,:,:]
+        targets_train = targets_train - 1
+        #logits_train = logits_train[:,None,:,:]
         print(logits_train.shape)
         print(targets_train.shape)
         dataset = torch.utils.data.TensorDataset(logits_train,targets_train)
@@ -74,72 +77,50 @@ class train():
         #-----training loop-----#    
                 
         torch.save(model.state_dict(),'blockblock.pt')
+    
+    def dataloader(self, input_directory, output_directory):
 
-def dataloader(directory):
+        combologits = torch.empty(0, 1, 529, 8)
+        combolabels = torch.empty(0)
 
-    output_list = []
-    label_list = []
+        for filename in os.listdir(input_directory):
 
-    for filename in os.listdir(directory):
-        if filename.endswith(".csv"):
-            filepath = os.path.join(directory, filename)
-            df = pd.read_csv(filepath)
+            if filename.endswith(".csv"):
 
-            label_1 = df.loc[df['Label'] == 0]
-            label_2 = df.loc[df['Label'] == 1]
-            label_3 = df.loc[df['Label'] == 2]
-            label_4 = df.loc[df['Label'] == 3]
-            label_5 = df.loc[df['Label'] == 4]
+                filepath = os.path.join(input_directory, filename)
+                data_csv = pd.read_csv(filepath, delimiter=',')
+                data_csv = data_csv.iloc[:72000,:8]
 
-            label_1mod = label_2.drop(columns=["Counter", "Validation", "Label"]).to_numpy()
-            label_2mod = label_3.drop(columns=["Counter", "Validation", "Label"]).to_numpy()
-            label_3mod = label_4.drop(columns=["Counter", "Validation", "Label"]).to_numpy()
-            label_4mod = label_5.drop(columns=["Counter", "Validation", "Label"]).to_numpy()
+                data_csv_detr = cleaner.detrend(data_csv)
+                data_csv_filt = cleaner.filter(data_csv_detr)
+                data_csv_np = np.array(data_csv_filt)
+                (data_csv_res, lables) = cleaner.cursed_reshape(data_csv_np)
 
+                print(data_csv_res.shape)
+                print(lables.shape)
+
+                data_torch = torch.from_numpy(data_csv_res) 
+                lables_torch = torch.from_numpy(lables)
+
+                logits = data_torch.squeeze(1)
+                data_torch = cleaner.CAR_filter(logits)
+                logits = data_torch.unsqueeze(1) 
+
+                combologits = torch.cat((combologits,logits), dim=0)
+                combolabels = torch.cat((combolabels,lables_torch), dim=0)
         
-            list_class = [label_1mod,label_2mod,label_3mod,label_4mod]
-            g = 0
+        user_logits_path = os.path.join(output_directory, 'logits.pt')
+        user_labels_path = os.path.join(output_directory, 'labels.pt')
+    
+        torch.save(combologits, user_logits_path)
+        torch.save(combolabels, user_labels_path)
 
-            for i in list_class:
 
-                for _ in range(6):
+input_directory = "/Users/pragun/Technical/BAP/2"
+output_directory = "/Users/pragun/Technical/BAP/funtime"
 
-                    index = _ * 1500
-                    for waa in range(30):
-
-                        a = i[index+25*waa:index + 529+25*waa]
-                        a = torch.tensor(a)
-                    
-                        if g == 0:
-                            output_list.append(a)
-                            label_list.append(0)
-                        elif g == 1:
-                            output_list.append(a)
-                            label_list.append(1)
-                            pass
-                        elif g == 2:
-                            output_list.append(a)
-                            label_list.append(2)
-                            pass
-                        elif g == 3:
-                            output_list.append(a)
-                            label_list.append(1)
-
-                g = g + 1
-        
-    output_label1 = np.stack(output_list)
-    output_label1 = torch.tensor(output_label1)
-    targets = torch.tensor(label_list)
-
-    print(output_label1.shape)    
-
-    torch.save(output_label1,"own.pt")
-    torch.save(targets,"owntargets.pt")
-
-    return True
-
-dataloader("/Users/pragun/Technical/BAP/2")
+a = trainer(64, 1e-2, 1000, 10)
+#a.dataloader(input_directory, output_directory)
+a.train('/Users/pragun/Technical/BAP/funtime/logits.pt', '/Users/pragun/Technical/BAP/funtime/labels.pt')
 
 #a = train(64,1e-1,1000,10,"C:\\Users\\Gebruiker\\Downloads\\EEGdata-2024-150--15-01-30.csv")
-#a.dataloader()
-#a.train("own.pt","owntargets.pt")

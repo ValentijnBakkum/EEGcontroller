@@ -9145,3 +9145,41 @@
 2024-06-03 10:03:49,302 - DEBUG - findfont: score(FontEntry(fname='C:\\Windows\\Fonts\\BAUHS93.TTF', name='Bauhaus 93', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.05
 2024-06-03 10:03:49,302 - DEBUG - findfont: score(FontEntry(fname='C:\\Windows\\Fonts\\DUBAI-REGULAR.TTF', name='Dubai', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.05
 2024-06-03 10:03:49,302 - DEBUG - findfont: Matching sans\-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('C:\\Users\\davbe\\AppData\\Local\\Programs\\Python\\Python39\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf') with score of 0.050000.
+2024-06-21 11:01:45,092 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 11:01:45,102 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 11:05:19,402 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 11:05:19,402 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 11:12:06,430 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 11:12:06,437 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 11:24:52,564 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 11:24:52,566 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 11:33:43,753 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 11:33:43,757 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 11:55:14,938 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 11:55:14,941 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 11:57:02,710 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 11:57:02,712 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 11:58:16,291 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 11:58:16,293 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 11:59:48,833 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 11:59:48,835 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 12:01:41,068 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 12:01:41,071 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 12:02:26,760 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 12:02:26,761 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 12:07:44,389 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 12:07:44,391 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 12:32:05,953 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 12:32:05,956 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 12:33:40,568 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 12:33:40,571 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 12:34:30,639 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 12:34:30,641 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 12:40:21,643 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 12:40:21,643 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 14:04:55,158 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 14:04:55,158 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 14:05:35,950 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 14:05:35,958 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
+2024-06-21 14:07:33,671 - DEBUG - CACHEDIR=C:\Users\tijnb\.matplotlib
+2024-06-21 14:07:33,679 - DEBUG - Using fontManager instance from C:\Users\tijnb\.matplotlib\fontlist-v330.json
