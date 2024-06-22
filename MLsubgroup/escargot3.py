@@ -137,13 +137,13 @@ class escargot(nn.Module):
         return nn.Sequential(*list)
     def create_nn(self): #creates the nn used in the model
         return nn.Sequential(nn.Flatten(),
-                                nn.Dropout(p=0.2),
+                                nn.Dropout(p=0.5),
                                 nn.Linear(2506,50,bias=False),
                                 nn.BatchNorm1d(num_features=50),
                                 #nn.ReLU(),
                                 L2NormalizationLayer(),
                                 spline_activation(device = device,grid = 5, input_dim = 50),
-                                nn.Dropout(p=0.2),
+                                nn.Dropout(p=0.5),
                                 nn.Linear(50,4),                         
         )
     
