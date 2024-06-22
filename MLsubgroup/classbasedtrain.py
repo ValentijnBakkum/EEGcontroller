@@ -25,7 +25,12 @@ class trainer():
         print(logits_train.shape)
         print(targets_train.shape)
         dataset = torch.utils.data.TensorDataset(logits_train,targets_train)
-        train = DataLoader(dataset,batch_size = self.batch_size,shuffle = True)
+        t = logits_train.shape(0)
+        train_size = int(t*0.9)
+        train,test = torch.utils.data.random_split(dataset,[train_size,t-train_size])
+        train = DataLoader(train,batch_size = self.batch_size,shuffle = True)
+        test =  DataLoader(test,batch_size = test_size,shuffle = True)
+
         model = escargot().to(self.device)
         model.train()
         optimizer = torch.optim.Adam(model.parameters(), lr=self.learning_rate, weight_decay=1e-3)
@@ -39,15 +44,17 @@ class trainer():
         for itere in range(self.max_iters):
             f_list,t_list = next(iter(train))
             t_list = t_list.type(torch.LongTensor)
+            tf_list,tt_list = next(iter(test))
+            tt_list = tt_list.type(torch.LongTensor)
             if itere % self.eval_interval == 0 or itere == self.max_iters - 1:
                 with torch.no_grad():
                     model.eval()
-                    out = model(f_list.to(self.device,dtype=torch.float))#tf_list.to(device),tff_list.to(device)
+                    out = model(tf_list.to(self.device,dtype=torch.float))#tf_list.to(device),tff_list.to(device)
                     #print(torch.max(out,dim=1))
                     values,ind = torch.max(out,dim = 1)
                     g = t_list.shape
                     #print(g)
-                    a = np.sum((torch.eq(ind.to("cpu"),t_list.to("cpu")).numpy()))
+                    a = np.sum((torch.eq(ind.to("cpu"),tt_list.to("cpu")).numpy()))
                     #print(a)
                     accuracy = (a/g)*100
                     tlist.append(accuracy)
@@ -65,10 +72,10 @@ class trainer():
                 inputs = model(f_list.to(self.device,dtype=torch.float))#,ff_list.to(device)batch_list.to(device)
                 #print(inputs[0])
                 with torch.no_grad():
-                    val_input = model(f_list.to(self.device,dtype=torch.float))#test_list.to(device),tff_list.to(device)
+                    val_input = model(tf_list.to(self.device,dtype=torch.float))#test_list.to(device),tff_list.to(device)
                 lossvalue = loss(inputs, t_list.to(self.device))
                 #print(lossvalue)
-                vallvalue = loss(val_input.to(self.device),t_list.to(self.device))
+                vallvalue = loss(val_input.to(self.device),tt_list.to(self.device))
                 avloss.append(vallvalue.data.cpu().numpy())
                 optimizer.zero_grad(set_to_none=True)
                 lossvalue.backward()
