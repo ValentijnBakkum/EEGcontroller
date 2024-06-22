@@ -2,6 +2,7 @@
 import numpy as np
 import torch
 from escargot3 import escargot
+import time
 
 # config:
 #   Window settings
@@ -54,14 +55,23 @@ def filter(y):
     return y_filtered
 
 pull_sample_count = -1
-def mock_pull_sample(reader):
+def mock_pull_sample(reader, timestamp):
     global pull_sample_count
     pull_sample_count += 1
+    output_timestamp = 0
+
+    now = time.time()
+
+    if (now - timestamp) < 1/250:
+        time.sleep(1/250 - (now - timestamp))
+        output_timestamp = time.time()
+    else:
+        output_timestamp = timestamp + 1/250
     
     if pull_sample_count >= len(reader[:, 0]):
-        return reader[0], 0
+        return reader[0], output_timestamp
     else:
-        return reader[pull_sample_count], 0
+        return reader[pull_sample_count], output_timestamp
 
 
     
@@ -80,19 +90,13 @@ user_id = input()
 # *** up to machine learning group to implement
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = escargot().to(device)
-#model.load_state_dict(torch.load("blockblock.pt")) # filename is temporary use user ID in future
+model.load_state_dict(torch.load('blockblock.pt')) # filename is temporary use user ID in future
 
-# step 3: synchronise with gui
-print("R") #R for ready
-recieved = input()
-if "G" != recieved:
-
-    raise Exception(f"Expected \"G\" during synchrnisation step. Got \"{recieved}\" instead.")
-
+timestamp = time.time()
 # loop
 while True:
     # step 4: windowing
-    sample,timestamp = mock_pull_sample(csv_array)
+    sample,timestamp = mock_pull_sample(csv_array, timestamp)
 
     overlap_win = int(overlap * window)
 
@@ -123,16 +127,17 @@ while True:
         # step 6: Send data to GUI
         # *** omited for testing *** Update: not necessary
 
-        print(y_win_filt.dtype)
+        #print(y_win_filt.dtype)
 
         # step 7: Classify window
-        torch_data = torch.from_numpy(y_win_filt).unsqueeze(0).unsqueeze(0)
-        print(f'torch_data.shape = {torch_data.shape}')
-        model.eval()
-        output_vector = model(torch_data.to(device, dtype=torch.float))
-        print(f'output_vector = {output_vector}')
-        print(f'output_vector.shape = {output_vector.shape}')
-        classify_result = torch.max(output_vector, dim=1)
+        with torch.no_grad():
+            torch_data = torch.from_numpy(y_win_filt).unsqueeze(0).unsqueeze(0)
+            #print(f'torch_data.shape = {torch_data.shape}')
+            model.eval()
+            output_vector = model(torch_data.to(device, dtype=torch.float))
+            #print(f'output_vector = {output_vector}')
+            #print(f'output_vector.shape = {output_vector.shape}')
+            classify_result = torch.max(output_vector, dim=1)[1].item()
 
         # step 8: Output classification
         print(classify_result)
