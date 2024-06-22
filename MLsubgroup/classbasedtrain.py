@@ -26,7 +26,7 @@ class trainer():
         print(logits_train.shape)
         print(targets_train.shape)
         dataset = torch.utils.data.TensorDataset(logits_train,targets_train)
-        t = logits_train.shape(0)
+        t = logits_train.shape[0]
         train_size = int(t*0.9)
         train,test = torch.utils.data.random_split(dataset,[train_size,t-train_size])
         train = DataLoader(train,batch_size = self.batch_size,shuffle = True)
