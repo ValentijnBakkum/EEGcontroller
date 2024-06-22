@@ -10,12 +10,13 @@ from csv_to_tensor import cleaner
 
 class trainer():
 
-    def __init__(self,batch_size,learning_rate,max_iters,eval_interval):
+    def __init__(self,batch_size,learning_rate,max_iters,eval_interval,test_size):
         self.batch_size = batch_size
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.learning_rate = learning_rate
         self.max_iters = max_iters
         self.eval_interval = eval_interval
+        self.test_size = test_size
 
     def train(self,logits_train,targets_train):
         logits_train = torch.load(logits_train)
@@ -29,7 +30,7 @@ class trainer():
         train_size = int(t*0.9)
         train,test = torch.utils.data.random_split(dataset,[train_size,t-train_size])
         train = DataLoader(train,batch_size = self.batch_size,shuffle = True)
-        test =  DataLoader(test,batch_size = test_size,shuffle = True)
+        test =  DataLoader(test,batch_size = self.test_size,shuffle = True)
 
         model = escargot().to(self.device)
         model.train()
