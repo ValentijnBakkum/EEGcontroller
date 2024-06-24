@@ -94,7 +94,7 @@ class classificationWorker(QObject):
         # *** up to machine learning group to implement
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model = escargot().to(device)
-        model.load_state_dict(torch.load('blockblock.pt')) # filename is temporary use user ID in future
+        model.load_state_dict(torch.load('blockblock.pt', map_location=torch.device('cpu'))) # filename is temporary use user ID in future
         #loop
         while True:
             # step 4: windowing
