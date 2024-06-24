@@ -5,8 +5,6 @@ from torchinfo import summary
 from attentionmod import blockblock,multihead
 from bspline import spline_activation
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-#device = "cpu"
-from kan import KAN
 
 #convnet decleration/architecture
 
@@ -87,13 +85,13 @@ class lstmmodule1(nn.Module):
         super(lstmmodule1, self).__init__()
         self.hidden_size = hidden_size
         self.num_layers = num_layers
-        self.attention = attention(1,1)
+        self.attention = attention(256,1)
         self.lstm = nn.LSTM(input_len,hidden_size,num_layers,batch_first=True)
     def forward(self,x):
         hidden_states = torch.zeros(self.num_layers, x.size(0),self.hidden_size).to(device)
         cell_states = torch.zeros(self.num_layers, x.size(0),self.hidden_size).to(device)
         out, (hn,cn) = self.lstm(x,(hidden_states.detach(),cell_states.detach()))
-        return hn
+        return self.attention(hn)
     
 
 #model
