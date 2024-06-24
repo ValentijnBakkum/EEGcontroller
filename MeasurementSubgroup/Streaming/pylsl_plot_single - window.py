@@ -69,8 +69,8 @@ def filter(y, low, high):
     return y_filtered
 
 # Window settings
-window = 250
-overlap = 0.5
+window = 1000
+overlap = 0.1
 
 # Plot settings
 pause = 0.01
@@ -154,7 +154,7 @@ while not aborted:
 
             plt.plot(t_out_down, y_out_down, 'o-')
             # Set y-axis limits
-            plt.ylim(-500, 500)
+            plt.ylim(-50, 50)
             plt.pause(pause)
 
             # remove the old plots after 500 samples
@@ -164,22 +164,26 @@ while not aborted:
         elif mode == "FFT":
         #FFT
         #Apply Hanning window
-            # hanning_window = np.hanning(len(y_win_filt))
-            # y_win_hann = y_win_filt * hanning_window
+            hanning_window = np.hanning(len(y_win_filt))
+            y_win_hann = y_win_filt * hanning_window
 
-            y_win_pad = np.pad(y_win_filt, int(100), 'constant')
-            y_win_pad2 = np.pad(y_win_filt2, int(100), 'constant')
+            # hamming_window = signal.windows.flattop(len(y_win_filt))
+            # y_win_hamm = y_win_filt * hamming_window
+
+            y_win_pad = np.pad(y_win_filt, int(window/2), 'constant')
+            y_win_pad2 = np.pad(y_win_filt2, int(window/2), 'constant')
+            y_win_pad3 = np.pad(y_win_hann, int(window/2), 'constant')
             # print(y_win_pad.shape)
 
             xf = rfftfreq(y_win_pad.shape[0], 1/250)
             y_fft = np.abs(rfft(y_win_pad))
             y_fft2 = np.abs(rfft(y_win_pad2))
-
-            print(y_fft.shape)
-            print(y_fft)
+            y_fft3 = np.abs(rfft(y_win_pad3))
 
             plt.plot(xf, y_fft2, label='0.5 - 38 Hz: ML')
             plt.plot(xf, y_fft, label='8- 30 Hz: MI')
+            plt.plot(xf, y_fft3, label='Hann')
+
             plt.axvline(4, color='k', linestyle='--', linewidth=1)
             plt.axvline(8, color='k', linestyle='--', linewidth=1)
             plt.axvline(12, color='k', linestyle='--', linewidth=1)
