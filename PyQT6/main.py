@@ -73,7 +73,7 @@ class classificationWorker(QObject):
     def run(self):
         #   Window settings
         window = 529
-        overlap = 0.9
+        overlap = 0
 
         #   ML settings
 
@@ -115,6 +115,7 @@ class classificationWorker(QObject):
                     torch_data = torch.from_numpy(y_win_filt).unsqueeze(0).unsqueeze(0)
                     model.eval()
                     output_vector = model(torch_data.to(device, dtype=torch.float))
+                    print(output_vector)
                     self.classify_result = torch.max(output_vector, dim=1)[1][0].item() 
                     # step 8: Output classification
                     self.result.emit(self.classify_result)
@@ -1192,6 +1193,9 @@ class UserWindow(QMainWindow):
             elif self.classify_result == 1:
                 if self.ui.mouseCursor.x() + self.stepsize < (self.ui.cursorFrame.width() - self.ui.mouseCursor.width()):
                     self.ui.mouseCursor.move(self.ui.mouseCursor.x() + self.stepsize, self.ui.mouseCursor.y())
+
+            if self.main.classify_result != -1:
+                self.main.classify_result = -1     
 
     # Simulate cursor movements with WASD keys
     def keyPressEvent(self, event):
