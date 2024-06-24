@@ -286,6 +286,20 @@ class MainWindow(QMainWindow):
         self.min_width = 1000
         self.original_geometry = self.geometry()
 
+        global classifyProcess
+        classifyProcess = subprocess.Popen(["python3", "-u", "MLsubgroup/Stream_and_classify.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, )
+        classifyProcess.stdin.write(str(0).encode('utf-8'))
+        classifyProcess.stdin.flush()
+
+        self.classifyTimer = QBasicTimer()
+        self.classifyTimer.start(200, self)
+
+    def timerEvent(self, event):
+        if event.timerId() == self.classifyTimer.timerId():
+            startTime = time.time()
+            classification = classifyProcess.stdout.read1(2)
+            print(classification, time.time() - startTime)
+
     # Handle Batch size text change
     def bachtSizeChange(self):
         self.batchSize = self.ui.batchSizeLine.text()
