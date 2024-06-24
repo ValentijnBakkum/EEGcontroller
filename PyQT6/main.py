@@ -9,7 +9,7 @@ from ui_ERDSWindow import Ui_ERDSWindow
 from ui_userWindow import Ui_UserWindow
 from Custom_Widgets import *
 from PySide6.QtWidgets import QInputDialog, QMessageBox, QSplashScreen, QFrame
-from PySide6.QtCore import Qt, QTimer, Slot, Signal, QEvent, QBasicTimer
+from PySide6.QtCore import Qt, QTimer, Slot, Signal, QEvent, QBasicTimer, QThread
 from PySide6.QtGui import QPainter, QColor, QFont
 import random
 import numpy as np
@@ -26,6 +26,99 @@ from scipy.fft import rfft, rfftfreq
 from scipy.signal import welch
 from scipy.signal import butter, lfilter, lfiltic
 from scipy import signal
+
+# =======================================================================
+# Classification QThread
+# =======================================================================
+class classificationWorker(QObject):
+    result = Signal(int)
+
+    # Filter raw signal
+    def filter(self, y, low, high):
+        # Remove the DC component
+        y = signal.detrend(y, axis=0)
+
+        # Define the filter parameters
+        lowcut = low
+        highcut = high
+        fs = 250  # Sampling frequency
+
+        # Calculate the filter coefficients
+        nyquist = 0.5 * fs
+        low = lowcut / nyquist
+        high = highcut / nyquist
+        b, a = butter(4, [low, high], btype='band')
+        #zi = lfilter_zi(b,a)*y[0]
+
+        # Apply the filter to each column of the DataFram
+        y_filtered_band= lfilter(b, a, np.array(y), axis =0)
+
+        # Define the filter parameters
+        lowcut = 48
+        highcut = 52
+        fs = 250  # Sampling frequency
+
+        # Calculate the filter coefficients
+        nyquist = 0.5 * fs
+        low = lowcut / nyquist
+        high = highcut / nyquist
+        b, a = butter(4, [low, high], btype='bandstop')
+        #zi = lfilter_zi(b,a)*y[0]
+
+        # Apply the filter to each column of the DataFram
+        y_filtered= lfilter(b, a, np.array(y_filtered_band), axis =0)
+
+        return y_filtered
+
+    def run(self):
+        #   Window settings
+        window = 529
+        overlap = 0.9
+
+        #   ML settings
+
+        # initial values:
+        y_win = np.zeros((window, 8))  # window array
+        t_win = np.zeros(window)  # time array
+        t = 1
+        i = 1
+        y_out = np.empty((0, 8))
+        t_out = np.array([])
+        # step 0: initialize lsl 
+        streams = resolve_stream()
+        inlet = StreamInlet(streams[0])
+        # step 1: read user id
+        #user_id = self.main.current_id
+        # step 2: load corresponding model
+        # *** up to machine learning group to implement
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model = escargot().to(device)
+        model.load_state_dict(torch.load('blockblock.pt')) # filename is temporary use user ID in future
+        #loop
+        while True:
+            # step 4: windowing
+            sample,timestamp = inlet.pull_sample() 
+            overlap_win = int((1 - overlap) * window)
+            if overlap_win < 1:
+                raise Exception("overlap is too large")
+            y_win[0, :] = sample[0:8] # EEG data 1
+            t_win[0] = (i)/250 # Counter from EEG cap in seconds
+            y_win = np.roll(y_win, -1)
+            t_win = np.roll(t_win, -1)
+            if i % window == 0 and i != window and i != 0:
+                # step 5: filtering
+                y_win_filt = self.filter(y_win, 0.5, 38)
+                # step 6: Send data to GUI
+                # *** omited for testing *** Update: not necessary
+                # step 7: Classify window
+                with torch.no_grad():
+                    torch_data = torch.from_numpy(y_win_filt).unsqueeze(0).unsqueeze(0)
+                    model.eval()
+                    output_vector = model(torch_data.to(device, dtype=torch.float))
+                    self.classify_result = torch.max(output_vector, dim=1)[1][0].item() 
+                    # step 8: Output classification
+                    self.result.emit(self.classify_result)
+            i += 1
 
 
 # =======================================================================
@@ -176,6 +269,8 @@ class MainWindow(QMainWindow):
             user_reader = csv.DictReader(user_file)
             for row in user_reader:
                 self.ui.usersList.insertItem(self.ui.usersList.currentRow(), row["Name"])
+
+        self.classify_result = ''
 
         # Data live plotting
         self.i = 0
@@ -382,11 +477,28 @@ class MainWindow(QMainWindow):
     # Emit the signals to the User Window to change page
     def setCursorPage(self):
             self.userWindow_to_cursorPage.emit()
+            self.classification_thread = QThread()
+            self.worker = classificationWorker()
+            self.worker.moveToThread(self.classification_thread)
+            self.classification_thread.started.connect(self.worker.run)
+
+            self.worker.result.connect(self.reportProgress)
+
+            self.classification_thread.start()
+
+    def reportProgress(self, n):
+        self.classify_result = n
     
     def setTrainPage(self):
+            self.classification_thread.quit
+            self.worker.deleteLater
+            self.classification_thread.deleteLater
             self.userWindow_to_trainingPage.emit()
 
     def setPromptPage(self):
+            self.classification_thread.quit
+            self.worker.deleteLater
+            self.classification_thread.deleteLater
             self.userWindow_to_promptPage.emit()
             self.ui.stopwatch.setText("0.0") # Reset timer
             self.flag = False
@@ -622,6 +734,9 @@ class MainWindow(QMainWindow):
 
     # Set and open ERDS Window functions
     def openERDSWindow(self):
+        self.classification_thread.quit
+        self.worker.deleteLater
+        self.classification_thread.deleteLater
         self.ui.ERDSBtn.setText("Loading")
         self.ui.ERDSBtn.setEnabled(False)
 
@@ -640,6 +755,9 @@ class MainWindow(QMainWindow):
         self.LavaGame = LavaGame
 
     def openLavaGame(self):
+        self.classification_thread.quit
+        self.worker.deleteLater
+        self.classification_thread.deleteLater
         self.LavaGame.showMaximized()
         self.userWindow.hide()
 
@@ -648,6 +766,9 @@ class MainWindow(QMainWindow):
         self.Asteroid = Asteroid
 
     def openAsteroid(self):
+        self.classification_thread.quit
+        self.worker.deleteLater
+        self.classification_thread.deleteLater
         self.Asteroid.showMaximized()
         self.userWindow.hide()
 
@@ -1032,99 +1153,11 @@ class UserWindow(QMainWindow):
             self.ui.promptTestWidget.setCurrentWidget(self.ui.promptPromptPage)
             self.promptTimer.stop()
 
-    # Filter raw signal
-    def filter(self, y, low, high):
-        # Remove the DC component
-        y = signal.detrend(y, axis=0)
-
-        # Define the filter parameters
-        lowcut = low
-        highcut = high
-        fs = 250  # Sampling frequency
-
-        # Calculate the filter coefficients
-        nyquist = 0.5 * fs
-        low = lowcut / nyquist
-        high = highcut / nyquist
-        b, a = butter(4, [low, high], btype='band')
-        #zi = lfilter_zi(b,a)*y[0]
-
-        # Apply the filter to each column of the DataFram
-        y_filtered_band= lfilter(b, a, np.array(y), axis =0)
-
-        # Define the filter parameters
-        lowcut = 48
-        highcut = 52
-        fs = 250  # Sampling frequency
-
-        # Calculate the filter coefficients
-        nyquist = 0.5 * fs
-        low = lowcut / nyquist
-        high = highcut / nyquist
-        b, a = butter(4, [low, high], btype='bandstop')
-        #zi = lfilter_zi(b,a)*y[0]
-
-        # Apply the filter to each column of the DataFram
-        y_filtered= lfilter(b, a, np.array(y_filtered_band), axis =0)
-
-        return y_filtered
-
     # Change pages according to signal received from MainWindow
     @Slot()
     def handle_signal_cursorPage(self):
         self.ui.demosPages.setCurrentWidget(self.ui.cursorPage)
-        #   Window settings
-        window = 529
-        overlap = 0.9
 
-        #   ML settings
-
-        # initial values:
-        y_win = np.zeros((window, 8))  # window array
-        t_win = np.zeros(window)  # time array
-        t = 1
-        i = 1
-        y_out = np.empty((0, 8))
-        t_out = np.array([])
-        # step 0: initialize lsl 
-        streams = resolve_stream()
-        inlet = StreamInlet(streams[0])
-        # step 1: read user id
-        #user_id = self.main.current_id
-        # step 2: load corresponding model
-        # *** up to machine learning group to implement
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        model = escargot().to(device)
-        model.load_state_dict(torch.load('blockblock.pt')) # filename is temporary use user ID in future
-        #loop
-        while self.ui.demosPages.currentWidget() == self.ui.cursorPage:
-            # step 4: windowing
-            sample,timestamp = inlet.pull_sample() 
-            overlap_win = int((1 - overlap) * window)
-            if overlap_win < 1:
-                raise Exception("overlap is too large")
-            y_win[0, :] = sample[0:8] # EEG data 1
-            t_win[0] = (i)/250 # Counter from EEG cap in seconds
-            y_win = np.roll(y_win, -1)
-            t_win = np.roll(t_win, -1)
-            if i % window == 0 and i != window and i != 0:
-                # step 5: filtering
-                y_win_filt = self.filter(y_win, 0.5, 38)
-                # step 6: Send data to GUI
-                # *** omited for testing *** Update: not necessary
-                # step 7: Classify window
-                with torch.no_grad():
-                    torch_data = torch.from_numpy(y_win_filt).unsqueeze(0).unsqueeze(0)
-                    model.eval()
-                    output_vector = model(torch_data.to(device, dtype=torch.float))
-                    self.classify_result = torch.max(output_vector, dim=1)[1][0].item() 
-                    # # step 8: Output classification
-                    # print(classify_result)
-            i += 1
-        # global classifyProcess
-        # classifyProcess = subprocess.Popen(["python3", "-u", "MLsubgroup/Stream_and_classify.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, )
-        # classifyProcess.stdin.write(str(self.main.current_id).encode('utf-8'))
-        # classifyProcess.stdin.flush()
     @Slot()
     def handle_signal_trainingPage(self):
         self.ui.demosPages.setCurrentWidget(self.ui.trainingPage)
@@ -1139,6 +1172,7 @@ class UserWindow(QMainWindow):
     def timerEvent(self, event):
         if event.timerId() == self.timerupdate.timerId():
             #prediction = classifyProcess.stdout.read1(1).decode("utf-8")
+            self.classify_result = self.main.classify_result
             if self.classify_result == '':
                 return
 
