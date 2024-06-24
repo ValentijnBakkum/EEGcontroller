@@ -26,6 +26,7 @@ from scipy.fft import rfft, rfftfreq
 from scipy.signal import welch
 from scipy.signal import butter, lfilter, lfiltic
 from scipy import signal
+from csv_to_tensor import cleaner
 
 # =======================================================================
 # Classification QThread
