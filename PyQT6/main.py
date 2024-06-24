@@ -1777,7 +1777,7 @@ class train():
                 scheduler.step()
         # -----training loop-----#
 
-        models_directory = os.path.join(os.path.dirname(os.getcwd()), 'Models')
+        models_directory = os.path.join(os.getcwd(), 'Models')
 
         # if models folder does not exists, create it
         if not os.path.exists(models_directory):
@@ -1809,58 +1809,43 @@ class train():
         # print(np.sum(acc_list)/10)
 
     def dataloader(self):
-        df = pd.read_csv(self.load)
-        label_1 = df.loc[df['Label'] == 0]
-        label_2 = df.loc[df['Label'] == 1]
-        label_3 = df.loc[df['Label'] == 2]
-        label_4 = df.loc[df['Label'] == 3]
-        label_5 = df.loc[df['Label'] == 4]
-        label_1mod = label_2.drop(columns=["Counter", "Validation", "Label"])
-        label_2mod = label_3.drop(columns=["Counter", "Validation", "Label"])
-        label_3mod = label_4.drop(columns=["Counter", "Validation", "Label"])
-        label_4mod = label_5.drop(columns=["Counter", "Validation", "Label"])
-        label_1mod = label_1mod.to_numpy()
-        label_2mod = label_2mod.to_numpy()
-        label_3mod = label_3mod.to_numpy()
-        label_4mod = label_4mod.to_numpy()
+        combologits = torch.empty(0, 1, 529, 8)
+        combolabels = torch.empty(0)
 
-        list_class = [label_1mod, label_2mod, label_3mod, label_4mod]
-        g = 0
-        output_list = []
-        label_list = []
-        # print(label_1mod)
-        for i in list_class:
-            for _ in range(6):
-                index = _ * 1500
-                for waa in range(30):
-                    a = i[index + 25 * waa:index + 529 + 25 * waa]
-                    a = torch.tensor(a)
-                    # print(a.shape)
-                    # a = torch.mul(a,0.00001)
-                    # print(a.shape)
+        input_directory = self.load
+        output_directory = os.path.join(os.getcwd(), 'Models')
 
-                    if g == 0:
-                        output_list.append(a)
-                        label_list.append(0)
-                    elif g == 1:
-                        output_list.append(a)
-                        label_list.append(1)
-                        pass
-                    elif g == 2:
-                        output_list.append(a)
-                        label_list.append(2)
-                        pass
-                    elif g == 3:
-                        output_list.append(a)
-                        label_list.append(1)
-            g = g + 1
-        output_label1 = np.stack(output_list)
-        output_label1 = torch.tensor(output_label1)
-        targets = torch.tensor(label_list)
-        print(output_label1.shape)
-        torch.save(output_label1, "own.pt")
-        torch.save(targets, "owntargets.pt")
-        return True
+        for filename in os.listdir(input_directory):
+
+            if filename.endswith(".csv"):
+                filepath = os.path.join(input_directory, filename)
+                data_csv = pd.read_csv(filepath, delimiter=',')
+                data_csv = data_csv.iloc[:72000, :8]
+
+                data_csv_detr = cleaner.detrend(data_csv)
+                data_csv_filt = cleaner.filter(data_csv_detr)
+                data_csv_np = np.array(data_csv_filt)
+                (data_csv_res, lables) = cleaner.cursed_reshape(data_csv_np)
+
+                print(data_csv_res.shape)
+                print(lables.shape)
+
+                data_torch = torch.from_numpy(data_csv_res)
+                lables_torch = torch.from_numpy(lables)
+
+                logits = data_torch.squeeze(1)
+                data_torch = cleaner.CAR_filter(logits)
+                logits = data_torch.unsqueeze(1)
+
+                combologits = torch.cat((combologits, logits), dim=0)
+                combolabels = torch.cat((combolabels, lables_torch), dim=0)
+
+        user_logits_path = os.path.join(output_directory, 'logits.pt')
+        user_labels_path = os.path.join(output_directory, 'labels.pt')
+
+        torch.save(combologits, user_logits_path)
+        torch.save(combolabels, user_labels_path)
+
 
 
 def show_main_window():
