@@ -800,7 +800,7 @@ class MainWindow(QMainWindow):
             self.show_message("Train Error", "No user selected!")
             return
 
-        new_directory = os.path.join(os.path.dirname(os.getcwd()), 'Data')
+        new_directory = os.path.join(os.getcwd(), 'Data')
         new_directory = os.path.join(new_directory, str(self.current_id))
 
         if not os.path.exists(new_directory):
@@ -874,7 +874,7 @@ class MainWindow(QMainWindow):
         if self.current_id == 0:
             self.has_model = False
         else:  # This checks if the selected user has a model trained.
-            models_directory = os.path.join(os.path.dirname(os.getcwd()), 'Models')
+            models_directory = os.path.join(os.getcwd(), 'Models')
 
             # if models folder does not exists, create it
             if not os.path.exists(models_directory):
