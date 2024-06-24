@@ -975,6 +975,8 @@ class UserWindow(QMainWindow):
         self.timer.timeout.connect(lambda: self.changePages())
         self.promptTimer.timeout.connect(lambda: self.changePrompt())
 
+        self.classify_result = ''
+
         # Cap connection
         global recProcess
         recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
@@ -1030,45 +1032,130 @@ class UserWindow(QMainWindow):
             self.ui.promptTestWidget.setCurrentWidget(self.ui.promptPromptPage)
             self.promptTimer.stop()
 
+    # Filter raw signal
+    def filter(self, y, low, high):
+        # Remove the DC component
+        y = signal.detrend(y, axis=0)
+
+        # Define the filter parameters
+        lowcut = low
+        highcut = high
+        fs = 250  # Sampling frequency
+
+        # Calculate the filter coefficients
+        nyquist = 0.5 * fs
+        low = lowcut / nyquist
+        high = highcut / nyquist
+        b, a = butter(4, [low, high], btype='band')
+        #zi = lfilter_zi(b,a)*y[0]
+
+        # Apply the filter to each column of the DataFram
+        y_filtered_band= lfilter(b, a, np.array(y), axis =0)
+
+        # Define the filter parameters
+        lowcut = 48
+        highcut = 52
+        fs = 250  # Sampling frequency
+
+        # Calculate the filter coefficients
+        nyquist = 0.5 * fs
+        low = lowcut / nyquist
+        high = highcut / nyquist
+        b, a = butter(4, [low, high], btype='bandstop')
+        #zi = lfilter_zi(b,a)*y[0]
+
+        # Apply the filter to each column of the DataFram
+        y_filtered= lfilter(b, a, np.array(y_filtered_band), axis =0)
+
+        return y_filtered
+
     # Change pages according to signal received from MainWindow
     @Slot()
     def handle_signal_cursorPage(self):
         self.ui.demosPages.setCurrentWidget(self.ui.cursorPage)
-        global classifyProcess
-        classifyProcess = subprocess.Popen(["python3", "-u", "MLsubgroup/Stream_and_classify.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, )
-        classifyProcess.stdin.write(str(self.main.current_id).encode('utf-8'))
-        classifyProcess.stdin.flush()
+        #   Window settings
+        window = 529
+        overlap = 0.9
+
+        #   ML settings
+
+        # initial values:
+        y_win = np.zeros((window, 8))  # window array
+        t_win = np.zeros(window)  # time array
+        t = 1
+        i = 1
+        y_out = np.empty((0, 8))
+        t_out = np.array([])
+        # step 0: initialize lsl 
+        streams = resolve_stream()
+        inlet = StreamInlet(streams[0])
+        # step 1: read user id
+        #user_id = self.main.current_id
+        # step 2: load corresponding model
+        # *** up to machine learning group to implement
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model = escargot().to(device)
+        model.load_state_dict(torch.load('blockblock.pt')) # filename is temporary use user ID in future
+        #loop
+        while self.ui.demosPages.currentWidget() == self.ui.cursorPage:
+            # step 4: windowing
+            sample,timestamp = inlet.pull_sample() 
+            overlap_win = int((1 - overlap) * window)
+            if overlap_win < 1:
+                raise Exception("overlap is too large")
+            y_win[0, :] = sample[0:8] # EEG data 1
+            t_win[0] = (i)/250 # Counter from EEG cap in seconds
+            y_win = np.roll(y_win, -1)
+            t_win = np.roll(t_win, -1)
+            if i % window == 0 and i != window and i != 0:
+                # step 5: filtering
+                y_win_filt = self.filter(y_win, 0.5, 38)
+                # step 6: Send data to GUI
+                # *** omited for testing *** Update: not necessary
+                # step 7: Classify window
+                with torch.no_grad():
+                    torch_data = torch.from_numpy(y_win_filt).unsqueeze(0).unsqueeze(0)
+                    model.eval()
+                    output_vector = model(torch_data.to(device, dtype=torch.float))
+                    self.classify_result = torch.max(output_vector, dim=1)[1][0].item() 
+                    # # step 8: Output classification
+                    # print(classify_result)
+            i += 1
+        # global classifyProcess
+        # classifyProcess = subprocess.Popen(["python3", "-u", "MLsubgroup/Stream_and_classify.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, )
+        # classifyProcess.stdin.write(str(self.main.current_id).encode('utf-8'))
+        # classifyProcess.stdin.flush()
     @Slot()
     def handle_signal_trainingPage(self):
         self.ui.demosPages.setCurrentWidget(self.ui.trainingPage)
-        classifyProcess.kill()
+        #classifyProcess.kill()
     @Slot()
     def handle_signal_promptPage(self):
         self.ui.demosPages.setCurrentWidget(self.ui.promptPage)
         self.ui.promptTestWidget.setCurrentWidget(self.ui.calibrationPromptPage)
         self.promptTimer.stop()
-        classifyProcess.kill()
+        #classifyProcess.kill()
 
     def timerEvent(self, event):
         if event.timerId() == self.timerupdate.timerId():
-            prediction = classifyProcess.stdout.read1(1).decode("utf-8")
-            if prediction == '':
+            #prediction = classifyProcess.stdout.read1(1).decode("utf-8")
+            if self.classify_result == '':
                 return
 
             prediction = int(prediction)
 
             self.step = 40  # Define step size for movement
 
-            if prediction == 3:
+            if self.classify_result == 3:
                 if self.ui.mouseCursor.y() - self.stepsize > 0:
                     self.ui.mouseCursor.move(self.ui.mouseCursor.x(), self.ui.mouseCursor.y() - self.stepsize)
-            elif prediction == 0:
+            elif self.classify_result == 0:
                 if self.ui.mouseCursor.x() - self.stepsize > 0:
                     self.ui.mouseCursor.move(self.ui.mouseCursor.x() - self.stepsize, self.ui.mouseCursor.y())
-            elif prediction == 2:
+            elif self.classify_result == 2:
                 if self.ui.mouseCursor.y() + self.stepsize < (self.ui.cursorFrame.height() - self.ui.mouseCursor.height()):
                     self.ui.mouseCursor.move(self.ui.mouseCursor.x(), self.ui.mouseCursor.y() + self.stepsize)
-            elif prediction == 1:
+            elif self.classify_result == 1:
                 if self.ui.mouseCursor.x() + self.stepsize < (self.ui.cursorFrame.width() - self.ui.mouseCursor.width()):
                     self.ui.mouseCursor.move(self.ui.mouseCursor.x() + self.stepsize, self.ui.mouseCursor.y())
 
@@ -1131,10 +1218,10 @@ class LavaGame(QMainWindow):
         # Start the game with countdown
         self.start_countdown()
 
-        global classifyProcess
-        classifyProcess = subprocess.Popen(["python3", "-u", "MLsubgroup/Stream_and_classify.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, )
-        classifyProcess.stdin.write(str(self.main.current_id).encode('utf-8'))
-        classifyProcess.stdin.flush()
+        # global classifyProcess
+        # classifyProcess = subprocess.Popen(["python3", "-u", "MLsubgroup/Stream_and_classify.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, )
+        # classifyProcess.stdin.write(str(self.main.current_id).encode('utf-8'))
+        # classifyProcess.stdin.flush()
 
     def start_countdown(self):
         if self.isHidden():
@@ -1206,7 +1293,7 @@ class LavaGame(QMainWindow):
 
     def timerEvent(self, event):
         if not self.game_over and event.timerId() == self.timer.timerId():
-            prediction = classifyProcess.stdout.read1(1).decode("utf-8")
+            #prediction = classifyProcess.stdout.read1(1).decode("utf-8")
             if prediction == '':
                 return
 
@@ -1301,7 +1388,7 @@ class LavaGame(QMainWindow):
     #                 self.player.move(self.player.x() + self.step, self.player.y())
 
     def closeEvent(self, event):
-        classifyProcess.kill()
+        #classifyProcess.kill()
         # Stop all game timers and reset game state
         self.check_collision_timer.stop()
         self.countdown_timer.stop()
@@ -1387,10 +1474,10 @@ class Game(QFrame):
         # setting focus
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
 
-        global classifyProcess
-        classifyProcess = subprocess.Popen(["python3", "-u", "MLsubgroup/Stream_and_classify.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, )
-        classifyProcess.stdin.write(str(self.main.current_id).encode('utf-8'))
-        classifyProcess.stdin.flush()
+        # global classifyProcess
+        # classifyProcess = subprocess.Popen(["python3", "-u", "MLsubgroup/Stream_and_classify.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, )
+        # classifyProcess.stdin.write(str(self.main.current_id).encode('utf-8'))
+        # classifyProcess.stdin.flush()
 
     # start method
     def start(self):
@@ -1489,7 +1576,7 @@ class Game(QFrame):
             self.direction = -1
 
     def read_prediction(self):
-        prediction = classifyProcess.stdout.read1(1).decode("utf-8")
+        #prediction = classifyProcess.stdout.read1(1).decode("utf-8")
         if prediction == '':
             self.direction = -1
             return
@@ -1577,8 +1664,8 @@ class Game(QFrame):
                     self.meteor.remove(pos_meteor)
                     self.score += 1
 
-    def closeEvent(self, event):
-        classifyProcess.kill()
+    #def closeEvent(self, event):
+        #classifyProcess.kill()
 
 #=======================================================================
 # train model on recorded data

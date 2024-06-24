@@ -54,51 +54,39 @@ def filter(y):
 
     return y_filtered
 
-# # step 0: initialize lsl 
-# streams = resolve_stream()
-# inlet = StreamInlet(streams[0])
-
-# # step 1: read user id
-# user_id = input()
-
-# # step 2: load corresponding model
-# # *** up to machine learning group to implement
-# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# model = escargot().to(device)
-# model.load_state_dict(torch.load('blockblock.pt')) # filename is temporary use user ID in future
-
-# loop
-# while True:
-#     # step 4: windowing
-#     sample,timestamp = inlet.pull_sample() 
-
-#     overlap_win = int((1 - overlap) * window)
-#     if overlap_win < 1:
-#         raise Exception("overlap is too large")
-
-
-#     y_win[0, :] = sample[0:8] # EEG data 1
-#     t_win[0] = (i)/250 # Counter from EEG cap in seconds
-
-#     y_win = np.roll(y_win, -1)
-#     t_win = np.roll(t_win, -1)
-
-#     if i % window == 0 and i != window and i != 0:
-#         # step 5: filtering
-#         y_win_filt = filter(y_win)
-
-#         # step 6: Send data to GUI
-#         # *** omited for testing *** Update: not necessary
-
-#         # step 7: Classify window
-#         with torch.no_grad():
-#             torch_data = torch.from_numpy(y_win_filt).unsqueeze(0).unsqueeze(0)
-#             model.eval()
-#             output_vector = model(torch_data.to(device, dtype=torch.float))
-#             classify_result = torch.max(output_vector, dim=1)[1][0].item() 
-
-#             # # step 8: Output classification
-#             # print(classify_result)
-
-#     i += 1
+# step 0: initialize lsl 
+streams = resolve_stream()
+inlet = StreamInlet(streams[0])
+# step 1: read user id
+user_id = input()
+# step 2: load corresponding model
+# *** up to machine learning group to implement
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = escargot().to(device)
+model.load_state_dict(torch.load('blockblock.pt')) # filename is temporary use user ID in future
+#loop
+while True:
+    # step 4: windowing
+    sample,timestamp = inlet.pull_sample() 
+    overlap_win = int((1 - overlap) * window)
+    if overlap_win < 1:
+        raise Exception("overlap is too large")
+    y_win[0, :] = sample[0:8] # EEG data 1
+    t_win[0] = (i)/250 # Counter from EEG cap in seconds
+    y_win = np.roll(y_win, -1)
+    t_win = np.roll(t_win, -1)
+    if i % window == 0 and i != window and i != 0:
+        # step 5: filtering
+        y_win_filt = filter(y_win)
+        # step 6: Send data to GUI
+        # *** omited for testing *** Update: not necessary
+        # step 7: Classify window
+        with torch.no_grad():
+            torch_data = torch.from_numpy(y_win_filt).unsqueeze(0).unsqueeze(0)
+            model.eval()
+            output_vector = model(torch_data.to(device, dtype=torch.float))
+            classify_result = torch.max(output_vector, dim=1)[1][0].item() 
+            # # step 8: Output classification
+            # print(classify_result)
+    i += 1
 
