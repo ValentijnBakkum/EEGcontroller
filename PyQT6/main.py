@@ -1614,20 +1614,24 @@ class Game(QFrame):
             # reset direction until new move button is pressed
             self.direction = -1
 
-    # def read_prediction(self):
-    #     #prediction = classifyProcess.stdout.read1(1).decode("utf-8")
-    #     if prediction == '':
-    #         self.direction = -1
-    #         return
+    def read_prediction(self):
+        prediction = self.main.classify_result
+        if prediction == '':
+            self.direction = -1
+            return
+        else:
+            self.main.classify_result = -1
 
-    #     prediction = int(prediction)
 
-    #     if prediction == 0:
-    #         self.direction = 0
-    #     elif prediction == 1:
-    #         self.direction = 1
-    #     else:
-    #         self.spawn_bullet = True
+        prediction = int(prediction)
+
+        if prediction == 0:
+            self.direction = 0
+        elif prediction == 1:
+            self.direction = 1
+        elif prediction != -1:
+            self.spawn_bullet = True
+
 
     # time event method
     def timerEvent(self, event):
@@ -1636,7 +1640,7 @@ class Game(QFrame):
         else:
             # checking timer id
             if event.timerId() == self.timer.timerId():
-                #self.read_prediction()
+                self.read_prediction()
                 # if the player is not gameover
                 if self.game_active:
                     # move the player and spawn meteors and bullets if needed
