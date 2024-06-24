@@ -1142,7 +1142,7 @@ class UserWindow(QMainWindow):
             if self.classify_result == '':
                 return
 
-            prediction = int(prediction)
+            self.classify_result = int(self.classify_result)
 
             self.step = 40  # Define step size for movement
 
@@ -1291,28 +1291,28 @@ class LavaGame(QMainWindow):
                 cell_widget.setStyleSheet("background-color: white; border: 1px solid black;")
                 self.grid_layout.addWidget(cell_widget, row, col + 2)  # Offset by 2 to skip the empty columns
 
-    def timerEvent(self, event):
-        if not self.game_over and event.timerId() == self.timer.timerId():
-            #prediction = classifyProcess.stdout.read1(1).decode("utf-8")
-            if prediction == '':
-                return
+    # def timerEvent(self, event):
+    #     if not self.game_over and event.timerId() == self.timer.timerId():
+    #         #prediction = classifyProcess.stdout.read1(1).decode("utf-8")
+    #         if prediction == '':
+    #             return
 
-            prediction = int(prediction)
+    #         prediction = int(prediction)
 
-            self.step = 40  # Define step size for movement
+    #         self.step = 40  # Define step size for movement
 
-            if prediction == 3:
-                if self.player.y() - self.step + 10 > 0:
-                    self.player.move(self.player.x(), self.player.y() - self.step)
-            elif prediction == 0:
-                if self.player.x() - self.step > self.width()/6:
-                    self.player.move(self.player.x() - self.step, self.player.y())
-            elif prediction == 2:
-                if self.player.y() + self.step < (self.height() - self.player.height()):
-                    self.player.move(self.player.x(), self.player.y() + self.step)
-            elif prediction == 1:
-                if self.player.x() + self.step < (self.width() - self.player.width())-self.width()/6:
-                    self.player.move(self.player.x() + self.step, self.player.y())
+    #         if prediction == 3:
+    #             if self.player.y() - self.step + 10 > 0:
+    #                 self.player.move(self.player.x(), self.player.y() - self.step)
+    #         elif prediction == 0:
+    #             if self.player.x() - self.step > self.width()/6:
+    #                 self.player.move(self.player.x() - self.step, self.player.y())
+    #         elif prediction == 2:
+    #             if self.player.y() + self.step < (self.height() - self.player.height()):
+    #                 self.player.move(self.player.x(), self.player.y() + self.step)
+    #         elif prediction == 1:
+    #             if self.player.x() + self.step < (self.width() - self.player.width())-self.width()/6:
+    #                 self.player.move(self.player.x() + self.step, self.player.y())
 
 
     def create_player(self):
@@ -1575,20 +1575,20 @@ class Game(QFrame):
             # reset direction until new move button is pressed
             self.direction = -1
 
-    def read_prediction(self):
-        #prediction = classifyProcess.stdout.read1(1).decode("utf-8")
-        if prediction == '':
-            self.direction = -1
-            return
+    # def read_prediction(self):
+    #     #prediction = classifyProcess.stdout.read1(1).decode("utf-8")
+    #     if prediction == '':
+    #         self.direction = -1
+    #         return
 
-        prediction = int(prediction)
+    #     prediction = int(prediction)
 
-        if prediction == 0:
-            self.direction = 0
-        elif prediction == 1:
-            self.direction = 1
-        else:
-            self.spawn_bullet = True
+    #     if prediction == 0:
+    #         self.direction = 0
+    #     elif prediction == 1:
+    #         self.direction = 1
+    #     else:
+    #         self.spawn_bullet = True
 
     # time event method
     def timerEvent(self, event):
@@ -1597,7 +1597,7 @@ class Game(QFrame):
         else:
             # checking timer id
             if event.timerId() == self.timer.timerId():
-                self.read_prediction()
+                #self.read_prediction()
                 # if the player is not gameover
                 if self.game_active:
                     # move the player and spawn meteors and bullets if needed
