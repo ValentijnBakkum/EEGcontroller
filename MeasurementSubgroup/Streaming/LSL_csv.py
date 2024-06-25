@@ -41,9 +41,9 @@ while True:
    inlet = StreamInlet(streams[0])
 
    print("R")  # R for ready
-   recieved = input()
+   received = input()
    logger.info("Received1")
-   logger.info(recieved)
+   logger.info(received)
 
    try:
       current_id = int(received)  # Convert the received input to an integer
@@ -113,7 +113,7 @@ while True:
       # Add column to the data_df called label
       data_df["Label"] = label  # add new column to the Dataframe
       data_df.to_csv(
-         'Data/' + current_id + '/EEGdata-' + now.strftime("%Y-%j--%H-%M-%S") + '.csv',
+         'Data/' + str(current_id) + '/EEGdata-' + now.strftime("%Y-%j--%H-%M-%S") + '.csv',
          index=False)
 
       # ICA filtering
