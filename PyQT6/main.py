@@ -712,11 +712,11 @@ class MainWindow(QMainWindow):
                 self.ydata[k][-plot_samples:] = self.y_win_filt2[-plot_samples:,k]
                 self.lines[k].setData(self.xdata, self.ydata[k])
 
-            self.power_band.setOpts(height=self.yBarGraph, brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
 
             if self.startFFT and not self.done_recording:
                 self.FFT_plot.setData(self.xf, self.y_fft2)
                 self.FFT_plot.setPen(pg.mkPen(self.pastel_colors[self.channel - 1], width = 2))
+                self.power_band.setOpts(height=self.yBarGraph, brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
 
         self.i += 1
 
