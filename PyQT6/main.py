@@ -71,7 +71,8 @@ class classificationWorker(QObject):
 
         return y_filtered
 
-    def run(self):
+    def run(self, main):
+        self.main = main
         #   Window settings
         window = 529
         overlap = 0
@@ -108,6 +109,7 @@ class classificationWorker(QObject):
 
         # Construct the full file path
         full_file_path = os.path.join(models_directory, file_name)
+        print(full_file_path)
 
         model.load_state_dict(torch.load(full_file_path, map_location=torch.device('cpu')))
         #loop
@@ -326,9 +328,7 @@ class MainWindow(QMainWindow):
 
         # ML plots
         self.accuracy_data = np.zeros(1)
-        self.accuracy_data_iter = np.zeros(1)
         self.loss_data = np.array([100])
-        self.loss_data_iter = np.zeros(1)
 
         # Create subplots and lines
         self.subplots = []
@@ -497,7 +497,7 @@ class MainWindow(QMainWindow):
             self.classification_thread = QThread()
             self.classification_worker = classificationWorker()
             self.classification_worker.moveToThread(self.classification_thread)
-            self.classification_thread.started.connect(self.classification_worker.run)
+            self.classification_thread.started.connect(self.classification_worker.run(self))
 
             self.classification_worker.result.connect(self.reportProgress)
 
@@ -714,7 +714,7 @@ class MainWindow(QMainWindow):
 
             self.power_band.setOpts(height=self.yBarGraph, brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
 
-            if self.startFFT:
+            if self.startFFT and not self.done_recording:
                 self.FFT_plot.setData(self.xf, self.y_fft2)
                 self.FFT_plot.setPen(pg.mkPen(self.pastel_colors[self.channel - 1], width = 2))
 
@@ -813,29 +813,39 @@ class MainWindow(QMainWindow):
 
         self.train_thread = QThread()
         self.train_worker = trainWorker(int(self.ui.batchSizeLine.text()), float(self.ui.learningRateLine.text()),
-                        int(self.ui.maxIterationLine.text()), 10, full_file_path, str(self.current_id), self, "Models/labels.pt", "Models/logits.pt")
+                        int(self.ui.maxIterationLine.text()), 10, full_file_path, str(self.current_id), self, "Models/logits.pt", "Models/labels.pt")
         self.train_worker.moveToThread(self.train_thread)
 
         self.train_thread.started.connect(self.train_worker.load_train)
         self.train_worker.finished.connect(self.train_thread.quit)
         self.train_worker.finished.connect(self.train_worker.deleteLater)
         self.train_thread.finished.connect(self.train_thread.deleteLater)
-        self.train_worker.percentage.connect(self.printProgress)
+        self.train_thread.finished.connect(self.resetPlots)
+        self.train_worker.progress_to_main.connect(self.printProgress)
+        self.train_worker.dataloading_to_main.connect(self.dataLoading)
+        self.train_worker.ML_to_main.connect(self.update_ML_plots)
         self.train_thread.start()
         self.in_training = True
 
         self.ui.dataTrainingBtn.setEnabled(False)
         self.train_thread.finished.connect(lambda: self.ui.dataTrainingBtn.setText("Train Data"))
-        self.train_thread.finished.connect(lambda: self.ui.dataTrainingBtn.setEnabled("Train Data"))
+        self.train_thread.finished.connect(lambda: self.ui.dataTrainingBtn.setEnabled(True))
 
     def printProgress(self, n):
-        self.ui.dataTrainingBtn.setText(n)
+        self.ui.dataTrainingBtn.setText(str(n))
+
+    def dataLoading(self):
+        self.ui.dataTrainingBtn.setText("Loading Data")
+
+    def resetPlots(self):
+        self.done_recording = False
+        self.startFFT = False
 
     # updating the Machine Learning plots while training
     def update_ML_plots(self, accuracy, avgloss):
         # when it's the first time after recording we want to clear the previous plots
-        accuracy = np.asarray(accuracy).flatten()
-        avgloss = np.asarray(avgloss).flatten()
+        self.accuracy_data = np.append(self.accuracy_data, accuracy)
+        self.loss_data = np.append(self.loss_data, avgloss)
 
         if self.done_recording == False:
             pen = pg.mkPen(self.pastel_colors[self.channel - 1], width=2)
@@ -845,8 +855,8 @@ class MainWindow(QMainWindow):
                 self.ui.powerBandPlot.clear()
             symbol_sign = None
             self.loss_plot = self.ui.powerBandPlot.plot(
-                list(range(len(avgloss))),
-                avgloss,
+                list(range(len(self.loss_data))),
+                self.loss_data,
                 name="Power Sensor",
                 pen=pen,
                 symbol=symbol_sign,
@@ -854,10 +864,10 @@ class MainWindow(QMainWindow):
                 symbolBrush="b",
             )
             self.ui.powerBandPlot.setYRange(0, 100)
-            self.ui.powerBandPlot.setXRange(0, int(self.ui.maxIterationLine.text()))
+            self.ui.powerBandPlot.setXRange(0, int(self.ui.maxIterationLine.text()) / 10)
             self.accuracy_plot = self.ui.FFTPlot.plot(
-                list(range(len(accuracy))),
-                accuracy,
+                list(range(len(self.accuracy_data))),
+                self.accuracy_data,
                 name="Power Sensor",
                 pen=pen,
                 symbol=symbol_sign,
@@ -865,14 +875,12 @@ class MainWindow(QMainWindow):
                 symbolBrush="b",
             )
             self.ui.FFTPlot.setYRange(0, 100)
-            self.ui.FFTPlot.setXRange(0, int(self.ui.maxIterationLine.text()))
+            self.ui.FFTPlot.setXRange(0, int(self.ui.maxIterationLine.text()) / 10)
             self.done_recording = True
 
         # update the plots with the new data
-        self.accuracy_plot.setData(list(range(len(accuracy))), accuracy)
-        self.loss_plot.setData(list(range(len(avgloss))), avgloss)
-
-        print(accuracy, avgloss)
+        self.accuracy_plot.setData(list(range(len(self.accuracy_data))), self.accuracy_data)
+        self.loss_plot.setData(list(range(len(self.loss_data))), self.loss_data)
 
     # Functions that handles the user based interface
     def ChooseUser(self, item):
@@ -1722,7 +1730,9 @@ class Game(QFrame):
 # Training thread
 # =======================================================================
 class trainWorker(QObject):
-    percentage = Signal(int)
+    progress_to_main = Signal(int)
+    dataloading_to_main = Signal()
+    ML_to_main = Signal(float, float)
     finished = Signal()
 
     def __init__(self, batch_size: int, learning_rate: float, max_iters: int, eval_interval, load_cvs: str, user_ID: str, main: MainWindow, logits_train: str, targets_train: str):
@@ -1741,7 +1751,8 @@ class trainWorker(QObject):
     def train(self):
         logits_train = torch.load(self.logits_train)
         targets_train = torch.load(self.targets_train)
-        logits_train = logits_train[:, None, :, :]
+        targets_train = targets_train - 1
+        #logits_train = logits_train[:, None, :, :]
         print(logits_train.shape)
         print(targets_train.shape)
         dataset = torch.utils.data.TensorDataset(logits_train, targets_train)
@@ -1776,14 +1787,14 @@ class trainWorker(QObject):
                     print("accuracy : {}, validation loss : {}, progress : {}%, lr : {}".format(accuracy, avgloss,
                                                                                                 int(progress),
                                                                                                 scheduler.get_last_lr()))
-                    self.percentage.emit(progress)
+                    self.progress_to_main.emit(progress)
                     avloss = []
                     if itere == 0:
                         print(" ")
                     else:
                         llist.append(avgloss)
                         acc_list.append(accuracy)
-                        self.main.update_ML_plots(acc_list, llist)
+                        self.ML_to_main.emit(float(accuracy), float(avgloss))
             else:
                 model.train()
                 inputs = model(f_list.to(self.device, dtype=torch.float))  # ,ff_list.to(device)batch_list.to(device)
@@ -1872,6 +1883,7 @@ class trainWorker(QObject):
         torch.save(combolabels, user_labels_path)
 
     def load_train(self):
+        self.dataloading_to_main.emit()
         self.dataloader()
         self.train()
 
