@@ -217,5 +217,5 @@ def ICA_filtering(file_name1):
     # Convert to csv
     ICA_data.to_csv("C:/Users/JackC/Documents/GitHub/EEGcontroller/MeasurementSubgroup/Our_measurements/Measurement_prompt_ICA/" +filename + "_ICA.csv", index = False)
 
-for file in filename_list:
-    ICA_filtering(file)
+# for file in filename_list:
+#     ICA_filtering(file)

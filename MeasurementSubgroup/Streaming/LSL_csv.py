@@ -105,7 +105,7 @@ while True:
       data_df["Label"] = label # add new column to the Dataframe
       data_df.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
 
-      # ICA filtering
+      #ICA filtering
       ICA_filtering('EEGdata-' + now.strftime("%Y-%j--%H-%M-%S"))
 
       # Get unique values in the 'number' column
