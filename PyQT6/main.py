@@ -1146,7 +1146,8 @@ class UserWindow(QMainWindow):
         count = 0
         pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0] # Fixed prompts for labeling
         recProcess.stdout.read1(1)
-        recProcess.stdin.write(b"G\n") # G for go
+        current_id = self.main.current_id
+        recProcess.stdin.write(f"{current_id}\n".encode())  # write current id to recording subprocess
         recProcess.stdin.flush()
         self.timer.start(6000)
 
