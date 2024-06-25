@@ -137,6 +137,14 @@ class classificationWorker(QObject):
                     self.classify_result = torch.max(output_vector, dim=1)[1][0].item() 
                     # step 8: Output classification
                     self.result.emit(self.classify_result)
+                    if self.classify_result == 0:
+                        self.main.ui.directionLine.setText('Left')
+                    elif self.classify_result == 1:
+                        self.main.ui.directionLine.setText('Right')
+                    elif self.classify_result == 2:
+                        self.main.ui.directionLine.setText('Down')
+                    elif self.classify_result == 3:
+                        self.main.ui.directionLine.setText('Up')
             i += 1
 
 
