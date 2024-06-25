@@ -89,12 +89,27 @@ class classificationWorker(QObject):
         streams = resolve_stream()
         inlet = StreamInlet(streams[0])
         # step 1: read user id
-        #user_id = self.main.current_id
+        user_id = self.main.current_id
         # step 2: load corresponding model
         # *** up to machine learning group to implement
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model = escargot().to(device)
-        model.load_state_dict(torch.load('blockblock.pt', map_location=torch.device('cpu'))) # filename is temporary use user ID in future
+
+        if not self.main.has_model:
+            user_id = 0
+
+        models_directory = os.path.join(os.getcwd(), 'Models')
+
+        # if models folder does not exists, create it
+        if not os.path.exists(models_directory):
+            os.makedirs(models_directory)
+
+        file_name = f"{user_id}.pt"
+
+        # Construct the full file path
+        full_file_path = os.path.join(models_directory, file_name)
+
+        model.load_state_dict(torch.load(full_file_path, map_location=torch.device('cpu')))
         #loop
         while True:
             # step 4: windowing
@@ -698,24 +713,15 @@ class MainWindow(QMainWindow):
                 self.lines[k].setData(self.xdata, self.ydata[k])
 
             self.power_band.setOpts(height=self.yBarGraph, brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
-            #self.power_band_1.setOpts(height=self.yBarGraph[0:3], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
-            #self.power_band_2.setOpts(height=self.yBarGraph[3], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
-            #self.power_band_3.setOpts(height=self.yBarGraph[4], brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
 
             if self.startFFT:
                 self.FFT_plot.setData(self.xf, self.y_fft2)
                 self.FFT_plot.setPen(pg.mkPen(self.pastel_colors[self.channel - 1], width = 2))
 
-            # Change the power band plots from channel
-            #self.yBarGraph = np.array(
-            #    [sum(self.ydata[self.channel - 1][i:i + self.av_height]) // self.av_height for i in
-            #     range(0, len(self.ydata[self.channel - 1]), self.av_height)])
-
         self.i += 1
 
         if self.i == 1000:
             print(time.time() - self.start_time)
-
 
     # For testing purposes
     def generate_random_sample(self):
@@ -940,7 +946,8 @@ class MainWindow(QMainWindow):
     def editUser(self):
         currentIndex = self.ui.usersList.currentRow()
         item = self.ui.usersList.item(currentIndex)
-        if(item.text() == "No user"):
+
+        if item.text() == "No user":
             self.show_message("Edit Error", "Cannot change the No user account!")
             return
         if item is not None:
@@ -1064,7 +1071,6 @@ class MainWindow(QMainWindow):
         elif event.key() == Qt.Key.Key_8:
             #self.yBarGraph = np.array([sum(self.ydata[7][i:i+self.av_height])//self.av_height for i in range(0,len(self.ydata[7]),self.av_height)])
             self.channel = 8
-        
 
         # to simulate the accuracy plot
         if event.key() == Qt.Key_P:
@@ -1082,9 +1088,10 @@ class MainWindow(QMainWindow):
         except:
             pass
 
-#=======================================================================
+
+# =======================================================================
 # User Window class
-#=======================================================================
+# =======================================================================
 class UserWindow(QMainWindow):
     def __init__(self, main_window):
         super(UserWindow, self).__init__()
@@ -1227,9 +1234,10 @@ class UserWindow(QMainWindow):
     def closeEvent(self, event):
         recProcess.kill()
 
-#=======================================================================
+
+# =======================================================================
 # Lava Game window class
-#=======================================================================
+# =======================================================================
 class LavaGame(QMainWindow):
     def __init__(self, main):
         super().__init__()
@@ -1635,8 +1643,6 @@ class Game(QFrame):
         elif prediction != -1:
             self.spawn_bullet = True
 
-
-
     # time event method
     def timerEvent(self, event):
         if self.width() < 500:
@@ -1712,12 +1718,13 @@ class Game(QFrame):
                     self.score += 1
 
 
-#=======================================================================
+# =======================================================================
 # Training thread
-#=======================================================================
+# =======================================================================
 class trainWorker(QObject):
     percentage = Signal(int)
     finished = Signal()
+
     def __init__(self, batch_size: int, learning_rate: float, max_iters: int, eval_interval, load_cvs: str, user_ID: str, main: MainWindow, logits_train: str, targets_train: str):
         super().__init__()
         self.batch_size = batch_size
@@ -1869,14 +1876,14 @@ class trainWorker(QObject):
         self.train()
 
 
-
 def show_main_window():
     window1.showMaximized()
     window1.show()
 
     splash.finish(window1)
 
-#Creates the app and runs the Mainwindow
+
+# Creates the app and runs the Mainwindow
 if __name__ == "__main__":
 
     path = './users.csv'
@@ -1887,7 +1894,6 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
 
-    
     splash = SplashScreen()
     splash.show()
 
