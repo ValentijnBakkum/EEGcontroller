@@ -812,6 +812,7 @@ class MainWindow(QMainWindow):
 
         new_directory = os.path.join(os.getcwd(), 'Data')
         new_directory = os.path.join(new_directory, str(self.current_id))
+        new_directory = os.path.join(new_directory, "ICA")
 
         if not os.path.exists(new_directory):
             self.show_message("Train Error", "There are no recordings made for this user!")
