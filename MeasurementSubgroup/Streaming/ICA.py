@@ -133,29 +133,38 @@ def ICA_filtering(file_name1):
         reconst_raw_array = reconst_raw[:][0].T
 
         for channel in range(8):
-            # assign raw and reconstructed signal to variables
-            signal1 = raw_array[:,channel]
-            signal2 = reconst_raw_array[:,channel]
+            for j in range (6):
+                # assign raw and reconstructed signal to variables
+                signal1 = raw_array[12000*j : 12000*(j+1),channel]
+                signal2 = reconst_raw_array[12000*j : 12000*(j+1),channel]
 
-            # calculate the minimum and maximum of both signals to determine peaks
-            max1 = np.max(signal1)
-            max2 = np.max(signal2)
-            min1 = np.min(signal1)
-            min2 = np.min(signal2)
+                # calculate the minimum and maximum of both signals to determine peaks
+                max1 = np.max(signal1)
+                max2 = np.max(signal2)
+                min1 = np.min(signal1)
+                min2 = np.min(signal2)
 
-            mean1 = np.mean(signal1)
+                # calculate variance 
+                vars1 = np.var(signal1)
+                vars2 = np.var(signal2)
 
-            # Calculate the difference betweeen man and min of both signals
-            dif1 = max1 - min1
-            dif2 = max2 - min2
+                # calculate standard deviation 
+                std1 = np.std(signal1)
+                std2 = np.std(signal2)
 
-            # Append to list
-            dif_l1.append(dif1 - dif2)
+                print(std1)
 
-        bad_channels = [i for i, value in enumerate(dif_l1) if value > 50]
-        if len(bad_channels) > 0:
-            bad_channels_l.append(i)
-        
+                # # Calculate the difference betweeen man and min of both signals
+                dif1 = max1 - min1
+                dif2 = max2 - min2
+
+                # # Append to list
+                # dif_l1.append(dif2-dif1)
+
+                # use combination of amplitude difference, variance difference and sd difference to determine faulty channels
+                if std1 - std2 > 9 or dif2*3.5 < dif1 or dif1 - dif2 > 200 and std2 >20:
+                    bad_channels_l.append(i)
+
         # # plot the original and ICA filtered signal
         # x1 = np.linspace(0, end/fs, end, endpoint=True)
 
@@ -176,6 +185,8 @@ def ICA_filtering(file_name1):
         
     # Change the indices which needs to be removed based on the plots and bad channels
     ica.exclude = bad_channels_l  # indices chosen based on various plots above
+
+    print(bad_channels_l)
 
     # ica.apply() changes the Raw object in-place, so let's make a copy first:
     reconst_raw = raw.copy()
@@ -217,5 +228,5 @@ def ICA_filtering(file_name1):
     # Convert to csv
     ICA_data.to_csv("C:/Users/JackC/Documents/GitHub/EEGcontroller/MeasurementSubgroup/Our_measurements/Measurement_prompt_ICA/" +filename + "_ICA.csv", index = False)
 
-# for file in filename_list:
-#     ICA_filtering(file)
+for file in filename_list:
+    ICA_filtering(file)
