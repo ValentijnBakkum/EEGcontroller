@@ -360,26 +360,19 @@ class MainWindow(QMainWindow):
         self.xLabels = ['Delta', 'Theta', 'Alpha', 'Beta', 'Gamma']
         self.xBarGraph = list(range(1,len(self.xLabels)+1))
 
-        ticks=[]
-        for i, item in enumerate(self.xLabels):
-            ticks.append( (self.xBarGraph[i], item) )
-        ticks = [ticks]
-
         self.power_band = pg.BarGraphItem(x=self.xBarGraph, height = self.yBarGraph, width = 1, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        #self.power_band_1= pg.BarGraphItem(x=self.xBarGraph[0:3], height = self.yBarGraph[0:3], width = 4, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        #self.power_band_2 = pg.BarGraphItem(x=self.xBarGraph[3], height = self.yBarGraph[3], width = 18, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
-        #self.power_band_3 = pg.BarGraphItem(x=self.xBarGraph[4], height = self.yBarGraph[4], width = 20, brush = QColor(0, 166, 214), pen=QColor(255, 255, 255))
         self.ui.powerBandPlot.addItem(self.power_band)
-        #self.ui.powerBandPlot.addItem(self.power_band_1)
-        #self.ui.powerBandPlot.addItem(self.power_band_2)
-        #self.ui.powerBandPlot.addItem(self.power_band_3)
-        self.ui.powerBandPlot.setYRange(0, 100)
-        ax = self.ui.powerBandPlot.getAxis('bottom')
-        ax.setTicks(ticks)
-        #self.ui.powerBandPlot.setXRange(0, 50)
+        self.ui.powerBandPlot.getPlotItem().getAxis('bottom').setTicks([[(i, self.xLabels[i-1]) for i in self.xBarGraph]])
+        self.ui.powerBandPlot.setYRange(0, 2)
+        self.ui.powerBandPlot.setXRange(0.5, 5.5)
         self.ui.powerBandPlot.setMouseEnabled(x=False, y=True)
         self.ui.powerBandPlot.setMenuEnabled(False)
         self.ui.powerBandPlot.hideButtons()
+        # Set axis labels after updating the data
+        self.ui.powerBandPlot.getAxis('bottom').setLabel('Frequency Band')  # Set bottom axis label
+        self.ui.powerBandPlot.getAxis('left').setLabel('Power Density [V^2/Hz]')  # Set left axis label
+        self.ui.FFTPlot.getAxis('bottom').setLabel('Frequency [Hz]')
+        self.ui.FFTPlot.getAxis('left').setLabel('Amplitude [uV]')
 
         self.start_time = time.time()
 
@@ -515,15 +508,9 @@ class MainWindow(QMainWindow):
         self.classify_result = n
     
     def setTrainPage(self):
-            self.classification_thread.quit
-            self.classification_worker.deleteLater
-            self.classification_thread.deleteLater
             self.userWindow_to_trainingPage.emit()
 
     def setPromptPage(self):
-            self.classification_thread.quit
-            self.classification_worker.deleteLater
-            self.classification_thread.deleteLater
             self.userWindow_to_promptPage.emit()
             self.ui.stopwatch.setText("0.0") # Reset timer
             self.flag = False
@@ -768,9 +755,6 @@ class MainWindow(QMainWindow):
         self.LavaGame = LavaGame
 
     def openLavaGame(self):
-        self.classification_thread.quit
-        self.classification_worker.deleteLater
-        self.classification_thread.deleteLater
         self.LavaGame.showMaximized()
         self.userWindow.hide()
 
@@ -845,10 +829,26 @@ class MainWindow(QMainWindow):
 
     def dataLoading(self):
         self.ui.dataTrainingBtn.setText("Loading Data")
+        self.ui.powerBandPlot.getAxis('bottom').setLabel('Progress')  # Set bottom axis label
+        self.ui.powerBandPlot.getAxis('left').setLabel('Loss')  # Set left axis label
+        self.ui.FFTPlot.getAxis('bottom').setLabel('Progress')
+        self.ui.FFTPlot.getAxis('left').setLabel('Accuracy')
 
     def resetPlots(self):
         self.done_recording = False
         self.startFFT = False
+        self.ui.FFTPlot.clear()
+        self.ui.powerBandPlot.clear()
+        self.ui.powerBandPlot.addItem(self.power_band)
+        self.ui.powerBandPlot.getPlotItem().getAxis('bottom').setTicks([[(i, self.xLabels[i-1]) for i in self.xBarGraph]])
+        self.ui.powerBandPlot.setYRange(0, 2)
+        self.ui.powerBandPlot.setXRange(0.5, 5.5)
+        self.ui.FFTPlot.setXRange(0, 60)
+        self.ui.FFTPlot.enableAutoRange(axis='y', enable=True)
+        self.ui.powerBandPlot.getAxis('bottom').setLabel('Frequency Band')  # Set bottom axis label
+        self.ui.powerBandPlot.getAxis('left').setLabel('Power Density [V^2/Hz]')  # Set left axis label
+        self.ui.FFTPlot.getAxis('bottom').setLabel('Frequency [Hz]')
+        self.ui.FFTPlot.getAxis('left').setLabel('Amplitude [uV]')
 
     # updating the Machine Learning plots while training
     def update_ML_plots(self, accuracy, avgloss):
@@ -860,8 +860,16 @@ class MainWindow(QMainWindow):
             pen = pg.mkPen(self.pastel_colors[self.channel - 1], width=2)
             # if the FFT and frequency band plots were used, clear them
             if self.startFFT:
-                self.FFT_plot.clear()
+                self.ui.FFTPlot.clear()
                 self.ui.powerBandPlot.clear()
+                # Reinitialize powerBandPlot axis
+                self.ui.powerBandPlot.setAxisItems({
+                'bottom': pg.AxisItem('bottom'),
+                'left': pg.AxisItem('left')
+                })
+                self.ui.powerBandPlot.setYRange(0, 100)
+                self.ui.powerBandPlot.setXRange(0, int(self.ui.maxIterationLine.text()) / 10)
+
             symbol_sign = None
             self.loss_plot = self.ui.powerBandPlot.plot(
                 list(range(len(self.loss_data))),
@@ -872,8 +880,6 @@ class MainWindow(QMainWindow):
                 symbolSize=5,
                 symbolBrush="b",
             )
-            self.ui.powerBandPlot.setYRange(0, 100)
-            self.ui.powerBandPlot.setXRange(0, int(self.ui.maxIterationLine.text()) / 10)
             self.accuracy_plot = self.ui.FFTPlot.plot(
                 list(range(len(self.accuracy_data))),
                 self.accuracy_data,
@@ -1833,20 +1839,18 @@ class trainWorker(QObject):
         full_file_path = os.path.join(models_directory, file_name)
 
         # Check if a file with the same name already exists in the 'models' directory
-        file_exists = os.path.isfile(full_file_path)
+        #file_exists = os.path.isfile(full_file_path)
 
-        if file_exists:
-            reply = QMessageBox.question(
-                self.main,
-                'File Exists',
-                f"A model already exists for this user. Do you want to overwrite it?",
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                QMessageBox.StandardButton.No
-            )
+        # if file_exists:
+        #     reply = QMessageBox.question(
+        #         None,
+        #         "File Exist",
+        #         "A model already exists for this user. Do you want to overwrite it?",
+        #         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
 
-            if reply == QMessageBox.StandardButton.No:
-                self.main.show_message("Save Canceled", "The existing model was not overwritten.")
-                return
+        #     if reply == QMessageBox.StandardButton.No:
+        #         self.main.show_message("Save Canceled", "The existing model was not overwritten.")
+        #         return
 
         torch.save(model.state_dict(), full_file_path)
         self.main.has_model = True
