@@ -19,6 +19,7 @@ finished = False
 #columns=['Time','FZ', 'C3', 'CZ', 'C4', 'PZ', 'PO7', 'OZ', 'PO8','AccX','AccY','AccZ','Gyro1','Gyro2','Gyro3', 'Battery','Counter','Validation']
 columns = ['FZ', 'C3', 'CZ', 'C4', 'PZ', 'PO7', 'OZ', 'PO8', 'Counter','Validation']
 columns_index_dict = {'FZ': 0, 'C3': 1, 'CZ': 2, 'C4': 3,'PZ': 4, 'PO7': 5, 'OZ': 6, 'PO8': 7, 'Counter': 15, 'Validation': 16}
+columns_index_dict = {'FZ': 0, 'C3': 1, 'CZ': 2, 'C4': 3, 'PZ': 4, 'PO7': 5, 'OZ': 6, 'PO8': 7, 'Counter': 15,
 
 pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0]
 pageNumber = 0

@@ -74,10 +74,11 @@ filename_list = [
 'EEGdata-2024-162--11-28-38',
 'EEGdata-2024-162--11-35-23']
 
-def ICA_filtering(file_name1):
+def ICA_filtering(user_id, file_name1):
     # Select file from measurement
     # Change next to lines if needed
     path = "C:/Users/JackC/Documents/GitHub/EEGcontroller/MeasurementSubgroup/Our_measurements/Measurement_prompt/"
+    path = "Data/" + user_id + '/'
     filename = file_name1
 
     df = pd.read_csv(path+filename + ".csv", sep=",")
@@ -226,7 +227,7 @@ def ICA_filtering(file_name1):
     ICA_data = pd.concat([ICA_data, columns_add], axis=1)
 
     # Convert to csv
-    ICA_data.to_csv("C:/Users/JackC/Documents/GitHub/EEGcontroller/MeasurementSubgroup/Our_measurements/Measurement_prompt_ICA/" +filename + "_ICA.csv", index = False)
+    ICA_data.to_csv("Data/"+ user_id + '/ICA/' + filename + "_ICA.csv", index = False)
 
 # for file in filename_list:
 #     ICA_filtering(file)
