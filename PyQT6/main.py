@@ -750,7 +750,7 @@ class MainWindow(QMainWindow):
         ERDS_process = subprocess.Popen(["python", "-u", "MeasurementSubgroup/ERDS_plots/ERDS_for_GUI.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
 
         # Start a timer to check for the signal file
-        self.check_timer.start(6000)
+        self.check_timer.start(500)
 
     # Set and open Lava Game Window functions
     def setLavaGameWindow(self, LavaGame):
@@ -1115,7 +1115,7 @@ class UserWindow(QMainWindow):
         recProcess.stdout.read1(1)
         recProcess.stdin.write(b"G\n") # G for go
         recProcess.stdin.flush()
-        self.timer.start(500)
+        self.timer.start(6000)
 
     def changePages(self):
         if self.ui.demosPages.currentWidget() == self.ui.trainingPage:
