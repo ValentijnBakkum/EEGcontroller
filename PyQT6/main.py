@@ -750,7 +750,7 @@ class MainWindow(QMainWindow):
         ERDS_process = subprocess.Popen(["python", "-u", "MeasurementSubgroup/ERDS_plots/ERDS_for_GUI.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
 
         # Start a timer to check for the signal file
-        self.check_timer.start(500)
+        self.check_timer.start(6000)
 
     # Set and open Lava Game Window functions
     def setLavaGameWindow(self, LavaGame):
