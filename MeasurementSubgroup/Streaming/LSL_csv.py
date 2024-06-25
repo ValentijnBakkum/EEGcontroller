@@ -6,6 +6,8 @@ import pandas as pd
 import numpy as np
 import logging
 
+from ICA import ICA_filtering
+
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename = "test.log", level = logging.INFO)
 logger.info('Started')
@@ -22,7 +24,7 @@ pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0]
 pageNumber = 0
 
 # prompt time settings
-prompt_time = 6 # time of each prompt in seconds
+prompt_time = 0.5 # time of each prompt in seconds
 promptsamples = prompt_time * 48 * 250 # amount of samples of each recording (time * amount of prompts * sampling rate + 5 samples as buffer)
 
 # 1. Right hand, 2. Left hand, 3. Tongue, 4. Feet, 0. Rest
@@ -103,6 +105,9 @@ while True:
       data_df["Label"] = label # add new column to the Dataframe
       data_df.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-' + now.strftime("%Y-%j--%H-%M-%S") + '.csv', index = False)
 
+      # ICA filtering
+      ICA_filtering('EEGdata-' + now.strftime("%Y-%j--%H-%M-%S"))
+
       # Get unique values in the 'number' column
       unique_values = data_df['Label'].unique()[1:]
       subsets = {}
@@ -131,6 +136,7 @@ while True:
       # Add column to the data_df called label
       data_df["Label"] = label # add new column to the Dataframe
       data_df.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-' + now.strftime("%Y-%j--%H-%M-%S") + '_STOP.csv', index = False)
+      
 
    inlet.close_stream()
 

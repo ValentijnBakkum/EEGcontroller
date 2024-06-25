@@ -1115,7 +1115,7 @@ class UserWindow(QMainWindow):
         recProcess.stdout.read1(1)
         recProcess.stdin.write(b"G\n") # G for go
         recProcess.stdin.flush()
-        self.timer.start(6000)
+        self.timer.start(500)
 
     def changePages(self):
         if self.ui.demosPages.currentWidget() == self.ui.trainingPage:
