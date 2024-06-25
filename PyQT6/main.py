@@ -480,11 +480,11 @@ class MainWindow(QMainWindow):
     def setCursorPage(self):
             self.userWindow_to_cursorPage.emit()
             self.classification_thread = QThread()
-            self.worker = classificationWorker()
-            self.worker.moveToThread(self.classification_thread)
-            self.classification_thread.started.connect(self.worker.run)
+            self.classification_worker = classificationWorker()
+            self.classification_worker.moveToThread(self.classification_thread)
+            self.classification_thread.started.connect(self.classification_worker.run)
 
-            self.worker.result.connect(self.reportProgress)
+            self.classification_worker.result.connect(self.reportProgress)
 
             self.classification_thread.start()
 
@@ -493,13 +493,13 @@ class MainWindow(QMainWindow):
     
     def setTrainPage(self):
             self.classification_thread.quit
-            self.worker.deleteLater
+            self.classification_worker.deleteLater
             self.classification_thread.deleteLater
             self.userWindow_to_trainingPage.emit()
 
     def setPromptPage(self):
             self.classification_thread.quit
-            self.worker.deleteLater
+            self.classification_worker.deleteLater
             self.classification_thread.deleteLater
             self.userWindow_to_promptPage.emit()
             self.ui.stopwatch.setText("0.0") # Reset timer
@@ -736,9 +736,6 @@ class MainWindow(QMainWindow):
 
     # Set and open ERDS Window functions
     def openERDSWindow(self):
-        self.classification_thread.quit
-        self.worker.deleteLater
-        self.classification_thread.deleteLater
         self.ui.ERDSBtn.setText("Loading")
         self.ui.ERDSBtn.setEnabled(False)
 
@@ -758,7 +755,7 @@ class MainWindow(QMainWindow):
 
     def openLavaGame(self):
         self.classification_thread.quit
-        self.worker.deleteLater
+        self.classification_worker.deleteLater
         self.classification_thread.deleteLater
         self.LavaGame.showMaximized()
         self.userWindow.hide()
@@ -769,7 +766,7 @@ class MainWindow(QMainWindow):
 
     def openAsteroid(self):
         self.classification_thread.quit
-        self.worker.deleteLater
+        self.classification_worker.deleteLater
         self.classification_thread.deleteLater
         self.Asteroid.showMaximized()
         self.userWindow.hide()
@@ -808,13 +805,28 @@ class MainWindow(QMainWindow):
         if not os.path.exists(new_directory):
             self.show_message("Train Error", "There are no recordings made for this user!")
             return
-
+        
         full_file_path = os.path.join(new_directory, new_directory)
-        trainer = train(int(self.ui.batchSizeLine.text()), float(self.ui.learningRateLine.text()),
-                        int(self.ui.maxIterationLine.text()), 10, full_file_path, str(self.current_id), self)
-        trainer.dataloader()
-        trainer.train("own.pt", "owntargets.pt")
+
+        self.train_thread = QThread()
+        self.train_worker = trainWorker(int(self.ui.batchSizeLine.text()), float(self.ui.learningRateLine.text()),
+                        int(self.ui.maxIterationLine.text()), 10, full_file_path, str(self.current_id), self, "Models/labels.pt", "Models/logits.pt")
+        self.train_worker.moveToThread(self.train_thread)
+
+        self.train_thread.started.connect(self.train_worker.load_train)
+        self.train_worker.finished.connect(self.train_thread.quit)
+        self.train_worker.finished.connect(self.train_worker.deleteLater)
+        self.train_thread.finished.connect(self.train_thread.deleteLater)
+        self.train_worker.percentage.connect(self.printProgress)
+        self.train_thread.start()
         self.in_training = True
+
+        self.ui.dataTrainingBtn.setEnabled(False)
+        self.train_thread.finished.connect(lambda: self.ui.dataTrainingBtn.setText("Train Data"))
+        self.train_thread.finished.connect(lambda: self.ui.dataTrainingBtn.setEnabled("Train Data"))
+
+    def printProgress(self, n):
+        self.ui.dataTrainingBtn.setText(n)
 
     # updating the Machine Learning plots while training
     def update_ML_plots(self, accuracy, avgloss):
@@ -1711,10 +1723,13 @@ class Game(QFrame):
         #classifyProcess.kill()
 
 #=======================================================================
-# train model on recorded data
+# Training thread
 #=======================================================================
-class train():
-    def __init__(self, batch_size: int, learning_rate: float, max_iters: int, eval_interval, load_cvs: str, user_ID: str, main: MainWindow):
+class trainWorker(QObject):
+    percentage = Signal(int)
+    finished = Signal()
+    def __init__(self, batch_size: int, learning_rate: float, max_iters: int, eval_interval, load_cvs: str, user_ID: str, main: MainWindow, logits_train: str, targets_train: str):
+        super().__init__()
         self.batch_size = batch_size
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.learning_rate = learning_rate
@@ -1723,10 +1738,12 @@ class train():
         self.load = load_cvs
         self.user_ID = user_ID
         self.main = main
+        self.logits_train = logits_train
+        self.targets_train = targets_train
 
-    def train(self, logits_train, targets_train):
-        logits_train = torch.load(logits_train)
-        targets_train = torch.load(targets_train)
+    def train(self):
+        logits_train = torch.load(self.logits_train)
+        targets_train = torch.load(self.targets_train)
         logits_train = logits_train[:, None, :, :]
         print(logits_train.shape)
         print(targets_train.shape)
@@ -1762,6 +1779,7 @@ class train():
                     print("accuracy : {}, validation loss : {}, progress : {}%, lr : {}".format(accuracy, avgloss,
                                                                                                 int(progress),
                                                                                                 scheduler.get_last_lr()))
+                    self.percentage.emit(progress)
                     avloss = []
                     if itere == 0:
                         print(" ")
@@ -1814,6 +1832,7 @@ class train():
 
         torch.save(model.state_dict(), full_file_path)
         self.main.has_model = True
+        self.finished.emit()
         # print(acc_list)
         # print(np.sum(acc_list)/10)
 
@@ -1854,6 +1873,10 @@ class train():
 
         torch.save(combologits, user_logits_path)
         torch.save(combolabels, user_labels_path)
+
+    def load_train(self):
+        self.dataloader()
+        self.train()
 
 
 
