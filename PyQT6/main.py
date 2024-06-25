@@ -765,9 +765,6 @@ class MainWindow(QMainWindow):
         self.Asteroid = Asteroid
 
     def openAsteroid(self):
-        self.classification_thread.quit
-        self.classification_worker.deleteLater
-        self.classification_thread.deleteLater
         self.Asteroid.showMaximized()
         self.userWindow.hide()
 
@@ -1525,11 +1522,6 @@ class Game(QFrame):
         # setting focus
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
 
-        # global classifyProcess
-        # classifyProcess = subprocess.Popen(["python3", "-u", "MLsubgroup/Stream_and_classify.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, )
-        # classifyProcess.stdin.write(str(self.main.current_id).encode('utf-8'))
-        # classifyProcess.stdin.flush()
-
     # start method
     def start(self):
         # starting timer
@@ -1628,12 +1620,11 @@ class Game(QFrame):
 
     def read_prediction(self):
         prediction = self.main.classify_result
+        print(prediction)
         if prediction == '':
-            self.direction = -1
             return
         else:
             self.main.classify_result = -1
-
 
         prediction = int(prediction)
 
@@ -1643,6 +1634,7 @@ class Game(QFrame):
             self.direction = 1
         elif prediction != -1:
             self.spawn_bullet = True
+
 
 
     # time event method
@@ -1714,13 +1706,11 @@ class Game(QFrame):
                 self.bullet.remove(pos)
             # if bullet collides with meteor, remove the bullet and meteor and add a point to the players score
             for pos_meteor in self.meteor[:]:
-                if pos[0] > pos_meteor[0] and pos[0] < pos_meteor[0] + self.cometSize and pos[1] < pos_meteor[1] + self.cometSize:
+                if pos_meteor[0] - 5 < pos[0] < pos_meteor[0] + self.cometSize and pos[1] < pos_meteor[1] + self.cometSize:
                     self.bullet.remove(pos)
                     self.meteor.remove(pos_meteor)
                     self.score += 1
 
-    #def closeEvent(self, event):
-        #classifyProcess.kill()
 
 #=======================================================================
 # Training thread
