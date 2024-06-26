@@ -1331,9 +1331,9 @@ class LavaGame(QMainWindow):
     # def keyPressEvent(self, event):
     #     if not self.game_over:
     #         prediction = int(classifyProcess.stdout.read1(1))
-    #
+    
     #         self.step = 40  # Define step size for movement
-    #
+    
     #         if prediction == 3:
     #             if self.player.y() - self.step + 10 > 0:
     #                 self.player.move(self.player.x(), self.player.y() - self.step)
@@ -1346,6 +1346,23 @@ class LavaGame(QMainWindow):
     #         elif prediction == 1:
     #             if self.player.x() + self.step < (self.width() - self.player.width())-self.width()/6:
     #                 self.player.move(self.player.x() + self.step, self.player.y())
+
+    def keyPressEvent(self, event):
+        
+        self.step = 40  # Define step size for movement
+
+        if event.key() == Qt.Key.Key_W:
+            if self.player.y() - self.step + 10 > 0:
+                    self.player.move(self.player.x(), self.player.y() - self.step)
+        elif event.key() == Qt.Key.Key_A:
+            if self.player.x() - self.step > self.width()/6:
+                    self.player.move(self.player.x() - self.step, self.player.y())
+        elif event.key() == Qt.Key.Key_S:
+            if self.player.y() + self.step < (self.height() - self.player.height()):
+                    self.player.move(self.player.x(), self.player.y() + self.step)
+        elif event.key() == Qt.Key.Key_D:
+            if self.player.x() + self.step < (self.width() - self.player.width())-self.width()/6:
+                    self.player.move(self.player.x() + self.step, self.player.y())
 
     def closeEvent(self, event):
         #classifyProcess.kill()
