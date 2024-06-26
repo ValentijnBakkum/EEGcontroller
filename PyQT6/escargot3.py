@@ -5,7 +5,6 @@ from torchinfo import summary
 from attentionmod import blockblock,multihead
 from bspline import spline_activation
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-#device = "cpu"
 
 #convnet decleration/architecture
 
@@ -93,6 +92,7 @@ class lstmmodule1(nn.Module):
         cell_states = torch.zeros(self.num_layers, x.size(0),self.hidden_size).to(device)
         out, (hn,cn) = self.lstm(x,(hidden_states.detach(),cell_states.detach()))
         return self.attention(hn)
+    
 
 #model
 class escargot(nn.Module):
@@ -117,11 +117,15 @@ class escargot(nn.Module):
         intermediate = self.Cnn(xr)
         intermediate = self.flatten(intermediate)
         #concatenating in one output layer
-        xlstmi = torch.squeeze(x)
+        xlstmi = torch.squeeze(x,dim=1)
+        #print(xlstmi.shape)
         #xlstmi = xlstmi[None,:,:]
+        #print(xlstmi.shape)
         xlstm = self.lstm(xlstmi)
-        xlstm = torch.squeeze(xlstm)
+        xlstm = torch.squeeze(xlstm,dim=0)
+        #print(xlstm)
         #xlstm = xlstm[None,:]
+        #print(xlstm.shape,intermediate.shape)
         intermediate = torch.cat((intermediate,xlstm),dim=1)
         return self.nn(intermediate)
     
@@ -146,11 +150,13 @@ class escargot(nn.Module):
                                 nn.Dropout(p=0.5),
                                 nn.Linear(50,4),                         
         )
-    
-
 #summary of the model
 #model = escargot().to(device)
-#summary(model, [(40,1,529,8)])
-#a = torch.rand(40,1,529,16).to(device)
+#model.load_state_dict(torch.load("C:\\Users\\Gebruiker\\Desktop\\Bap\\blockblock.pt"))
+#summary(model, [(64,1,529,8)])
+#a = torch.rand(20,1,529,8).to(device)
+#print(a)
 #b = torch.rand(40,1,40,40,16).to(device)
-#print(model(a,b))
+#model.eval()
+#a = model(a)
+#print(a)

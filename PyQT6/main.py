@@ -29,126 +29,6 @@ from scipy import signal
 from csv_to_tensor import cleaner
 
 # =======================================================================
-# Classification QThread
-# =======================================================================
-class classificationWorker(QObject):
-    result = Signal(int)
-
-    # Filter raw signal
-    def filter(self, y, low, high):
-        # Remove the DC component
-        y = signal.detrend(y, axis=0)
-
-        # Define the filter parameters
-        lowcut = low
-        highcut = high
-        fs = 250  # Sampling frequency
-
-        # Calculate the filter coefficients
-        nyquist = 0.5 * fs
-        low = lowcut / nyquist
-        high = highcut / nyquist
-        b, a = butter(4, [low, high], btype='band')
-        #zi = lfilter_zi(b,a)*y[0]
-
-        # Apply the filter to each column of the DataFram
-        y_filtered_band= lfilter(b, a, np.array(y), axis =0)
-
-        # Define the filter parameters
-        lowcut = 48
-        highcut = 52
-        fs = 250  # Sampling frequency
-
-        # Calculate the filter coefficients
-        nyquist = 0.5 * fs
-        low = lowcut / nyquist
-        high = highcut / nyquist
-        b, a = butter(4, [low, high], btype='bandstop')
-        #zi = lfilter_zi(b,a)*y[0]
-
-        # Apply the filter to each column of the DataFram
-        y_filtered= lfilter(b, a, np.array(y_filtered_band), axis =0)
-
-        return y_filtered
-
-    def run(self, main):
-        self.main = main
-        #   Window settings
-        window = 529
-        overlap = 0
-
-        #   ML settings
-
-        # initial values:
-        y_win = np.zeros((window, 8))  # window array
-        t_win = np.zeros(window)  # time array
-        t = 1
-        i = 1
-        y_out = np.empty((0, 8))
-        t_out = np.array([])
-        # step 0: initialize lsl 
-        streams = resolve_stream()
-        inlet = StreamInlet(streams[0])
-        # step 1: read user id
-        user_id = self.main.current_id
-        # step 2: load corresponding model
-        # *** up to machine learning group to implement
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        model = escargot().to(device)
-
-        if not self.main.has_model:
-            user_id = 0
-
-        models_directory = os.path.join(os.getcwd(), 'Models')
-
-        # if models folder does not exists, create it
-        if not os.path.exists(models_directory):
-            os.makedirs(models_directory)
-
-        file_name = f"{user_id}.pt"
-
-        # Construct the full file path
-        full_file_path = os.path.join(models_directory, file_name)
-        print(full_file_path)
-
-        model.load_state_dict(torch.load(full_file_path, map_location=torch.device('cpu')))
-        #loop
-        while True:
-            # step 4: windowing
-            sample,timestamp = inlet.pull_sample() 
-            overlap_win = int((1 - overlap) * window)
-            if overlap_win < 1:
-                raise Exception("overlap is too large")
-            y_win[0, :] = sample[0:8] # EEG data 1
-            t_win[0] = (i)/250 # Counter from EEG cap in seconds
-            y_win = np.roll(y_win, -1)
-            t_win = np.roll(t_win, -1)
-            if i % window == 0 and i != window and i != 0:
-                # step 5: filtering
-                y_win_filt = self.filter(y_win, 0.5, 38)
-                # step 6: Send data to GUI
-                # *** omited for testing *** Update: not necessary
-                # step 7: Classify window
-                with torch.no_grad():
-                    torch_data = torch.from_numpy(y_win_filt).unsqueeze(0).unsqueeze(0)
-                    model.eval()
-                    output_vector = model(torch_data.to(device, dtype=torch.float))
-                    print(output_vector)
-                    self.classify_result = torch.max(output_vector, dim=1)[1][0].item() 
-                    # step 8: Output classification
-                    self.result.emit(self.classify_result)
-                    if self.classify_result == 0:
-                        self.main.ui.directionLine.setText('Left')
-                    elif self.classify_result == 1:
-                        self.main.ui.directionLine.setText('Right')
-                    elif self.classify_result == 2:
-                        self.main.ui.directionLine.setText('Down')
-                    elif self.classify_result == 3:
-                        self.main.ui.directionLine.setText('Up')
-            i += 1
-
-
-# =======================================================================
 # Initialization Splashscreen
 # =======================================================================
 class SplashScreen(QSplashScreen):
@@ -496,9 +376,9 @@ class MainWindow(QMainWindow):
     def setCursorPage(self):
             self.userWindow_to_cursorPage.emit()
             self.classification_thread = QThread()
-            self.classification_worker = classificationWorker()
+            self.classification_worker = classificationWorker(self)
             self.classification_worker.moveToThread(self.classification_thread)
-            self.classification_thread.started.connect(self.classification_worker.run(self))
+            self.classification_thread.started.connect(self.classification_worker.run)
 
             self.classification_worker.result.connect(self.reportProgress)
 
@@ -1235,8 +1115,8 @@ class UserWindow(QMainWindow):
                 if self.ui.mouseCursor.x() + self.stepsize < (self.ui.cursorFrame.width() - self.ui.mouseCursor.width()):
                     self.ui.mouseCursor.move(self.ui.mouseCursor.x() + self.stepsize, self.ui.mouseCursor.y())
 
-            if self.main.classify_result != -1:
-                self.main.classify_result = -1     
+            # if self.main.classify_result != -1:
+            #     self.main.classify_result = -1     
 
     # Simulate cursor movements with WASD keys
     def keyPressEvent(self, event):
@@ -1655,8 +1535,6 @@ class Game(QFrame):
         print(prediction)
         if prediction == '':
             return
-        else:
-            self.main.classify_result = -1
 
         prediction = int(prediction)
 
@@ -1666,6 +1544,9 @@ class Game(QFrame):
             self.direction = 1
         elif prediction != -1:
             self.spawn_bullet = True
+
+        if self.main.classify_result != -1:
+            self.main.classify_result = -1    
 
     # time event method
     def timerEvent(self, event):
@@ -1900,6 +1781,130 @@ class trainWorker(QObject):
         self.dataloading_to_main.emit()
         self.dataloader()
         self.train()
+
+
+# =======================================================================
+# Classification QThread
+# =======================================================================
+class classificationWorker(QObject):
+    result = Signal(int)
+
+    def __init__(self, main: MainWindow):
+        super().__init__()
+        self.main = main
+
+    # Filter raw signal
+    def filter(self, y, low, high):
+        # Remove the DC component
+        y = signal.detrend(y, axis=0)
+
+        # Define the filter parameters
+        lowcut = low
+        highcut = high
+        fs = 250  # Sampling frequency
+
+        # Calculate the filter coefficients
+        nyquist = 0.5 * fs
+        low = lowcut / nyquist
+        high = highcut / nyquist
+        b, a = butter(4, [low, high], btype='band')
+        #zi = lfilter_zi(b,a)*y[0]
+
+        # Apply the filter to each column of the DataFram
+        y_filtered_band= lfilter(b, a, np.array(y), axis =0)
+
+        # Define the filter parameters
+        lowcut = 48
+        highcut = 52
+        fs = 250  # Sampling frequency
+
+        # Calculate the filter coefficients
+        nyquist = 0.5 * fs
+        low = lowcut / nyquist
+        high = highcut / nyquist
+        b, a = butter(4, [low, high], btype='bandstop')
+        #zi = lfilter_zi(b,a)*y[0]
+
+        # Apply the filter to each column of the DataFram
+        y_filtered= lfilter(b, a, np.array(y_filtered_band), axis =0)
+
+        return y_filtered
+
+    def run(self):
+        #   Window settings
+        window = 529
+        overlap = 0
+
+        #   ML settings
+
+        # initial values:
+        y_win = np.zeros((window, 8))  # window array
+        t_win = np.zeros(window)  # time array
+        t = 1
+        i = 1
+        y_out = np.empty((0, 8))
+        t_out = np.array([])
+        # step 0: initialize lsl 
+        streams = resolve_stream()
+        inlet = StreamInlet(streams[0])
+        # step 1: read user id
+        user_id = self.main.current_id
+        # step 2: load corresponding model
+        # *** up to machine learning group to implement
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model = escargot().to(device)
+
+        if not self.main.has_model:
+            user_id = 0
+
+        models_directory = os.path.join(os.getcwd(), 'Models')
+
+        # if models folder does not exists, create it
+        if not os.path.exists(models_directory):
+            os.makedirs(models_directory)
+
+        file_name = f"{user_id}.pt"
+
+        # Construct the full file path
+        full_file_path = os.path.join(models_directory, file_name)
+        print(full_file_path)
+
+        model.load_state_dict(torch.load(full_file_path, map_location=torch.device('cpu')))
+        #loop
+        while True:
+            # step 4: windowing
+            sample,timestamp = inlet.pull_sample() 
+            overlap_win = int((1 - overlap) * window)
+            if overlap_win < 1:
+                raise Exception("overlap is too large")
+            y_win[0, :] = sample[0:8] # EEG data 1
+            t_win[0] = (i)/250 # Counter from EEG cap in seconds
+            y_win = np.roll(y_win, -1)
+            t_win = np.roll(t_win, -1)
+            if i % window == 0 and i != window and i != 0:
+                # step 5: filtering
+                y_win_filt = self.filter(y_win, 0.5, 38)
+                # step 6: Send data to GUI
+                # *** omited for testing *** Update: not necessary
+                # step 7: Classify window
+                with torch.no_grad():
+                    torch_data = torch.from_numpy(y_win_filt).unsqueeze(0).unsqueeze(0)
+                    model.eval()
+                    output_vector = model(torch_data.to(device, dtype=torch.float))
+                    print(output_vector)
+                    self.classify_result = torch.max(output_vector, dim=1)[1][0].item() 
+                    # step 8: Output classification
+                    self.result.emit(self.classify_result)
+                    if self.classify_result == 0:
+                        self.main.ui.directionLine.setText('Left')
+                    elif self.classify_result == 1:
+                        self.main.ui.directionLine.setText('Right')
+                    elif self.classify_result == 2:
+                        self.main.ui.directionLine.setText('Down')
+                    elif self.classify_result == 3:
+                        self.main.ui.directionLine.setText('Up')
+            i += 1
+
 
 
 def show_main_window():
