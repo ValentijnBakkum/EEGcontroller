@@ -122,7 +122,7 @@ class escargot(nn.Module):
         #xlstmi = xlstmi[None,:,:]
         #print(xlstmi.shape)
         xlstm = self.lstm(xlstmi)
-        xlstm = torch.squeeze(xlstm)
+        xlstm = torch.squeeze(xlstm,dim=1)
         #print(xlstm)
         #xlstm = xlstm[None,:]
         #print(xlstm.shape,intermediate.shape)
