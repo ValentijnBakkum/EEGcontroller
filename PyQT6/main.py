@@ -215,8 +215,8 @@ class MainWindow(QMainWindow):
         self.gamma_band = (30, 50)
 
         # ML plots
-        self.accuracy_data = np.zeros(1)
-        self.loss_data = np.array([100])
+        self.accuracy_data = np.array([0])
+        self.loss_data = np.array([])
 
         # Create subplots and lines
         self.subplots = []
@@ -696,6 +696,7 @@ class MainWindow(QMainWindow):
         self.train_thread.finished.connect(self.resetPlots)
         self.train_worker.progress_to_main.connect(self.printProgress)
         self.train_worker.dataloading_to_main.connect(self.dataLoading)
+        self.train_worker.training_started.connect(self.trainingStarted)
         self.train_worker.ML_to_main.connect(self.update_ML_plots)
         self.train_thread.start()
         self.in_training = True
@@ -709,6 +710,12 @@ class MainWindow(QMainWindow):
 
     def dataLoading(self):
         self.ui.dataTrainingBtn.setText("Loading Data")
+
+    def trainingStarted(self):
+        self.ui.powerBandPlot.setAxisItems({
+                'bottom': pg.AxisItem('bottom'),
+                'left': pg.AxisItem('left')
+                })
         self.ui.powerBandPlot.getAxis('bottom').setLabel('Progress')  # Set bottom axis label
         self.ui.powerBandPlot.getAxis('left').setLabel('Loss')  # Set left axis label
         self.ui.FFTPlot.getAxis('bottom').setLabel('Progress')
@@ -743,11 +750,7 @@ class MainWindow(QMainWindow):
                 self.ui.FFTPlot.clear()
                 self.ui.powerBandPlot.clear()
                 # Reinitialize powerBandPlot axis
-                self.ui.powerBandPlot.setAxisItems({
-                'bottom': pg.AxisItem('bottom'),
-                'left': pg.AxisItem('left')
-                })
-                self.ui.powerBandPlot.setYRange(0, 100)
+                self.ui.powerBandPlot.setYRange(0, 5)
                 self.ui.powerBandPlot.setXRange(0, int(self.ui.maxIterationLine.text()) / 10)
 
             symbol_sign = None
@@ -1348,7 +1351,7 @@ class LavaGame(QMainWindow):
     #                 self.player.move(self.player.x() + self.step, self.player.y())
 
     def keyPressEvent(self, event):
-        
+
         self.step = 40  # Define step size for movement
 
         if event.key() == Qt.Key.Key_W:
@@ -1646,6 +1649,7 @@ class Game(QFrame):
 class trainWorker(QObject):
     progress_to_main = Signal(int)
     dataloading_to_main = Signal()
+    training_started = Signal()
     ML_to_main = Signal(float, float)
     finished = Signal()
 
@@ -1797,6 +1801,7 @@ class trainWorker(QObject):
     def load_train(self):
         self.dataloading_to_main.emit()
         self.dataloader()
+        self.training_started.emit()
         self.train()
 
 
