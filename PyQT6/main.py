@@ -314,7 +314,7 @@ class MainWindow(QMainWindow):
 
         # FFT and band power plots
         # Window settings
-        self.window = 1000
+        self.window = 500
         self.overlap = 0.25
         # calculate sample overlap
         self.overlap_win = int(self.overlap * self.window)
@@ -649,7 +649,7 @@ class MainWindow(QMainWindow):
 
             # zero pad the signal      
             #y_win_pad = np.pad(y_win_filt, int(0), 'constant')
-            y_win_pad2 = np.pad(windowed_signal, int(self.window/2), 'constant') # pick the channel from the number key that is pressed
+            y_win_pad2 = np.pad(windowed_signal, int(300), 'constant') # pick the channel from the number key that is pressed
             # print(y_win_pad.shape)
 
             self.xf = rfftfreq(y_win_pad2.shape[0], 1/250)

@@ -7,6 +7,13 @@ from scipy import signal
 import os
 # fastica, picard, infomax. Picard maybe better
 
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename="ICA.log", level=logging.INFO)
+logger.info('Started')
+
+
 def filter(data):
     data = signal.detrend(data, axis = 0)
 
@@ -77,9 +84,11 @@ filename_list = [
 def ICA_filtering(user_id, file_name1):
     # Select file from measurement
     # Change next to lines if needed
-    path = "C:/Users/JackC/Documents/GitHub/EEGcontroller/MeasurementSubgroup/Our_measurements/Measurement_prompt/"
+    #path = "C:/Users/JackC/Documents/GitHub/EEGcontroller/MeasurementSubgroup/Our_measurements/Measurement_prompt/"
     path = "Data/" + str(user_id) + '/'
     filename = file_name1
+
+    logger.info('Data read')
 
     df = pd.read_csv(path+filename + ".csv", sep=",")
     end = df.shape[0] # Remove 5 samples buffer at the end
@@ -88,6 +97,8 @@ def ICA_filtering(user_id, file_name1):
 
     #Apply the filters and DC component removal
     df = filter(df)
+    
+    logger.info('Data filtered')
 
     # Constants
     num_components = 8
@@ -104,6 +115,8 @@ def ICA_filtering(user_id, file_name1):
     ch_type = ['eeg' for i in range(8)]
     mne_info = mne.create_info(ch_names, float(250), ch_types=ch_type)
 
+    logger.info('MNE set')
+
     #create mne.raw object
     raw = mne.io.RawArray(channels, mne_info)
     raw.set_montage(mne.channels.make_standard_montage("standard_1005"))
@@ -111,30 +124,43 @@ def ICA_filtering(user_id, file_name1):
     #actual code
     raw.filter(0.5, 38)
 
+    logger.info('Ready for ICA')
+
     # ICA model
-    ica = mne.preprocessing.ICA(method='picard', fit_params=dict(ortho=False,extended=True), n_components=num_components, random_state=0)
+    #ica = mne.preprocessing.ICA(n_components=num_components, max_iter="auto", random_state=0)
+    ica = mne.preprocessing.ICA(method='picard', fit_params=dict(ortho=False,extended=False), n_components=num_components, max_iter=500, random_state=0)
     #ica = mne.preprocessing.ICA(method='infomax', fit_params=dict(extended=True), n_components=num_components, random_state=0)
     ica.fit(raw) # fit the model on the data
+    
+    logger.info('ICA fit')
 
     bad_channels_l = []
     i = 0
 
     # Cycle through exclude indices from 0 to 7
     for exclude_index in range(8):
-        dif_l1 = []
+        logger.info('ICA exclude chceck \n')
         # Change the indices which needs to be removed based on the plots and bad channels
         ica.exclude = [exclude_index]  # indices chosen based on various plots above
 
         # ica.apply() changes the Raw object in-place, so let's make a copy first:
         reconst_raw = raw.copy()
+        
+        logger.info('ICA exclude chceck raw copied')
         ica.apply(reconst_raw)
+
+        logger.info('ICA exclude chceck ICA papplied')
 
         # Transpose to recreate the original shape
         raw_array = raw[:][0].T
         reconst_raw_array = reconst_raw[:][0].T
 
+        logger.info('ICA exclude chceck after transpose')
+
         for channel in range(8):
+            logger.info('ICA channel chceck')
             for j in range (6):
+                logger.info('ICA channel section chceck')
                 # assign raw and reconstructed signal to variables
                 signal1 = raw_array[12000*j : 12000*(j+1),channel]
                 signal2 = reconst_raw_array[12000*j : 12000*(j+1),channel]
@@ -152,8 +178,6 @@ def ICA_filtering(user_id, file_name1):
                 # calculate standard deviation 
                 std1 = np.std(signal1)
                 std2 = np.std(signal2)
-
-                print(std1)
 
                 # # Calculate the difference betweeen man and min of both signals
                 dif1 = max1 - min1
@@ -184,18 +208,21 @@ def ICA_filtering(user_id, file_name1):
 
         i += 1
         
+    logger.info('Before bad channels')
     # Change the indices which needs to be removed based on the plots and bad channels
     ica.exclude = bad_channels_l  # indices chosen based on various plots above
 
     print(bad_channels_l)
 
     # ica.apply() changes the Raw object in-place, so let's make a copy first:
-    reconst_raw = raw.copy()
-    ica.apply(reconst_raw)
+    reconst_raw1 = raw.copy()
+    ica.apply(reconst_raw1)
+
+    logger.info('ICA applied channels gone')
 
     # Transpose to recreate the original shape
     raw_array = raw[:][0].T
-    reconst_raw_array = reconst_raw[:][0].T
+    reconst_raw_array = reconst_raw1[:][0].T
 
     # # plot the original and ICA filtered signal
     # x1 = np.linspace(0, end/fs, end, endpoint=True)
@@ -216,6 +243,8 @@ def ICA_filtering(user_id, file_name1):
     # Convert ICA signal to csv file and add columns which were removed before ICA
     ICA_data = pd.DataFrame(reconst_raw_array)
 
+    logger.info('ICA data ready to csv')
+
     # Add columns that were removed
     df = pd.read_csv(path+filename + ".csv", sep=",")
     columns_add = df[['Counter', 'Validation', 'Label']] # select the last three columns to be added
@@ -226,8 +255,13 @@ def ICA_filtering(user_id, file_name1):
     # Adding the last three columns to ICA_data
     ICA_data = pd.concat([ICA_data, columns_add], axis=1)
 
+    logger.info('ICA data ready to csv added columns')
+
     # Convert to csv
     ICA_data.to_csv("Data/"+ str(user_id) + '/ICA/' + filename + "_ICA.csv", index = False)
 
+    logger.info('ICA to csv')
+
+
 # for file in filename_list:
-#     ICA_filtering(file)
+#     ICA_filtering(1, file)

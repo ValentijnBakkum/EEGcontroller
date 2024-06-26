@@ -102,9 +102,6 @@ while True:
    data_df = pd.DataFrame.from_dict(data_dict)
    now = datetime.now()
 
-   logger.info(now)
-   logger.info(data_dict)
-
    if recieved_loop != "Stop":
       recieved1 = input()
       logger.info("Received2")
