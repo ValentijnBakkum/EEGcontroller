@@ -136,6 +136,7 @@ class MainWindow(QMainWindow):
 
         # Convert to pastel colors
         self.pastel_colors = [self.make_pastel(color) for color in colors]
+        self.current_time = time.time()
         
         # Connect a function for if the buttons are clicked
         # User page:
@@ -529,8 +530,8 @@ class MainWindow(QMainWindow):
 
             # zero pad the signal      
             #y_win_pad = np.pad(y_win_filt, int(0), 'constant')
-            y_win_pad2 = np.pad(windowed_signal, int(300), 'constant') # pick the channel from the number key that is pressed
-            # print(y_win_pad.shape)
+            y_win_pad2 = np.pad(windowed_signal, int(261), 'constant') # pick the channel from the number key that is pressed
+            # print(y_win_pad.shape) 
 
             self.xf = rfftfreq(y_win_pad2.shape[0], 1/250)
             #y_fft = np.abs(rfft(y_win_pad))
@@ -593,10 +594,9 @@ class MainWindow(QMainWindow):
                 self.FFT_plot.setPen(pg.mkPen(self.pastel_colors[self.channel - 1], width = 2))
                 self.power_band.setOpts(height=self.yBarGraph, brush=pg.mkBrush(self.pastel_colors[self.channel - 1]))
 
+            print(time.time() - self.current_time)
+            self.current_time = time.time()
         self.i += 1
-
-        if self.i == 1000:
-            print(time.time() - self.start_time)
 
     # For testing purposes
     def generate_random_sample(self):
@@ -1035,7 +1035,6 @@ class UserWindow(QMainWindow):
         current_id = self.main.current_id
         recProcess.stdin.write(f"{current_id}\n".encode())  # write current id to recording subprocess
         recProcess.stdin.flush()
-        self.timer.start(6000)
 
     def changePages(self):
         if self.ui.demosPages.currentWidget() == self.ui.trainingPage:
