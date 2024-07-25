@@ -15,6 +15,7 @@ import random
 import numpy as np
 import pandas as pd
 import time
+from datetime import datetime
 import pyqtgraph as pg
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -612,7 +613,6 @@ class MainWindow(QMainWindow):
         if self.userWindow.isVisible():
             pass
         else:
-            recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
             self.userWindow.show()
 
     # Set and open ERDS Window functions
@@ -1023,8 +1023,23 @@ class UserWindow(QMainWindow):
         self.classify_result = ''
 
         # Cap connection
-        global recProcess
-        recProcess = subprocess.Popen(["python3", "-u", "MeasurementSubgroup/Streaming/LSL_csv.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,)
+        self.recording_thread = QThread()
+        self.recording_worker = recordingWorker(self)
+        self.recording_worker.moveToThread(self.recording_thread)
+        self.recording_thread.started.connect(self.recording_worker.run)
+
+        self.go_signal = Signal()
+        self.stop_signal = Signal()
+
+        self.is_ready = False
+        self.recording_worker.ready_signal.connect(self.set_ready)
+        self.go_signal.connect(self.recording_worker.go_signal)
+        self.stop_signal.connect(self.recording_worker.stop_signal)
+
+        self.recording_thread.start()
+
+    def set_ready(self):
+        self.is_ready = True
 
     @Slot()
     def startRecording(self):
@@ -1034,10 +1049,9 @@ class UserWindow(QMainWindow):
         i = 0
         count = 0
         pageArray = [1,2,3,4 ,4,3,2,1 ,2,3,4,1 ,1,3,4,2 ,3,2,4,1 ,4,1,2,3, 0] # Fixed prompts for labeling
-        recProcess.stdout.read1(1)
-        current_id = self.main.current_id
-        recProcess.stdin.write(f"{current_id}\n".encode())  # write current id to recording subprocess
-        recProcess.stdin.flush()
+        while False == self.is_ready:
+            time.sleep(0.1)
+        self.go_signal.emit()  # emit go
 
     def changePages(self):
         if self.ui.demosPages.currentWidget() == self.ui.trainingPage:
@@ -1047,25 +1061,19 @@ class UserWindow(QMainWindow):
 
             pageNumber = pageArray[i]
 
-            recProcess.stdin.write(b"Prompt\n") # G for go
-            recProcess.stdin.flush()
-
             if count % 2 != 0:
                 self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
             else:
                 self.ui.promptsWidgets.setCurrentIndex(pageNumber)
                 i = i + 1
             if count == 47:
-                recProcess.stdin.write(b"Done\n")  # G for go
-                recProcess.stdin.flush()
                 self.timer.stop()
 
             count = count + 1
 
     @Slot()
     def stopRecording(self):
-        recProcess.stdin.write(b"Stop\n") # G for go
-        recProcess.stdin.flush()
+        self.stop_signal.emit("Stop")
         self.timer.stop()
         self.ui.promptsWidgets.setCurrentWidget(self.ui.calibrationPage)
 
@@ -1927,6 +1935,124 @@ class classificationWorker(QObject):
             i += 1
 
 
+# =======================================================================
+# Recording QThread
+# =======================================================================
+class recordingWorker(QObject):
+    ready_signal = Signal()
+    go_signal = False
+    stop_signal = "Continue"
+
+    def __init__(self, main: MainWindow):
+        super().__init__()
+        self.main = main
+
+    def set_go_signal(self):
+        self.go_signal = True
+
+    def set_stop_signal(self):
+        self.stop_signal = "Stop"
+
+    def run(self):
+        finished = False
+
+        # initialize the colomns of your data and your dictionary to capture the data.
+        # columns=['Time','FZ', 'C3', 'CZ', 'C4', 'PZ', 'PO7', 'OZ', 'PO8','AccX','AccY','AccZ','Gyro1','Gyro2','Gyro3', 'Battery','Counter','Validation']
+        columns = ['FZ', 'C3', 'CZ', 'C4', 'PZ', 'PO7', 'OZ', 'PO8', 'Counter', 'Validation']
+        columns_index_dict = {'FZ': 0, 'C3': 1, 'CZ': 2, 'C4': 3, 'PZ': 4, 'PO7': 5, 'OZ': 6, 'PO8': 7, 'Counter': 15,
+                            'Validation': 16}
+
+        pageArray = [1, 2, 3, 4, 4, 3, 2, 1, 2, 3, 4, 1, 1, 3, 4, 2, 3, 2, 4, 1, 4, 1, 2, 3, 0]
+        pageNumber = 0
+
+        # prompt time settings
+        prompt_time = 6  # time of each prompt in seconds
+        promptsamples = prompt_time * 48 * 250  # amount of samples of each recording (time * amount of prompts * sampling rate + 5 samples as buffer)
+
+        # 1. Right hand, 2. Left hand, 3. Tongue, 4. Feet, 0. Rest
+
+        while True:
+
+            data_dict = dict((k, []) for k in columns)
+            label = []
+
+            streams = resolve_stream()
+            inlet = StreamInlet(streams[0])
+
+            self.ready_signal.emit()  # ready signal
+            while False == self.go_signal:
+                time.sleep(0.1)
+
+            current_id = self.main.current_id  # Convert the received input to an integer
+
+            i = 0
+            pageNumber = 0
+
+            while not finished:
+                # get the streamed data. Columns of sample are equal to the columns variable, only the first element being timestamp
+                # concatenate timestamp and data in 1 list
+
+                sample, timestamp = inlet.pull_sample()
+                all_data = sample
+
+                # logger.info(len(data_dict['Counter']))
+
+                # print(all_data) # print the data coming from the EEG cap
+
+                # updating data dictionary with newly transmitted samples   
+                for column in data_dict.keys():  # iterate over the columns of the data dictionary
+                    data_dict[column].append(all_data[columns_index_dict[column]])  # append the data to the corresponding column
+
+                ### Add label column
+                if len(data_dict['Counter']) % int(250 * (
+                        prompt_time * 2)) == 0:  # Each prompt takes 12 seconds in total. Set pageNumber to 0 which is the rest state
+                    pageNumber = 0
+                elif len(data_dict['Counter']) % int(250 * (
+                prompt_time)) == 0:  # After 6 seconds the action will appear. Set pageNumber to pageArray[i] which is the action
+                    pageNumber = pageArray[i]
+                else:  # Else assign the same pageNumber
+                    pageNumber = pageNumber
+
+                label.append(pageNumber)  # Append to list label
+
+                # After 12 seconds add 1 to i, which goes to the next prompt
+                if len(data_dict['Counter']) % int(250 * (prompt_time * 2)) == 0 and len(data_dict['Counter']) != 0:
+                    i += 1
+
+                # data is collected at 250 Hz. Let's stop data collection after 60 seconds. Meaning we stop when we collected 250*60 samples.
+                if len(data_dict['Counter']) >= (
+                        promptsamples + 5):  # 72005 = sampling_rate * seconds_per_prompt * num_prompts + 5_seconds_leeway
+                    finished = True  # 72005 = 250*(6+6)*(4*6)+5
+
+                if len(data_dict['Counter']) % int(promptsamples / 48) == 0:
+                    recieved_loop = self.stop_signal()
+                    if recieved_loop == "Stop":
+                        finished = True
+                        inlet.close_stream()
+
+                        # lastly, we can save our data to a CSV format.
+            data_df = pd.DataFrame.from_dict(data_dict)
+            now = datetime.now()
+
+            if recieved_loop != "Stop":
+
+                # Add column to the data_df called label
+                data_df["Label"] = label  # add new column to the Dataframe
+                data_df.to_csv(
+                    'Data/' + str(current_id) + '/EEGdata-' + now.strftime("%Y-%j--%H-%M-%S") + '.csv',
+                    index=False)
+
+                # ICA filtering
+                # ICA_filtering(current_id, 'EEGdata-' + now.strftime("%Y-%j--%H-%M-%S"))
+
+            else:
+                # Add column to the data_df called label
+                data_df["Label"] = label # add new column to the Dataframe
+                data_df.to_csv('MeasurementSubgroup/Our_measurements/Measurement_prompt/EEGdata-' + now.strftime("%Y-%j--%H-%M-%S") + '_STOP.csv', index = False)
+
+            inlet.close_stream()
+
+            finished = False
 
 def show_main_window():
     window1.showMaximized()

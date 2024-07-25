@@ -53,7 +53,7 @@ def multifile(string_array):
     events = np.empty((0,  3), dtype=int)
     i = 0
     for file in string_array:
-        output = np.concatenate((output, np.genfromtxt('MeasurementSubgroup/Our_measurements/Measurement_prompt/' + file, delimiter=',')[1:, :]), axis=0)
+        output = np.concatenate((output, np.genfromtxt(file, delimiter=',')[1:, :]), axis=0)
         temp_events = np.array([[ 1500, 0, 1],
                                 [ 4500, 0, 2],
                                 [ 7500, 0, 3],
@@ -97,22 +97,41 @@ def multifile(string_array):
 #———————————————————————————————————————————————————————————————————————
 #(allOutputs, events) = multifile(["EEGdata-2024-149--16-41-44.csv"])
 #———————————————————————————————————————————————————————————————————————
-(allOutputs, events) = multifile(["EEGdata-2024-150--14-48-32.csv",
-                                  "EEGdata-2024-150--14-55-28.csv",
-                                  "EEGdata-2024-150--15-01-30.csv",
-                                  "EEGdata-2024-150--15-07-57.csv",
-                                  "EEGdata-2024-150--15-14-53.csv",
-                                  "EEGdata-2024-150--15-30-23.csv",
-                                  "EEGdata-2024-150--15-36-40.csv",
-                                  "EEGdata-2024-150--15-42-38.csv"
-                                  ])
+# (allOutputs, events) = multifile(["Data/2/EEGdata-2024-150--14-48-32.csv",
+#                                 "Data/2/EEGdata-2024-150--14-55-28.csv",
+#                                 "Data/2/EEGdata-2024-150--15-01-30.csv",
+#                                 "Data/2/EEGdata-2024-150--15-07-57.csv",
+#                                 "Data/2/EEGdata-2024-150--15-14-53.csv",
+#                                 "Data/2/EEGdata-2024-150--15-30-23.csv",
+#                                 "Data/2/EEGdata-2024-150--15-36-40.csv",
+#                                 "Data/2/EEGdata-2024-150--15-42-38.csv"
+#                                 ])
 #———————————————————————————————————————————————————————————————————————
-#(allOutputs, events) = multifile(["EEGdata-2024-156--14-35-07.csv",
+# (allOutputs, events) = multifile(["EEGdata-2024-156--14-35-07.csv",
 #                                  "EEGdata-2024-156--14-42-54.csv",
 #                                  "EEGdata-2024-156--14-51-06.csv",
 #                                  "EEGdata-2024-156--14-58-57.csv",
 #                                  "EEGdata-2024-156--15-06-57.csv"
 #                                  ])
+#———————————————————————————————————————————————————————————————————————
+# (allOutputs, events) = multifile(['Data/3/EEGdata-2024-156--14-35-07.csv',
+#                                 'Data/3/EEGdata-2024-156--14-42-54.csv',
+#                                 'Data/3/EEGdata-2024-156--14-51-06.csv',
+#                                 'Data/3/EEGdata-2024-156--14-58-57.csv',
+#                                 'Data/3/EEGdata-2024-156--15-06-57.csv',
+#                                 'Data/3/EEGdata-2024-156--15-21-50.csv',
+#                                 'Data/3/EEGdata-2024-156--15-27-22.csv'])
+#———————————————————————————————————————————————————————————————————————
+(allOutputs, events) = multifile(['Data/4/EEGdata-2024-162--11-15-01.csv',
+                                'Data/4/EEGdata-2024-162--11-20-53.csv',
+                                'Data/4/EEGdata-2024-162--11-28-38.csv',
+                                'Data/4/EEGdata-2024-162--11-35-23.csv'])
+#———————————————————————————————————————————————————————————————————————
+# (allOutputs, events) = multifile(['Data/1/EEGdata-2024-144--14-24-41.csv',
+#                                 'Data/1/EEGdata-2024-144--14-47-17.csv',
+#                                 'Data/1/EEGdata-2024-144--14-56-37.csv',
+#                                 'Data/1/EEGdata-2024-144--15-28-30.csv',
+#                                 'Data/1/EEGdata-2024-144--15-54-35.csv'])
 #———————————————————————————————————————————————————————————————————————
 
 channels = allOutputs[:, 0:8].transpose()
@@ -139,10 +158,7 @@ epochs = mne.Epochs(
     event_id=[1, 2, 3, 4],
     tmin=tmin - 0.5,
     tmax=tmax + 0.5,
-    picks=(    'Fz', 
-        'C3',  'Cz',  'C4', 
-               'Pz', 
-        'PO7', 'Oz',  'PO8'),
+    picks=('C3',  'Cz',  'C4'),
     baseline=None,
     preload=True,
 )
@@ -243,19 +259,19 @@ df["band"] = pd.cut(
 )
 
 # Filter to retain only relevant frequency bands:
-freq_bands_of_interest = ["delta", "theta", "alpha", "beta"]
+freq_bands_of_interest = ["alpha", "beta"]
 df = df[df.band.isin(freq_bands_of_interest)]
 df["band"] = df["band"].cat.remove_unused_categories()
 
 # Order channels for plotting:
-df["channel"] = df["channel"].cat.reorder_categories(('Fz', 'C3', 'Cz', 'C4', 'Pz', 'PO7', 'Oz', 'PO8'), ordered=True)
+df["channel"] = df["channel"].cat.reorder_categories(('C3',  'Cz',  'C4'), ordered=True)
 
 df = df.drop(df.index[df['time'].isin([-1.004])], axis=0)
 
 #df.to_csv('MeasurementSubgroup/ERDS_plots/MNE_erds.csv')
 
 g = sns.FacetGrid(df, row="band", col="channel", margin_titles=True)
-g.map(sns.lineplot, "time", "value", "condition", n_boot=10, errorbar=("pi", 100))
+g.map(sns.lineplot, "time", "value", "condition", n_boot=10)
 axline_kw = dict(color="black", linestyle="dashed", linewidth=0.5, alpha=0.5)
 g.map(plt.axhline, y=0, **axline_kw)
 g.map(plt.axvline, x=0, **axline_kw)
