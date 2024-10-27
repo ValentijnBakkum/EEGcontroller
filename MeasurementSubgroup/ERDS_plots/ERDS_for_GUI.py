@@ -1,38 +1,8 @@
-"""
-.. _ex-tfr-erds:
-
-===============================
-Compute and visualize ERDS maps
-===============================
-
-This example calculates and displays ERDS maps of event-related EEG data.
-ERDS (sometimes also written as ERD/ERS) is short for event-related
-desynchronization (ERD) and event-related synchronization (ERS)
-:footcite:`PfurtschellerLopesdaSilva1999`. Conceptually, ERD corresponds to a
-decrease in power in a specific frequency band relative to a baseline.
-Similarly, ERS corresponds to an increase in power. An ERDS map is a
-time/frequency representation of ERD/ERS over a range of frequencies
-:footcite:`GraimannEtAl2002`. ERDS maps are also known as ERSP (event-related
-spectral perturbation) :footcite:`Makeig1993`.
-
-In this example, we use an EEG BCI data set containing two different motor
-imagery tasks (imagined hand and feet movement). Our goal is to generate ERDS
-maps for each of the two tasks.
-
-First, we load the data and create epochs of 5s length. The data set contains
-multiple channels, but we will only consider C3, Cz, and C4. We compute maps
-containing frequencies ranging from 2 to 35Hz. We map ERD to red color and ERS
-to blue color, which is customary in many ERDS publications. Finally, we
-perform cluster-based permutation tests to estimate significant ERDS values
-(corrected for multiple comparisons within channels).
-"""
-# Authors: Clemens Brunner <clemens.brunner@gmail.com>
-#          Felix Klotzsche <klotzsche@cbs.mpg.de>
+# Modified from code by: Clemens Brunner <clemens.brunner@gmail.com>
+#                        Felix Klotzsche <klotzsche@cbs.mpg.de>
 #
 # License: BSD-3-Clause
 # Copyright the MNE-Python contributors.
-
-# As usual, we import everything we need.
 
 import os
 import matplotlib.pyplot as plt
@@ -118,16 +88,6 @@ epochs = mne.Epochs(
     preload=True,
 )
 
-# .. _cnorm-example:
-#
-# Here we set suitable values for computing ERDS maps. Note especially the
-# ``cnorm`` variable, which sets up an *asymmetric* colormap where the middle
-# color is mapped to zero, even though zero is not the middle *value* of the
-# colormap range. This does two things: it ensures that zero values will be
-# plotted in white (given that below we select the ``RdBu`` colormap), and it
-# makes synchronization and desynchronization look equally prominent in the
-# plots, even though their extreme values are of different magnitudes.
-
 freqs = np.arange(2, 36)  # frequencies from 2-35Hz
 vmin, vmax = -1, 1.5  # set min and max ERDS values in plot
 baseline = (-1, 0)  # baseline interval (in s)
@@ -149,64 +109,10 @@ tfr = epochs.compute_tfr(
 )
 tfr.crop(tmin, tmax).apply_baseline(baseline, mode="percent")
 
-"""
-for event in event_ids:
-    # select desired epochs for visualization
-    tfr_ev = tfr[event]
-    fig, axes = plt.subplots(
-        1, 4, figsize=(12, 4), gridspec_kw={"width_ratios": [10, 10, 10, 1]}
-    )
-    for ch, ax in enumerate(axes[:-1]):  # for each channel
-        # positive clusters
-        _, c1, p1, _ = pcluster_test(tfr_ev.data[:, ch], tail=1, **kwargs)
-        # negative clusters
-        _, c2, p2, _ = pcluster_test(tfr_ev.data[:, ch], tail=-1, **kwargs)
-
-        # note that we keep clusters with p <= 0.05 from the combined clusters
-        # of two independent tests; in this example, we do not correct for
-        # these two comparisons
-        c = np.stack(c1 + c2, axis=2)  # combined clusters
-        p = np.concatenate((p1, p2))  # combined p-values
-        mask = c[..., p <= 0.05].any(axis=-1)
-
-        # plot TFR (ERDS map with masking)
-        tfr_ev.average().plot(
-            [ch],
-            cmap="RdBu",
-            cnorm=cnorm,
-            axes=ax,
-            colorbar=False,
-            show=False,
-            mask=mask,
-            mask_style="mask",
-        )
-
-        ax.set_title(epochs.ch_names[ch], fontsize=10)
-        ax.axvline(0, linewidth=1, color="black", linestyle=":")  # event
-        if ch != 0:
-            ax.set_ylabel("")
-            ax.set_yticklabels("")
-    fig.colorbar(axes[0].images[-1], cax=axes[-1]).ax.set_yscale("linear")
-    fig.suptitle(f"ERDS ({event})")
-    plt.show()
-"""
-
-# Similar to `~mne.Epochs` objects, we can also export data from
-# `~mne.time_frequency.EpochsTFR` and `~mne.time_frequency.AverageTFR` objects
-# to a :class:`Pandas DataFrame <pandas.DataFrame>`. By default, the `time`
-# column of the exported data frame is in milliseconds. Here, to be consistent
-# with the time-frequency plots, we want to keep it in seconds, which we can
-# achieve by setting ``time_format=None``:
-
 df = tfr.to_data_frame(time_format=None)
 df.head()
 
-# This allows us to use additional plotting functions like
-# :func:`seaborn.lineplot` to plot confidence bands:
-
 df = tfr.to_data_frame(time_format=None, long_format=True)
-
-#print(df)
 
 # Map to frequency bands:
 freq_bounds = {"_": 0, "delta": 3, "theta": 7, "alpha": 13, "beta": 35, "gamma": 140}
@@ -240,7 +146,3 @@ plt.show()
 
 with open("plot_opened.signal", "w") as f:
     f.write("Plot opened")
-
-# References
-# ==========
-# .. footbibliography::

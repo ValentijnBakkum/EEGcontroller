@@ -1,38 +1,8 @@
-"""
-.. _ex-tfr-erds:
-
-===============================
-Compute and visualize ERDS maps
-===============================
-
-This example calculates and displays ERDS maps of event-related EEG data.
-ERDS (sometimes also written as ERD/ERS) is short for event-related
-desynchronization (ERD) and event-related synchronization (ERS)
-:footcite:`PfurtschellerLopesdaSilva1999`. Conceptually, ERD corresponds to a
-decrease in power in a specific frequency band relative to a baseline.
-Similarly, ERS corresponds to an increase in power. An ERDS map is a
-time/frequency representation of ERD/ERS over a range of frequencies
-:footcite:`GraimannEtAl2002`. ERDS maps are also known as ERSP (event-related
-spectral perturbation) :footcite:`Makeig1993`.
-
-In this example, we use an EEG BCI data set containing two different motor
-imagery tasks (imagined hand and feet movement). Our goal is to generate ERDS
-maps for each of the two tasks.
-
-First, we load the data and create epochs of 5s length. The data set contains
-multiple channels, but we will only consider C3, Cz, and C4. We compute maps
-containing frequencies ranging from 2 to 35Hz. We map ERD to red color and ERS
-to blue color, which is customary in many ERDS publications. Finally, we
-perform cluster-based permutation tests to estimate significant ERDS values
-(corrected for multiple comparisons within channels).
-"""
-# Authors: Clemens Brunner <clemens.brunner@gmail.com>
-#          Felix Klotzsche <klotzsche@cbs.mpg.de>
+# Modified from code by: Clemens Brunner <clemens.brunner@gmail.com>
+#                        Felix Klotzsche <klotzsche@cbs.mpg.de>
 #
 # License: BSD-3-Clause
 # Copyright the MNE-Python contributors.
-
-# As usual, we import everything we need.
 
 import matplotlib.pyplot as plt
 import numpy as np
