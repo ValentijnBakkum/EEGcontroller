@@ -2,7 +2,6 @@ import os
 import sys
 import json
 import csv
-import subprocess
 from ui_interface import *
 from ui_splashscreen import *
 from ui_ERDSWindow import Ui_ERDSWindow
@@ -1191,11 +1190,6 @@ class LavaGame(QMainWindow):
 
         # Start the game with countdown
         self.start_countdown()
-
-        # global classifyProcess
-        # classifyProcess = subprocess.Popen(["python3", "-u", "MLsubgroup/Stream_and_classify.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, )
-        # classifyProcess.stdin.write(str(self.main.current_id).encode('utf-8'))
-        # classifyProcess.stdin.flush()
 
     def start_countdown(self):
         if self.isHidden():
