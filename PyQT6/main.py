@@ -1002,6 +1002,8 @@ class MainWindow(QMainWindow):
 # User Window class
 # =======================================================================
 class UserWindow(QMainWindow):
+    go_signal = Signal()
+    stop_signal = Signal()
     def __init__(self, main_window):
         super(UserWindow, self).__init__()
         self.ui = Ui_UserWindow()
@@ -1031,13 +1033,10 @@ class UserWindow(QMainWindow):
         self.recording_worker.moveToThread(self.recording_thread)
         self.recording_thread.started.connect(self.recording_worker.run)
 
-        self.go_signal = Signal()
-        self.stop_signal = Signal()
-
         self.is_ready = False
         self.recording_worker.ready_signal.connect(self.set_ready)
-        self.go_signal.connect(self.recording_worker.go_signal)
-        self.stop_signal.connect(self.recording_worker.stop_signal)
+        self.go_signal.connect(self.recording_worker.set_go_signal)
+        self.stop_signal.connect(self.recording_worker.set_stop_signal)
 
         self.recording_thread.start()
 
